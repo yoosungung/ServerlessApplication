@@ -1,0 +1,31 @@
+{
+  "name": "app_on_aws",
+  "version": "0.1.0",
+  "bin": {
+    "app_on_aws": "bin/app_on_aws.js"
+  },
+  "scripts": {
+    "build": "echo build !!",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.119.0",
+    "aws-cdk": "1.119.0",
+    "jest": "^26.4.2"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigatewayv2": "^1.119.0",
+    "@aws-cdk/aws-apigatewayv2-authorizers": "^1.119.0",
+    "@aws-cdk/aws-apigatewayv2-integrations": "^1.119.0",
+    "@aws-cdk/aws-dynamodb": "^1.119.0",
+    "@aws-cdk/aws-iam": "^1.119.0",
+    "@aws-cdk/aws-kms": "^1.119.0",
+    "@aws-cdk/aws-lambda": "^1.119.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.119.0",
+    "@aws-cdk/aws-logs": "^1.119.0",
+    "@aws-cdk/aws-s3": "^1.119.0",
+    "@aws-cdk/aws-s3-deployment": "^1.119.0",
+    "@aws-cdk/aws-stepfunctions": "^1.119.0",
+    "@aws-cdk/core": "1.119.0"
+  }
+}
