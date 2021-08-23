@@ -5,10 +5,11 @@ const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '10m';
 const nodemailer = require('nodemailer');
 const mailConfig = JSON.parse(process.env.SMTP_CONFIG || '{}');
 
+const region = process.env.AWS_REGION || 'ap-northeast-2';
 const tableName = process.env.APP_TABLE || 'default-app-table';
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, GetCommand } = require("@aws-sdk/lib-dynamodb");
-const dbClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+const dbClient = new DynamoDBClient({ region: region });
 const docClient = DynamoDBDocumentClient.from(dbClient);
 
 const bucketName = process.env.USER_BUCKET || 'default-user-files';
@@ -69,12 +70,12 @@ exports.CheckHandler = async (event, context) => {
   //console.info('event:', event);
   //console.info('context:', context);
 
-  const tokenList = event.identitySource;
+  const token = event.identitySource;
 
   let statLambda = {
     "Action": "execute-api:Invoke",
     "Effect": "Deny",
-    "Resource": `arn:aws:execute-api:ap-northeast-2:${event.requestContext.accountId}:${event.requestContext.apiId}/v1/*/api/*`
+    "Resource": `arn:aws:execute-api:${region}:${event.requestContext.accountId}:${event.requestContext.apiId}/*/*/api/*`
   }
 
   let res = {
@@ -86,22 +87,22 @@ exports.CheckHandler = async (event, context) => {
     "context": {}
   };
 
-  for(let token of tokenList) {
-    try {
-      const decoded = await jwt.verify(token, jwtSecretKey);
-      statLambda.Effect = "Allow";
-      res.principalId = `${decoded.INFO_ID}::app-on-aws-authn`;
+  //for(let token of tokenList) {
+  try {
+    const decoded = await jwt.verify(token, jwtSecretKey);
+    statLambda.Effect = "Allow";
+    res.principalId = `${decoded.INFO_ID}::app-on-aws-authn`;
 
-      delete decoded.exp;
-      delete decoded.iat;
-      res.context = decoded;
-      const refreshToken = await jwt.sign(decoded, jwtSecretKey, { expiresIn: jwtExpiresIn });
-      res.context['jwtoken'] = refreshToken;
-    } catch(err) {
-      console.info('verify error:', err);
-    }
+    delete decoded.exp;
+    delete decoded.iat;
+    res.context = decoded;
+    const refreshToken = await jwt.sign(decoded, jwtSecretKey, { expiresIn: jwtExpiresIn });
+    res.context['jwtoken'] = refreshToken;
+  } catch(err) {
+    console.info('verify error:', err);
   }
+  //}
 
-  //console.info('res:', JSON.stringify(res));
+  console.info('res:', JSON.stringify(res));
   return res;
 };
