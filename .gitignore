@@ -6,3 +6,6 @@ cdk.out
 
 # vue
 dist
+
+# rest api client
+*.http
