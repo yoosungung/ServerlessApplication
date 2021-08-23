@@ -1,132 +1,7 @@
 [
   {
-    "value": "employee",
-    "text": "직원",
-    "icon": "mdi-account-tie",
-    "type": "master",
-    "visiblity": {
-      "read": "all",
-      "write": "owner"
-    },
-    "fields": [
-      {
-        "text": "부서",
-        "value": "group",
-        "type": "select",
-        "code": [
-          "솔루션랩",
-          "프로젝트서비스"
-        ],
-        "summary": "require"
-      },
-      {
-        "text": "이름",
-        "value": "title",
-        "type": "text",
-        "summary": ""
-      },
-      {
-        "value": "rank",
-        "text": "직위",
-        "type": "select",
-        "code": [
-          "본부장",
-          "팀장",
-          "팀원(전무)",
-          "팀원(이사)",
-          "팀원(부장)",
-          "팀원(차장)",
-          "팀원(과장)",
-          "팀원(대리)",
-          "팀원(주임)",
-          "팀원(사원)"
-        ],
-        "summary": ""
-      },
-      {
-        "value": "INFO_ID",
-        "text": "이메일",
-        "type": "email",
-        "summary": "require"
-      }
-    ],
-    "children": [
-      "workhistory"
-    ]
-  },
-  {
-    "value": "workhistory",
-    "text": "근무기록(월간)",
-    "type": "child",
-    "visiblity": {
-      "read": "all",
-      "write": "owner"
-    },
-    "filter": {
-      "FilterExpression": "endday >= :v_endday",
-      "ExpressionAttributeValues": {
-        ":v_endday": "$DATE:-31:YYYY/MM/DD"
-      }
-    },
-    "fields": [
-      {
-        "value": "startday",
-        "text": "시작일자",
-        "type": "date"
-      },
-      {
-        "value": "endday",
-        "text": "종료일자",
-        "type": "date"
-      },
-      {
-        "value": "workcondition",
-        "text": "근무상태",
-        "type": "select",
-        "code": [
-          "하자조치(무상)",
-          "하자조치(유상)",
-          "MA(유상)",
-          "투입(무상)",
-          "투입(유상)",
-          "지원(유상)",
-          "지원(무상)"
-        ]
-      },
-      {
-        "value": "rate",
-        "text": "비율(%)",
-        "type": "number",
-        "code":[0,100],
-        "default": 100
-      },
-      {
-        "value": "discribe",
-        "text": "구분",
-        "type": "text"
-      }
-    ]
-  },
-  {
-    "value": "file",
-    "text": "파일",
-    "icon": "mdi-file",
-    "type": "system",
-    "visiblity": {
-      "read": "all",
-      "write": "owner"
-    },
-    "fields": [
-      {
-        "text": "이름",
-        "value": "title",
-        "type": "text"
-      }
-    ]
-  },
-  {
-    "value": "project",
-    "text": "프로젝트",
+    "value": "test",
+    "text": "테스트",
     "icon": "mdi-clipboard-check",
     "type": "master",
     "visiblity": {
@@ -135,57 +10,121 @@
     },
     "fields": [
       {
-        "text": "고객사",
-        "value": "account",
-        "type": "text",
+        "text": "bool-type",
+        "value": "bool-data",
+        "type": "bool",
         "summary": ""
       },
       {
-        "text": "이름",
-        "value": "title",
-        "type": "text",
+        "text": "file-type",
+        "value": "file-data",
+        "type": "file",
         "summary": ""
       },
       {
-        "text": "시작일자",
-        "value": "startday",
-        "type": "date"
-      },
-      {
-        "text": "오픈일자",
-        "value": "openday",
-        "type": "date",
+        "text": "code-type",
+        "value": "code-data",
+        "type": "code",
+        "code": [
+          { "value": "value-1", "text": "text-1" },
+          { "value": "value-2", "text": "text-2" }
+        ],
         "summary": ""
       },
       {
-        "text": "종료일자",
-        "value": "endday",
-        "type": "date"
+        "text": "select-type",
+        "value": "select-data",
+        "type": "select",
+        "code": [
+          "text-1",
+          "text-2"
+        ],
+        "summary": ""
       },
       {
-        "text": "PM",
-        "value": "pm",
+        "text": "reference-type",
+        "value": "reference-data",
         "type": "reference",
         "code": [
           {
-            "object": "employee",
+            "object": "refobj",
             "value": "INFO_ID",
             "text": "title"
           }
         ],
         "summary": ""
+      },
+      {
+        "text": "number-type",
+        "value": "number-data",
+        "type": "number",
+        "code": [
+          0,
+          100
+        ],
+        "summary": ""
+      },
+      {
+        "text": "date-type",
+        "value": "date-data",
+        "type": "date",
+        "summary": ""
+      },
+      {
+        "text": "time-type",
+        "value": "time-data",
+        "type": "time",
+        "summary": ""
+      },
+      {
+        "text": "textarea-type",
+        "value": "textarea-data",
+        "type": "textarea",
+        "summary": ""
+      },
+      {
+        "text": "text-type",
+        "value": "text-data",
+        "type": "text",
+        "summary": ""
       }
     ],
     "children": [
-      "mileston",
-      "teams",
-      "issue",
-      "activity"
+      "childobj"
     ]
   },
   {
-    "value": "mileston",
-    "text": "마일스톤",
+    "value": "refobj",
+    "text": "참조객체",
+    "type": "master",
+    "visiblity": {
+      "read": "all",
+      "write": "owner"
+    },
+    "filter": {
+      "FilterExpression": "endday >= :v_endday",
+      "ExpressionAttributeValues": {
+        ":v_endday": "$DATE:-1:YYYY/MM/DD"
+      }
+    },
+    "fields": [
+      {
+        "text": "INFO_ID",
+        "value": "INFO_ID",
+        "type": "text",
+        "summary": ""
+      },
+      {
+        "text": "title",
+        "value": "title",
+        "type": "text",
+        "summary": ""
+      }
+    ]
+  },
+  {
+    "value": "childobj",
+    "text": "자식객체",
     "type": "child",
     "visiblity": {
       "read": "all",
@@ -199,168 +138,83 @@
     },
     "fields": [
       {
-        "text": "단계",
-        "value": "step",
+        "text": "bool-type",
+        "value": "bool-data",
+        "type": "bool",
+        "summary": ""
+      },
+      {
+        "text": "file-type",
+        "value": "file-data",
+        "type": "file",
+        "summary": ""
+      },
+      {
+        "text": "code-type",
+        "value": "code-data",
+        "type": "code",
+        "code": [
+          { "value": "value-1", "text": "text-1" },
+          { "value": "value-2", "text": "text-2" }
+        ],
+        "summary": ""
+      },
+      {
+        "text": "select-type",
+        "value": "select-data",
         "type": "select",
         "code": [
-          "사전준비",
-          "분석",
-          "설계",
-          "개발",
-          "테스트",
-          "이행",
-          "안정화"
-        ]
+          "text-1",
+          "text-2"
+        ],
+        "summary": ""
       },
       {
-        "text": "종료일자",
-        "value": "endday",
-        "type": "date"
-      },
-      {
-        "text": "진행율",
-        "value": "processrate",
-        "type": "number",
-        "code": [0, 100],
-        "default": 0
-      }
-    ]
-  },
-  {
-    "value": "teams",
-    "text": "팀구성",
-    "type": "reference",
-    "reference": "employee",
-    "visiblity": {
-      "read": "all",
-      "write": "owner"
-    },
-    "fields": [
-      {
-        "text": "부서",
-        "value": "group",
-        "type": "select",
-        "code": [
-          "솔루션랩",
-          "프로젝트서비스"
-        ]
-      },
-      {
-        "text": "이름",
-        "value": "title",
-        "type": "text"
-      },
-      {
-        "value": "rank",
-        "text": "직위",
-        "type": "select",
-        "code": [
-          "본부장",
-          "팀장",
-          "팀원(부장)",
-          "팀원(차장)",
-          "팀원(과장)",
-          "팀원(대리)",
-          "팀원(주임)",
-          "팀원(사원)"
-        ]
-      },
-      {
-        "value": "part",
-        "text": "부분",
-        "type": "text"
-      },
-      {
-        "value": "role",
-        "text": "역활",
-        "type": "select",
-        "code": [
-          "PM(팀장)",
-          "설계자",
-          "개발자",
-          "컨설팅"
-        ]
-      }
-    ]
-  },
-  {
-    "value": "issue",
-    "text": "이슈",
-    "type": "child",
-    "visiblity": {
-      "read": "all",
-      "write": "owner"
-    },
-    "filter": {
-      "FilterExpression": "status = :v_issue OR status = :v_runing",
-      "ExpressionAttributeValues": {
-        ":v_issue": "발생",
-        ":v_runing": "진행중"
-      }
-    },
-    "fields": [
-      {
-        "text": "상태",
-        "value": "status",
-        "type": "select",
-        "code": [
-          "발생",
-          "진행중",
-          "해결"
-        ]
-      },
-      {
-        "text": "발생일자",
-        "value": "startday",
-        "type": "date"
-      },
-      {
-        "text": "해결일자",
-        "value": "endday",
-        "type": "date"
-      },
-      {
-        "text": "발생내용",
-        "value": "raisecontent",
-        "type": "textarea"
-      },
-      {
-        "text": "해결내용",
-        "value": "solvecontent",
-        "type": "textarea"
-      }
-    ]
-  },
-  {
-    "value": "activity",
-    "text": "방문활동",
-    "type": "child",
-    "visiblity": {
-      "read": "all",
-      "write": "owner"
-    },
-    "fields": [
-      {
-        "text": "방문일자",
-        "value": "visiteday",
-        "type": "date"
-      },
-      {
-        "text": "담당자",
-        "value": "meetter",
+        "text": "reference-type",
+        "value": "reference-data",
         "type": "reference",
         "code": [
           {
-            "object": "employee",
+            "object": "refobj",
             "value": "INFO_ID",
             "text": "title"
           }
-        ]
+        ],
+        "summary": ""
       },
       {
-        "text": "방문내용",
-        "value": "content",
-        "type": "textarea"
+        "text": "number-type",
+        "value": "number-data",
+        "type": "number",
+        "code": [
+          0,
+          100
+        ],
+        "summary": ""
+      },
+      {
+        "text": "date-type",
+        "value": "date-data",
+        "type": "date",
+        "summary": ""
+      },
+      {
+        "text": "time-type",
+        "value": "time-data",
+        "type": "time",
+        "summary": ""
+      },
+      {
+        "text": "textarea-type",
+        "value": "textarea-data",
+        "type": "textarea",
+        "summary": ""
+      },
+      {
+        "text": "text-type",
+        "value": "text-data",
+        "type": "text",
+        "summary": ""
       }
     ]
   }

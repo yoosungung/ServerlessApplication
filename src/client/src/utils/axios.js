@@ -8,7 +8,7 @@ import axios from "axios";
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-const apiURL = "https://047b5atsch.execute-api.ap-northeast-2.amazonaws.com";
+const apiURL = "https://mshj94wl3i.execute-api.ap-northeast-2.amazonaws.com";
 
 let config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || window.location.origin
