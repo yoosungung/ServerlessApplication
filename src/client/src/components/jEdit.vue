@@ -21,12 +21,13 @@
                 v-if="itm.type == 'file'"
                 v-model="editdata[itm.value]"
                 :label="itm.text"
+                prepend-icon="mdi-paperclip"
               ></v-file-input>
               <v-radio-group
                 v-if="itm.type == 'code'"
                 v-model="editdata[itm.value]"
               >
-                <v-radio v-for="n in itm.code" :key="n.value" :label="n.text">
+                <v-radio v-for="n in itm.code" :key="n.value" :value="n.value" :label="n.text">
                 </v-radio>
               </v-radio-group>
               <v-select
@@ -80,7 +81,7 @@
                 </template>
                 <v-date-picker
                   v-model="editdata[itm.value]"
-                  @input="itm[value + '_picker'] = false"
+                  @input="itm[itm.value + '_picker'] = false"
                 ></v-date-picker>
               </v-menu>
               <v-menu
@@ -106,7 +107,6 @@
                   ></v-text-field>
                 </template>
                 <v-time-picker
-                  v-if="itm[value + '_picker']"
                   v-model="editdata[itm.value]"
                   full-width
                   @click:minute="inputTime(itm.value)"

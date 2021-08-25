@@ -111,7 +111,13 @@ export default {
                     const cval = row[f.value];
                     const nval = f.refitems.find(c => c.value === cval);
                     if(nval) {
-                      row[f.value] = nval['text'] || cval;  
+                      row[f.value] = nval['text'] || cval;
+                    }
+                  } else if(f.type == "code" && f.code?.length > 0) {
+                    const cval = row[f.value];
+                    const nval = f.code.find(c => c.value === cval);
+                    if(nval) {
+                      row[f.value] = nval['text'] || cval;
                     }
                   }
                 }
@@ -154,7 +160,7 @@ export default {
     },
     hasReference(fields) {
       for(const f of fields) {
-        if(f.type === "reference") {
+        if(f.type === "reference" || f.type === "code") {
           return true;
         }
       }

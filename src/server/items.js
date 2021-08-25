@@ -69,8 +69,8 @@ exports.GetListHandler = async (event, context) => {
 }
 
 exports.AnyInfoParentIdHandler = async (event, context) => {
-  //console.info('event:', JSON.stringify(event, null, 2));
-  //console.info('context:', JSON.stringify(context, null, 2));
+  console.info('event:', JSON.stringify(event, null, 2));
+  console.info('context:', JSON.stringify(context, null, 2));
 
   const editAt = Date.now();
   let editBy = "Nogroup:Noname";
