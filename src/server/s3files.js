@@ -16,7 +16,7 @@ exports.GetS3FileHandler = async (event, context) => {
   //console.info('event:', JSON.stringify(event, null, 2));
   //console.info('context:', JSON.stringify(context, null, 2));
 
-  const params = {Bucket: bucketName};
+  const params = { Bucket: bucketName };
   let command = undefined;
   if (event.routeKey === "GET /api/files/{key+}") {
     params['Prefix'] = event.pathParameters.key;

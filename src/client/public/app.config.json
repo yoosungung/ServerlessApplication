@@ -10,40 +10,40 @@
     },
     "fields": [
       {
-        "text": "bool-type",
-        "value": "bool-data",
+        "text": "bool_type",
+        "value": "bool_data",
         "type": "bool",
         "summary": ""
       },
       {
-        "text": "file-type",
-        "value": "file-data",
+        "text": "file_type",
+        "value": "file_data",
         "type": "file",
         "summary": ""
       },
       {
-        "text": "code-type",
-        "value": "code-data",
+        "text": "code_type",
+        "value": "code_data",
         "type": "code",
         "code": [
-          { "value": "value-1", "text": "text-1" },
-          { "value": "value-2", "text": "text-2" }
+          { "value": "value_1", "text": "text_1" },
+          { "value": "value_2", "text": "text_2" }
         ],
         "summary": ""
       },
       {
-        "text": "select-type",
-        "value": "select-data",
+        "text": "select_type",
+        "value": "select_data",
         "type": "select",
         "code": [
-          "text-1",
-          "text-2"
+          "text_1",
+          "text_2"
         ],
         "summary": ""
       },
       {
-        "text": "reference-type",
-        "value": "reference-data",
+        "text": "reference_type",
+        "value": "reference_data",
         "type": "reference",
         "code": [
           {
@@ -55,8 +55,8 @@
         "summary": ""
       },
       {
-        "text": "number-type",
-        "value": "number-data",
+        "text": "number_type",
+        "value": "number_data",
         "type": "number",
         "code": [
           0,
@@ -65,26 +65,26 @@
         "summary": ""
       },
       {
-        "text": "date-type",
-        "value": "date-data",
+        "text": "date_type",
+        "value": "date_data",
         "type": "date",
         "summary": ""
       },
       {
-        "text": "time-type",
-        "value": "time-data",
+        "text": "time_type",
+        "value": "time_data",
         "type": "time",
         "summary": ""
       },
       {
-        "text": "textarea-type",
-        "value": "textarea-data",
+        "text": "textarea_type",
+        "value": "textarea_data",
         "type": "textarea",
         "summary": ""
       },
       {
-        "text": "text-type",
-        "value": "text-data",
+        "text": "text_type",
+        "value": "text_data",
         "type": "text",
         "summary": ""
       }
@@ -138,40 +138,40 @@
     },
     "fields": [
       {
-        "text": "bool-type",
-        "value": "bool-data",
+        "text": "bool_type",
+        "value": "bool_data",
         "type": "bool",
         "summary": ""
       },
       {
-        "text": "file-type",
-        "value": "file-data",
+        "text": "file_type",
+        "value": "file_data",
         "type": "file",
         "summary": ""
       },
       {
-        "text": "code-type",
-        "value": "code-data",
+        "text": "code_type",
+        "value": "code_data",
         "type": "code",
         "code": [
-          { "value": "value-1", "text": "text-1" },
-          { "value": "value-2", "text": "text-2" }
+          { "value": "value_1", "text": "text_1" },
+          { "value": "value_2", "text": "text_2" }
         ],
         "summary": ""
       },
       {
-        "text": "select-type",
-        "value": "select-data",
+        "text": "select_type",
+        "value": "select_data",
         "type": "select",
         "code": [
-          "text-1",
-          "text-2"
+          "text_1",
+          "text_2"
         ],
         "summary": ""
       },
       {
-        "text": "reference-type",
-        "value": "reference-data",
+        "text": "reference_type",
+        "value": "reference_data",
         "type": "reference",
         "code": [
           {
@@ -183,8 +183,8 @@
         "summary": ""
       },
       {
-        "text": "number-type",
-        "value": "number-data",
+        "text": "number_type",
+        "value": "number_data",
         "type": "number",
         "code": [
           0,
@@ -193,26 +193,26 @@
         "summary": ""
       },
       {
-        "text": "date-type",
-        "value": "date-data",
+        "text": "date_type",
+        "value": "date_data",
         "type": "date",
         "summary": ""
       },
       {
-        "text": "time-type",
-        "value": "time-data",
+        "text": "time_type",
+        "value": "time_data",
         "type": "time",
         "summary": ""
       },
       {
-        "text": "textarea-type",
-        "value": "textarea-data",
+        "text": "textarea_type",
+        "value": "textarea_data",
         "type": "textarea",
         "summary": ""
       },
       {
-        "text": "text-type",
-        "value": "text-data",
+        "text": "text_type",
+        "value": "text_data",
         "type": "text",
         "summary": ""
       }
