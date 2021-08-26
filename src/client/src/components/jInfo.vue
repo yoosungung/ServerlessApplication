@@ -15,6 +15,24 @@
           dense
           hide-details="true"
         ></v-textarea>
+        <v-file-input
+          v-else-if="itm.type == 'file'"
+          v-model="jsondata[itm.value]"
+          :label="itm.text"
+          prepend-icon="mdi-paperclip"
+          readonly
+          dense
+          hide-details="true"
+        ></v-file-input>
+        <v-select
+          v-else-if="itm.type == 'select' || itm.type == 'code'"
+          v-model="jsondata[itm.value]"
+          :items="itm.code"
+          :label="itm.text"
+          readonly
+          dense
+          hide-details="true"
+        ></v-select>
         <v-select
           v-else-if="itm.type == 'reference'"
           v-model="jsondata[itm.value]"
