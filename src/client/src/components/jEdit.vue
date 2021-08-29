@@ -19,9 +19,10 @@
               ></v-checkbox>
               <v-file-input
                 v-if="itm.type == 'file'"
-                v-model="editdata[itm.value]"
+                v-model="filedata[itm.value]"
                 :label="itm.text"
                 prepend-icon="mdi-paperclip"
+                @change="onFileChange(itm.value)"
               ></v-file-input>
               <v-radio-group
                 v-if="itm.type == 'code'"
@@ -173,6 +174,7 @@ export default {
       isedit: false,
       editlayout: [],
       editdata: {},
+      filedata: {},
       valid: true,
       viewselect: false
     };
@@ -246,12 +248,36 @@ export default {
       this.$refs[name + "_picker"][0].save(this.editdata[name]);
       this.editlayout[name + "_picker"] = false;
     },
+    onFileChange(itemName) {
+      const fileObject = this.filedata[itemName];
+      this.editdata[itemName] = {
+        'lastModified': fileObject['lastModified'],
+        'lastModifiedDate': fileObject['lastModifiedDate'],
+        'name': fileObject['name'],
+        'size': fileObject['size'],
+        'type': fileObject['type']
+      };
+    },
+    getFileData(itemName) {
+      const fileData = this.editdata[itemName];
+      const fileObject = new File([], fileData['name'], {
+        'lastModified': fileData['lastModified'],
+        'lastModifiedDate': fileData['lastModifiedDate'],
+        'type': fileData['type']
+      });
+      this.filedata[itemName] = fileObject;
+    },
     qryEditData() {
       this.$axios
         .get(`/api/info/${this.$props.objectgroup}/${this.id}`)
         .then((r) => {
           if (r && r.data) {
             this.editdata = r.data;
+            for (let itm of this.editlayout) {
+              if(itm.type == 'file') {
+                this.getFileData(itm.value);
+              }
+            }
           } else {
             this.editdata = {};
           }
