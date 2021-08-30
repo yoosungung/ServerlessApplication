@@ -17,12 +17,14 @@
         ></v-textarea>
         <v-file-input
           v-else-if="itm.type == 'file'"
-          v-model="jsondata[itm.value]"
+          v-model="filedata[itm.value]"
           :label="itm.text"
           prepend-icon="mdi-paperclip"
+          append-outer-icon="mdi-download"
           readonly
           dense
           hide-details="true"
+          @click:append-outer="fileDownload(itm)"
         ></v-file-input>
         <v-select
           v-else-if="itm.type == 'select' || itm.type == 'code'"
@@ -67,11 +69,32 @@ export default {
     jsondata: Object
   },
   beforeMount() {
-    console.info(this.$props);
+    for (let itm of this.$props.objectconfig) {
+      if(itm.type == 'file') {
+        const itemName = itm.value;
+        const fileData = this.$props.jsondata[itemName];
+        const fileObject = new File([], fileData['name'], {
+          'lastModified': fileData['lastModified'],
+          'lastModifiedDate': fileData['lastModifiedDate'],
+          'type': fileData['type']
+        });
+        this.filedata[itemName] = fileObject;
+      }
+    }
   },
   computed: {
     getTitle() {
       return this.$props.jsondata['title'] || this.$props.jsondata['name'] || this.$props.jsondata['caption'];
+    }
+  },
+  data() {
+    return {
+      filedata: {}
+    }
+  },
+  methods: {
+    fileDownload(item) {
+      console.log(item);
     }
   }
 }

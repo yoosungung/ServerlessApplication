@@ -22,7 +22,9 @@
                 v-model="filedata[itm.value]"
                 :label="itm.text"
                 prepend-icon="mdi-paperclip"
+                append-outer-icon="mdi-download"
                 @change="onFileChange(itm.value)"
+                @click:append-outer="fileDownload(itm)"
               ></v-file-input>
               <v-radio-group
                 v-if="itm.type == 'code'"
@@ -199,6 +201,11 @@ export default {
     } else {
       this.isedit = false;
       this.editdata = this.$props.jsondata || {};
+      for (let itm of this.editlayout) {
+        if(itm.type == 'file') {
+          this.getFileData(itm.value);
+        }
+      }
     }
   },
   methods: {
@@ -266,6 +273,9 @@ export default {
         'type': fileData['type']
       });
       this.filedata[itemName] = fileObject;
+    },
+    fileDownload(item) {
+      console.log(item);
     },
     qryEditData() {
       this.$axios
