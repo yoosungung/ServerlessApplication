@@ -2,18 +2,27 @@
 
 class UIConfig {
   _configs = new Map();
+  _apiurl = "http://localhost:8000";
+
   async loadConfigs() {
     try {
       const response = await fetch('/app.config.json');
       const appconfig = await response.json();
-      for (const obj of appconfig) {
+      const uiconfig = appconfig['UI'];
+      for (const obj of uiconfig) {
         this._configs.set(obj.value, obj);
       }
+      this._apiurl = appconfig["API"];
+
       return true;
     } catch(e) {
       console.error(e);
       return false;
     }
+  }
+
+  getApiUrl() {
+    return this._apiurl;
   }
 
   _names = new Map();

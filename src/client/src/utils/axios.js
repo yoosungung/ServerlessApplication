@@ -8,21 +8,22 @@ import axios from "axios";
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
-const apiURL = "https://mshj94wl3i.execute-api.ap-northeast-2.amazonaws.com";
-
-let config = {
+const _config = {
   // baseURL: process.env.baseURL || process.env.apiUrl || window.location.origin
-  baseURL: process.env.apiUrl || apiURL,
+  baseURL: "http://localhost:8000",
   headers: { 'Content-Type': 'application/json', 'Authorization': '' },
   timeout: 60 * 1000, // Timeout
   withCredentials: false // Check cross-site Access-Control
 };
 
-const _axios = axios.create(config);
+let _axios = {};
 let _app = {};
 
-_axios.use = (app) => {
+_axios.use = (app, apiUrl) => {
   _app = app;
+  _config.baseURL = apiUrl || _config.baseURL;
+  _axios = axios.create(_config);
+
   _axios.interceptors.request.use(
     function(config) {
       return config;

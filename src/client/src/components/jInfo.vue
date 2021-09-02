@@ -83,7 +83,20 @@ export default {
   },
   methods: {
     fileDownload(item) {
-      s3File.getFile(this.filedata[item?.value]);
+      const s3path = s3File.getPath(this.$props.objectid, item?.value, this.filedata);
+      this.$axios
+        .get(`/api/file/${s3path}`)
+        .then((r) => {
+          if (r?.data) {
+            fetch(r.data.url)
+              .then((response) => console.log("response:", response))
+              .catch((error) => console.log("error:", error));
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          this.onMessageBox('Erorr', 'File down load error !');
+        });
     },
     fileProps(item) {
       s3File.api2file(item?.value, this.filedata, this.$props.jsondata);

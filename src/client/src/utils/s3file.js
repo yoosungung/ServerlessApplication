@@ -27,10 +27,9 @@ module.exports.api2file = function(fileIndex, files, datas) {
   }
 }
 
-module.exports.getFile = function(file) {
-  console.log(file);
+module.exports.getPath = function(objectId, fileIndex, files) {
+  return `${objectId}\\${fileIndex}\\${files[fileIndex]['name']}`;
 }
 
-module.exports.putFile = function(file) {
-  console.log(file);
-}
+
+

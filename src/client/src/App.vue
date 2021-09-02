@@ -81,11 +81,12 @@ export default {
     timeout: 2000,
   }),
   created() {
-    this.$axios.use(this);
+    //this.$axios.use(this);
   },
   async beforeMount() {
     if(await this.$uiconfig.loadConfigs()) {
       this.items = this.$uiconfig.getMenus();
+      this.$axios.use(this, this.$uiconfig.getApiUrl());
     }    
   },
   methods: {
