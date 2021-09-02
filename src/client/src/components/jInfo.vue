@@ -18,10 +18,9 @@
         <v-file-input
           v-else-if="itm.type == 'file'"
           v-model="filedata[itm.value]"
-          :label="itm.text"
+          :label="fileProps(itm)"
           prepend-icon="mdi-paperclip"
           append-outer-icon="mdi-download"
-          readonly
           dense
           hide-details="true"
           @click:append-outer="fileDownload(itm)"
@@ -61,6 +60,8 @@
 </template>
 
 <script>
+import s3File from "../utils/s3file.js";
+
 export default {
   props: {
     objectname: String,
@@ -69,18 +70,6 @@ export default {
     jsondata: Object
   },
   beforeMount() {
-    for (let itm of this.$props.objectconfig) {
-      if(itm.type == 'file') {
-        const itemName = itm.value;
-        const fileData = this.$props.jsondata[itemName];
-        const fileObject = new File([], fileData['name'], {
-          'lastModified': fileData['lastModified'],
-          'lastModifiedDate': fileData['lastModifiedDate'],
-          'type': fileData['type']
-        });
-        this.filedata[itemName] = fileObject;
-      }
-    }
   },
   computed: {
     getTitle() {
@@ -89,12 +78,16 @@ export default {
   },
   data() {
     return {
-      filedata: {}
+      filedata: {},
     }
   },
   methods: {
     fileDownload(item) {
-      console.log(item);
+      s3File.getFile(this.filedata[item?.value]);
+    },
+    fileProps(item) {
+      s3File.api2file(item?.value, this.filedata, this.$props.jsondata);
+      return item?.value;
     }
   }
 }

@@ -160,6 +160,7 @@
 
 <script>
 import jselect from "./jSelect.vue";
+import s3File from "../utils/s3file.js";
 
 export default {
   components: { jselect },
@@ -256,26 +257,13 @@ export default {
       this.editlayout[name + "_picker"] = false;
     },
     onFileChange(itemName) {
-      const fileObject = this.filedata[itemName];
-      this.editdata[itemName] = {
-        'lastModified': fileObject['lastModified'],
-        'lastModifiedDate': fileObject['lastModifiedDate'],
-        'name': fileObject['name'],
-        'size': fileObject['size'],
-        'type': fileObject['type']
-      };
+      s3File.file2api(itemName, this.filedata, this.editdata);
     },
     getFileData(itemName) {
-      const fileData = this.editdata[itemName];
-      const fileObject = new File([], fileData['name'], {
-        'lastModified': fileData['lastModified'],
-        'lastModifiedDate': fileData['lastModifiedDate'],
-        'type': fileData['type']
-      });
-      this.filedata[itemName] = fileObject;
+      s3File.api2file(itemName, this.filedata, this.editdata);
     },
     fileDownload(item) {
-      console.log(item);
+      s3File.getFile(this.filedata[item?.value]);
     },
     qryEditData() {
       this.$axios

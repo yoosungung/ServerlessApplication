@@ -28,7 +28,7 @@ _axios.use = (app) => {
       return config;
     },
     function(error) {
-      _app.messageBar("Service error", error);
+      _app.onMessageBar("Service error", error);
       return Promise.reject(error);
     }
   );
@@ -48,7 +48,7 @@ _axios.use = (app) => {
 
         _app.$router.push({ name: 'signin', path: '/signin' })
       } else {
-        _app.messageBar("Service error", error);
+        _app.onMessageBar("Service error", error);
       }
       return Promise.reject(error);
     }
