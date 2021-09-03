@@ -1,0 +1,224 @@
+{
+  "API": "https://mshj94wl3i.execute-api.ap-northeast-2.amazonaws.com",
+  "UI": [
+    {
+      "value": "test",
+      "text": "테스트",
+      "icon": "mdi-clipboard-check",
+      "type": "master",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "fields": [
+        {
+          "text": "bool_type",
+          "value": "bool_data",
+          "type": "bool",
+          "summary": ""
+        },
+        {
+          "text": "file_type",
+          "value": "file_data",
+          "type": "file",
+          "summary": ""
+        },
+        {
+          "text": "code_type",
+          "value": "code_data",
+          "type": "code",
+          "code": [
+            { "value": "value_1", "text": "text_1" },
+            { "value": "value_2", "text": "text_2" }
+          ],
+          "summary": ""
+        },
+        {
+          "text": "select_type",
+          "value": "select_data",
+          "type": "select",
+          "code": [
+            "text_1",
+            "text_2"
+          ],
+          "summary": ""
+        },
+        {
+          "text": "reference_type",
+          "value": "reference_data",
+          "type": "reference",
+          "code": [
+            {
+              "object": "refobj",
+              "value": "INFO_ID",
+              "text": "title"
+            }
+          ],
+          "summary": ""
+        },
+        {
+          "text": "number_type",
+          "value": "number_data",
+          "type": "number",
+          "code": [
+            0,
+            100
+          ],
+          "summary": ""
+        },
+        {
+          "text": "date_type",
+          "value": "date_data",
+          "type": "date",
+          "summary": ""
+        },
+        {
+          "text": "time_type",
+          "value": "time_data",
+          "type": "time",
+          "summary": ""
+        },
+        {
+          "text": "textarea_type",
+          "value": "textarea_data",
+          "type": "textarea",
+          "summary": ""
+        },
+        {
+          "text": "text_type",
+          "value": "text_data",
+          "type": "text",
+          "summary": ""
+        }
+      ],
+      "children": [
+        "childobj"
+      ]
+    },
+    {
+      "value": "refobj",
+      "text": "참조객체",
+      "type": "master",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "filter": {
+        "FilterExpression": "endday >= :v_endday",
+        "ExpressionAttributeValues": {
+          ":v_endday": "$DATE:-1:YYYY/MM/DD"
+        }
+      },
+      "fields": [
+        {
+          "text": "INFO_ID",
+          "value": "INFO_ID",
+          "type": "text",
+          "summary": ""
+        },
+        {
+          "text": "title",
+          "value": "title",
+          "type": "text",
+          "summary": ""
+        }
+      ]
+    },
+    {
+      "value": "childobj",
+      "text": "자식객체",
+      "type": "child",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "filter": {
+        "FilterExpression": "endday >= :v_endday",
+        "ExpressionAttributeValues": {
+          ":v_endday": "$DATE:-1:YYYY/MM/DD"
+        }
+      },
+      "fields": [
+        {
+          "text": "bool_type",
+          "value": "bool_data",
+          "type": "bool",
+          "summary": ""
+        },
+        {
+          "text": "file_type",
+          "value": "file_data",
+          "type": "file",
+          "summary": ""
+        },
+        {
+          "text": "code_type",
+          "value": "code_data",
+          "type": "code",
+          "code": [
+            { "value": "value_1", "text": "text_1" },
+            { "value": "value_2", "text": "text_2" }
+          ],
+          "summary": ""
+        },
+        {
+          "text": "select_type",
+          "value": "select_data",
+          "type": "select",
+          "code": [
+            "text_1",
+            "text_2"
+          ],
+          "summary": ""
+        },
+        {
+          "text": "reference_type",
+          "value": "reference_data",
+          "type": "reference",
+          "code": [
+            {
+              "object": "refobj",
+              "value": "INFO_ID",
+              "text": "title"
+            }
+          ],
+          "summary": ""
+        },
+        {
+          "text": "number_type",
+          "value": "number_data",
+          "type": "number",
+          "code": [
+            0,
+            100
+          ],
+          "summary": ""
+        },
+        {
+          "text": "date_type",
+          "value": "date_data",
+          "type": "date",
+          "summary": ""
+        },
+        {
+          "text": "time_type",
+          "value": "time_data",
+          "type": "time",
+          "summary": ""
+        },
+        {
+          "text": "textarea_type",
+          "value": "textarea_data",
+          "type": "textarea",
+          "summary": ""
+        },
+        {
+          "text": "text_type",
+          "value": "text_data",
+          "type": "text",
+          "summary": ""
+        }
+      ]
+    }
+  ]
+}
