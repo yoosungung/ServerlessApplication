@@ -13,8 +13,8 @@ const s3config = {
 const s3 = new S3Client(s3config);
 
 exports.GetS3FileHandler = async (event, context) => {
-  //console.info('event:', JSON.stringify(event, null, 2));
-  //console.info('context:', JSON.stringify(context, null, 2));
+  console.info('event:', JSON.stringify(event, null, 2));
+  console.info('context:', JSON.stringify(context, null, 2));
 
   const params = { Bucket: bucketName };
   let command = undefined;
@@ -45,6 +45,6 @@ exports.GetS3FileHandler = async (event, context) => {
   }
 
   // All log statements are written to CloudWatch
-  //console.info(`response from: ${event.requestContext.http.path} statusCode: ${response.statusCode} body: ${response.body}`);
+  console.info(`response from: ${event.requestContext.http.path} statusCode: ${response.statusCode} body: ${response.body}`);
   return response;
 }
