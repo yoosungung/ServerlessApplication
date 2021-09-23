@@ -13,7 +13,7 @@
       "fields": [
         {
           "text": "직원구분",
-          "value": "TeamsType",
+          "value": "GROUP",
           "type": "select",
           "code": [
             "솔루션랩",
@@ -33,8 +33,8 @@
           "text": "직위",
           "type": "select",
           "code": [
-            "PM",
-            "PL",
+            "팀장",
+            "리더",
             "팀원"
           ],
           "summary": ""
@@ -71,7 +71,7 @@
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "title"
+              "text": "Name"
             }
           ],
           "summary": ""
@@ -106,10 +106,7 @@
           "text": "작업일수",
           "value": "TaskDays",
           "type": "number",
-          "code": [
-            0.1,
-            5.0
-          ],
+          "code": [1, 5],
           "summary": ""
         },
         {
@@ -235,10 +232,7 @@
           "text": "작업일수",
           "value": "TaskDays",
           "type": "number",
-          "code": [
-            0.1,
-            5.0
-          ]
+          "code": [1, 5]
         },
         {
           "text": "설명",
@@ -265,7 +259,7 @@
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "title"
+              "text": "Name"
             }
           ]
         },
@@ -274,7 +268,7 @@
           "value": "TeamsType",
           "type": "select",
           "code": [
-            "PL",
+            "리더",
             "팀원",
             "고객"
           ]
@@ -293,10 +287,7 @@
           "text": "투입비율",
           "value": "WorkRate",
           "type": "number",
-          "code": [
-            1,
-            100
-          ]
+          "code": [1, 100]
         },
         {
           "text": "설명",
@@ -336,10 +327,7 @@
           "text": "작업일수",
           "value": "TaskDays",
           "type": "number",
-          "code": [
-            0.1,
-            5.0
-          ]
+          "code": [1, 5]
         },
         {
           "text": "시작일자",

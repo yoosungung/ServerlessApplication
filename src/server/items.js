@@ -28,19 +28,22 @@ exports.GetListHandler = async (event, context) => {
 
   if(event.routeKey === "GET /api/code/{name}") {
     if (event.queryStringParameters) {
-      params["ProjectionExpression"] = `${event.queryStringParameters.value || "INFO_ID"}, ${event.queryStringParameters.text} || "title"`;
+      params["ProjectionExpression"] = `${event.queryStringParameters.value || "INFO_ID"}, ${event.queryStringParameters.text} || "#Name"`;
     } else {
-      params["ProjectionExpression"] = "INFO_ID, title";
+      params["ProjectionExpression"] = "INFO_ID, #Name";
+    }
+    if(params["ProjectionExpression"].includes('#Name')) {
+      params["ExpressionAttributeNames"] = {"#Name": "Name"};
     }
   } else {
     if(event.queryStringParameters) {
       if (event.queryStringParameters.visible && event.requestContext.authorizer && event.requestContext.authorizer.lambda) {
         if (event.queryStringParameters.visible === "owner") {
           params["FilterExpression"] = "INFO_BY = :v_info_by";
-          params.ExpressionAttributeValues[":v_info_by"] = `${event.requestContext.authorizer.lambda.group || '솔류션랩'}:${event.requestContext.authorizer.lambda.INFO_ID}`;
+          params.ExpressionAttributeValues[":v_info_by"] = `${event.requestContext.authorizer.lambda.GROUP || '솔루션랩'}:${event.requestContext.authorizer.lambda.INFO_ID}`;
         } else if (event.queryStringParameters["visible"] === "group" ) {
           params["FilterExpression"] = "begins_with(INFO_BY, :v_info_by)";
-          params.ExpressionAttributeValues[":v_info_by"] = event.requestContext.authorizer.lambda.group;
+          params.ExpressionAttributeValues[":v_info_by"] = event.requestContext.authorizer.lambda.GROUP;
         }
       }
     }
@@ -77,9 +80,9 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
   if(event.requestContext.authorizer && event.requestContext.authorizer.lambda) {
     let grp = undefined;
     if(event.body) {
-      grp = JSON.parse(event.body).group;
+      grp = JSON.parse(event.body).GROUP;
     }
-    editBy = `${event.requestContext.authorizer.lambda.group || grp || "Nogroup"}:${event.requestContext.authorizer.lambda.INFO_ID || "Noname"}`;
+    editBy = `${event.requestContext.authorizer.lambda.GROUP || grp || "Nogroup"}:${event.requestContext.authorizer.lambda.INFO_ID || "Noname"}`;
   }
 
   let res = undefined;
