@@ -12,7 +12,10 @@
     "@aws-sdk/client-dynamodb": "^3.29.0",
     "@aws-sdk/client-s3": "^3.29.0",
     "@aws-sdk/lib-dynamodb": "^3.29.0",
+    "@aws-sdk/s3-request-presigner": "^3.24.0",
+    "axios": "^0.21.4",
     "csv-parse": "^4.16.2",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "form-data": "^2.3.3"
   }
 }

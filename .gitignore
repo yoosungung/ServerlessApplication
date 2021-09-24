@@ -9,3 +9,4 @@ dist
 
 # rest api client
 *.http
+.env

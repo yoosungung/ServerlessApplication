@@ -285,20 +285,23 @@ export default {
           this.editdata = {}
         });
     },
-    saveFiles() {
+    async saveFiles() {
       for (let itm of this.editlayout) {
         if (itm.type == "file") {
           let s3path = s3File.getPath((this.isedit?this.id:this.editdata.INFO_ID), itm.value, this.filedata);
+          this.editdata[itm.value]["s3key"] = s3path;
           this.$axios
             .put(`/api/file/${s3path}`)
             .then((r) => {
               if (r?.data) {
-                fetch(r.data.url, {
-                  method: r.data.method,
-                  headers: { "Content-Type": this.filedata[itm.value]['type']},
-                  body: this.filedata[itm.value]
-                })
-                  .then((response) => console.log("response:", response))
+                const f = this.filedata[itm.value];
+                fetch(r.data.url,
+                  {
+                    method: r.data.method,
+                    headers: { "Content-Type": f.type},
+                    body: f
+                  }
+                ).then((response) => console.log("response:", response))
                   .catch((error) => console.error("error:", error));
               }
             })
@@ -312,8 +315,8 @@ export default {
     closeEdit() {
       this.$emit("close-editor");
     },
-    saveEditData() {
-      this.saveFiles();
+    async saveEditData() {
+      await this.saveFiles();
 
       this.editdata['INFO_TYPE'] = this.$props.objectype;
       if (this.isedit) {

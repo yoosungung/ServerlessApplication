@@ -83,14 +83,26 @@ export default {
   },
   methods: {
     fileDownload(item) {
-      const s3path = s3File.getPath(this.$props.objectid, item?.value, this.filedata);
+      const f = this.$props.jsondata[item?.value];
+      const s3path = f["s3key"] || s3File.getPath(this.$props.objectid, item?.value, this.filedata);
       this.$axios
         .get(`/api/file/${s3path}`)
         .then((r) => {
           if (r?.data) {
-            fetch(r.data.url)
-              .then((response) => console.log("response:", response))
-              .catch((error) => console.log("error:", error));
+            window.open(r.data.url);
+/*
+            fetch(r.data.url,
+              {
+                method: r.data.method,
+                headers: { "Content-Type": f.type}
+              }
+            )
+            .then(response => response.body)
+            .then(body => {
+              const reader = body.getReader();
+            })
+            .catch((error) => console.log("error:", error));
+*/
           }
         })
         .catch((e) => {
