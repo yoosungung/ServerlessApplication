@@ -1,5 +1,5 @@
 {
-  "API": "https://mshj94wl3i.execute-api.ap-northeast-2.amazonaws.com",
+  "API": "https://y0topzvoci.execute-api.ap-northeast-2.amazonaws.com",
   "UI": [
     {
       "value": "employee",
@@ -50,7 +50,7 @@
     {
       "value": "TProcess",
       "text": "프로세스",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-checkbox-marked-circle",
       "type": "master",
       "visiblity": {
         "read": "group",
@@ -129,7 +129,7 @@
     {
       "value": "TProject",
       "text": "프로젝트",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-silverware-fork-knife",
       "type": "master",
       "visiblity": {
         "read": "all",
@@ -209,7 +209,7 @@
     {
       "value": "TProjectProcess",
       "text": "프로젝트범위",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-arrange-bring-forward",
       "type": "child",
       "visiblity": {
         "read": "owner",
@@ -244,7 +244,7 @@
     {
       "value": "TTeams",
       "text": "팀원",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-account-group",
       "type": "child",
       "visiblity": {
         "read": "owner",
@@ -299,7 +299,7 @@
     {
       "value": "TTask",
       "text": "작업",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-ticket",
       "type": "child",
       "visiblity": {
         "read": "owner",

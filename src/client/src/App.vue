@@ -74,7 +74,7 @@ export default {
     selectedItem: 0,
     items: [],
     minVariant: false,
-    title: "Solution-Lab",
+    title: "프로젝트 관리",
     snackbar: false,
     snackbar_message: "",
     snackbar_title: "",
