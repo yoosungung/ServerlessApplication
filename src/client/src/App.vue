@@ -79,13 +79,14 @@ export default {
     snackbar_message: "",
     snackbar_title: "",
     timeout: 2000,
+    signUser: {}
   }),
   created() {
     //this.$axios.use(this);
   },
   async beforeMount() {
     if(await this.$uiconfig.loadConfigs()) {
-      this.items = this.$uiconfig.getMenus();
+      this.items = this.$uiconfig.getMenus(false);
       this.$axios.use(this, this.$uiconfig.getApiUrl());
     }    
   },
@@ -94,6 +95,14 @@ export default {
       this.snackbar_title = title;
       this.snackbar_message = message;
       this.snackbar = true;
+    },
+    onSignin(employee) {
+      if(employee) {
+        this.signUser = employee;
+        if(this.signUser.isadmin) {
+          this.items = this.$uiconfig.getMenus(true);
+        }
+      }
     }
   },
 };

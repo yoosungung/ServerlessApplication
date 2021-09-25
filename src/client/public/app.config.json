@@ -5,7 +5,7 @@
       "value": "employee",
       "text": "직원",
       "icon": "mdi-account-tie",
-      "type": "master",
+      "type": "system",
       "visiblity": {
         "read": "all",
         "write": "owner"
@@ -44,6 +44,11 @@
           "text": "이메일",
           "type": "email",
           "summary": "require"
+        },
+        {
+          "value": "isadmin",
+          "text": "관리자",
+          "type": "bool"
         }
       ]
     },

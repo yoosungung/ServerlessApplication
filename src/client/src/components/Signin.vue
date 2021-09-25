@@ -58,6 +58,7 @@ export default {
         )
         .then((r) => {
           if(r.data.signin === "ok") {
+            this.setsign(r.data.employee);
             this.$router.push({ name: 'home', path: '/' });
           }          
         })
@@ -69,6 +70,9 @@ export default {
     reset() {
       this.$refs.form.reset();
     },
+    setsign(employee) {
+      this.$root.$children[0].onSignin(employee);
+    }
   },
 };
 </script>

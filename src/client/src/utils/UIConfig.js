@@ -39,11 +39,13 @@ class UIConfig {
   }
 
   _menus = [];
-  getMenus() {
-    if (this._menus.length == 0) {
+  _isadmin = false;
+  getMenus(isadmin = false) {
+    if (this._menus.length == 0 || this._isadmin != isadmin) {
+      this._menus = [];
       this._menus.push({ icon: "mdi-view-dashboard", title: "홈", to: "/" });
       for (const val of this._configs.values()) {
-        if (val.type == 'master') {
+        if (val.type == 'master' || (isadmin && val.type == 'system')) {
           this._menus.push({ icon: val.icon, title: val.text, to: `/list/${val.value}` });
         }
       }

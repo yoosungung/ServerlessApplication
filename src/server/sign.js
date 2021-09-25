@@ -51,7 +51,7 @@ exports.InHandler = async (event, context) => {
                     );
       reponse.statusCode = 200;
       reponse.headers.Authorization = token;
-      reponse.body = JSON.stringify({"signin": "ok", "Authorization": token});
+      reponse.body = JSON.stringify({"signin": "ok", "employee": res.Item});
     } else {
       console.info('smtp return: ', conntion);
       reponse.statusCode = 535;
