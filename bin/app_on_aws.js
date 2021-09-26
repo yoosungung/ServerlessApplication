@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const cdk = require('@aws-cdk/core');
-const { AppOnAwsStack } = require('../lib/app_on_aws-stack');
+const { AppOnAwsStack } = require('./app_on_aws-stack');
 
 const app = new cdk.App();
 new AppOnAwsStack(app, 'AppOnAwsStack', {
