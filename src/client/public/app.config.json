@@ -76,7 +76,12 @@
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_rank >= :v_rank",
+                "ExpressionAttributeNames": {"#n_rank": "rank"},
+                "ExpressionAttributeValues": {":v_rank": "팀장"}
+              }
             }
           ],
           "summary": ""
@@ -155,7 +160,13 @@
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "rank >= :v_rank",
+                "ExpressionAttributeValues": {
+                  ":v_rank": "팀장"
+                }
+              }
             }
           ],
           "summary": ""
@@ -163,8 +174,7 @@
         {
           "text": "고객사",
           "value": "Customer",
-          "type": "text",
-          "summary": ""
+          "type": "text"
         },
         {
           "text": "시작일자",
@@ -222,12 +232,12 @@
       },
       "fields": [
         {
-          "text": "프로젝트",
+          "text": "프로세스",
           "value": "Process",
           "type": "reference",
           "code": [
             {
-              "object": "TProject",
+              "object": "TProcess",
               "value": "INFO_ID",
               "text": "Name"
             }

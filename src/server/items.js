@@ -27,13 +27,19 @@ exports.GetListHandler = async (event, context) => {
   };
 
   if(event.routeKey === "GET /api/code/{name}") {
-    if (event.queryStringParameters) {
-      params["ProjectionExpression"] = `${event.queryStringParameters.value || "INFO_ID"}, ${event.queryStringParameters.text} || "#Name"`;
-    } else {
-      params["ProjectionExpression"] = "INFO_ID, #Name";
-    }
-    if(params["ProjectionExpression"].includes('#Name')) {
-      params["ExpressionAttributeNames"] = {"#Name": "Name"};
+    const v_name = event.queryStringParameters?.value || "INFO_ID";
+    const t_name = event.queryStringParameters?.text || "Name";
+    params["ProjectionExpression"] = `#n_${v_name}, #n_${t_name}`;
+    const attrname = {};
+    attrname[`#n_${v_name}`] = v_name;
+    attrname[`#n_${t_name}`] = t_name;
+    params["ExpressionAttributeNames"] = attrname;
+    if(event.queryStringParameters?.filter) {
+      const filter = JSON.parse(event.queryStringParameters.filter);
+      params["FilterExpression"] = filter["FilterExpression"];
+      params["ExpressionAttributeValues"] = Object.assign(params["ExpressionAttributeValues"], filter["ExpressionAttributeValues"]);
+      params["ExpressionAttributeNames"] = Object.assign(params["ExpressionAttributeNames"], filter["ExpressionAttributeNames"]);
+      
     }
   } else {
     if(event.queryStringParameters) {

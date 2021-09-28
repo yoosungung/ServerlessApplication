@@ -138,15 +138,19 @@ export default {
     },
     getRefItems(itm) {
       if ((!itm.refitems) || (itm.refitems.length == 0)) {
-        const valname = itm.code[0].value;
-        const txtname = itm.code[0].text;
+        const params = {
+          "value": itm.code[0].value,
+          "text": itm.code[0].text
+        };
+        if(itm.code[0].filter) {
+          params["filter"] = itm.code[0].filter;
+        }
         this.$axios
-          .get(`/api/code/${itm.code[0].object}`, 
-              { "value": valname, "text": txtname })
+          .get(`/api/code/${itm.code[0].object}`, { params })
           .then((r) => {
             if (r && r.data) {
               itm.refitems = r.data.map((row) => {
-                return { "value": row[valname], "text": row[txtname] };
+                return { "value": row[params.value], "text": row[params.text] };
               });
             } else {
               itm.refitems = [];  
