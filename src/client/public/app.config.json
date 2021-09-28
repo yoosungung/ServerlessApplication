@@ -78,7 +78,7 @@
               "value": "INFO_ID",
               "text": "Name",
               "filter": {
-                "FilterExpression": "#n_rank >= :v_rank",
+                "FilterExpression": "#n_rank = :v_rank",
                 "ExpressionAttributeNames": {"#n_rank": "rank"},
                 "ExpressionAttributeValues": {":v_rank": "팀장"}
               }
@@ -162,10 +162,9 @@
               "value": "INFO_ID",
               "text": "Name",
               "filter": {
-                "FilterExpression": "rank >= :v_rank",
-                "ExpressionAttributeValues": {
-                  ":v_rank": "팀장"
-                }
+                "FilterExpression": "#n_rank = :v_rank",
+                "ExpressionAttributeNames": {"#n_rank": "rank"},
+                "ExpressionAttributeValues": {":v_rank": "팀장"}
               }
             }
           ],
@@ -247,7 +246,7 @@
           "text": "작업일수",
           "value": "TaskDays",
           "type": "number",
-          "code": [1, 5]
+          "code": [1, 365]
         },
         {
           "text": "설명",
@@ -267,14 +266,19 @@
       },
       "fields": [
         {
-          "text": "팀원",
+          "text": "직원",
           "value": "Teams",
           "type": "reference",
           "code": [
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_rank IN (:v_leader, :v_teams)",
+                "ExpressionAttributeNames": {"#n_rank": "rank"},
+                "ExpressionAttributeValues": {":v_leader": "리더", ":v_teams": "팀원"}
+              }
             }
           ]
         },

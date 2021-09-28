@@ -149,16 +149,29 @@ export default {
       }
       this.qryChildData();
     },
-    qryRefItems(item) {
-      if (!item.refitems) {
+    qryRefItems(itm) {
+      if ((!itm.refitems) || (itm.refitems.length == 0)) {
+        const params = {
+          "value": itm.code[0].value,
+          "text": itm.code[0].text
+        };
+        if(itm.code[0].filter) {
+          params["filter"] = itm.code[0].filter;
+        }
         this.$axios
-          .get(`/api/code/${item.code[0].object}`)
+          .get(`/api/code/${itm.code[0].object}`, { params })
           .then((r) => {
-            item.refitems = r.data;
+            if (r && r.data) {
+              itm.refitems = r.data.map((row) => {
+                return { "value": row[params.value], "text": row[params.text] };
+              });
+            } else {
+              itm.refitems = [];  
+            }
           })
           .catch((e) => {
             console.error(e);
-            item.refitems = [];
+            itm.refitems = [];
           });
       }
     },

@@ -240,7 +240,7 @@ export default {
           params["filter"] = itm.code[0].filter;
         }
         this.$axios
-          .get(`/api/code/${itm.code[0].object}`, params)
+          .get(`/api/code/${itm.code[0].object}`, { params })
           .then((r) => {
             if (r && r.data) {
               itm.refitems = r.data.map((row) => {
