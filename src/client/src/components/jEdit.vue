@@ -187,13 +187,13 @@ export default {
       return this.$uiconfig.getName(this.$props.objectype);
     },
   },
-  beforeMount() {
+  async beforeMount() {
     if(this.$props.objectconfig) {
       this.editlayout = this.$props.objectconfig;
     } else {
       this.editlayout = this.$uiconfig.getLayout(this.$props.objectype);
     }    
-    this.setEditLayout();
+    await this.setEditLayout();
 
     if (this.$props.jsondata && this.$props.jsondata.INFO_ID) {
       this.isedit = true;
@@ -210,7 +210,7 @@ export default {
     }
   },
   methods: {
-    setEditLayout() {
+    async setEditLayout() {
       for (let itm of this.editlayout) {
         if (itm.type == "number") {
           if (itm.code && itm.code.length > 0) {
@@ -226,11 +226,11 @@ export default {
           itm.code &&
           itm.code.length == 1
         ) {
-          this.getRefItems(itm);
+          await this.getRefItems(itm);
         }
       }
     },
-    getRefItems(itm) {
+    async getRefItems(itm) {
       if ((!itm.refitems) || (itm.refitems.length == 0)) {
         const params = {
           "value": itm.code[0].value,

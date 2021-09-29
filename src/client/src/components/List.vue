@@ -76,11 +76,11 @@ export default {
     $route: "getPageConfig",
     selectvisible: "getQryData",
   },
-  beforeMount() {
-    this.getPageConfig();
+  async beforeMount() {
+    await this.getPageConfig();
   },
   methods: {
-    getPageConfig() {
+    async getPageConfig() {
       this.visible = this.$uiconfig.getVisible(this.$props.objectname);
       this.selectvisible = "owner";
       this.headers = this.$uiconfig.getListHeaders(this.$props.objectname);
@@ -90,7 +90,7 @@ export default {
           (itm.refitems === undefined || itm.refitems.length == 0) &&
           itm.code && itm.code.length == 1
         ) {
-          this.getRefItems(itm);
+          await this.getRefItems(itm);
         }
       }
       this.editconfig = this.$uiconfig.getLayout(this.$props.objectname);
@@ -136,7 +136,7 @@ export default {
         });
       this.dataloading = false;
     },
-    getRefItems(itm) {
+    async getRefItems(itm) {
       if ((!itm.refitems) || (itm.refitems.length == 0)) {
         const params = {
           "value": itm.code[0].value,

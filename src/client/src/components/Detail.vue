@@ -121,8 +121,8 @@ export default {
   watch: {
     $route: "getPageConfig",
   },
-  beforeMount() {
-    this.getPageConfig();
+  async beforeMount() {
+    await this.getPageConfig();
   },
   methods: {
     getTitle(objdat) {
@@ -132,12 +132,12 @@ export default {
         return 'Noname';
       }
     },
-    getPageConfig() {
+    async getPageConfig() {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);
       this.objectfields = this.$uiconfig.getLayout(this.$props.objectname);
       for (const fld of this.objectfields) {
         if (fld.type == "reference" && fld.code && fld.code.length == 1) {
-          this.qryRefItems(fld);
+          await this.qryRefItems(fld);
         }
       }
       this.qryParentData();
@@ -149,7 +149,7 @@ export default {
       }
       this.qryChildData();
     },
-    qryRefItems(itm) {
+    async qryRefItems(itm) {
       if ((!itm.refitems) || (itm.refitems.length == 0)) {
         const params = {
           "value": itm.code[0].value,

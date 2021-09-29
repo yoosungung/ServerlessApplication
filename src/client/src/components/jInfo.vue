@@ -90,19 +90,6 @@ export default {
         .then((r) => {
           if (r?.data) {
             window.open(r.data.url);
-/*
-            fetch(r.data.url,
-              {
-                method: r.data.method,
-                headers: { "Content-Type": f.type}
-              }
-            )
-            .then(response => response.body)
-            .then(body => {
-              const reader = body.getReader();
-            })
-            .catch((error) => console.log("error:", error));
-*/
           }
         })
         .catch((e) => {
