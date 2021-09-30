@@ -107,6 +107,12 @@
       },
       "fields": [
         {
+          "text": "번호",
+          "value": "INFO_ID",
+          "type": "text",
+          "summary": ""
+        },
+        {
           "text": "이름",
           "value": "Name",
           "type": "text",
