@@ -40,11 +40,7 @@
         placeholder="search"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-avatar size="24">
-        <img v-if="false" src="src" alt="alt" />
-        <v-icon v-if="true">mdi-account-circle</v-icon>
-      </v-avatar>
-      <v-btn icon color="primary" disabled>
+      <v-btn ref="btn_power" icon :color="signUser ? 'primery' : 'disable'" @click="onPower">
         <v-icon>mdi-power</v-icon>
       </v-btn>
     </v-app-bar>
@@ -79,7 +75,7 @@ export default {
     snackbar_message: "",
     snackbar_title: "",
     timeout: 2000,
-    signUser: {}
+    signUser: undefined
   }),
   created() {
     //this.$axios.use(this);
@@ -103,6 +99,11 @@ export default {
           this.items = this.$uiconfig.getMenus(true);
         }
       }
+    },
+    onPower() {
+      this.signUser = undefined;
+      this.$axios.defaults.headers['Authorization'] = "";
+      this.$router.push({ name: 'signin', path: '/signin' })
     }
   },
 };

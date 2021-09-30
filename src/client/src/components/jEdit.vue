@@ -291,7 +291,7 @@ export default {
     },
     async saveFiles() {
       for (let itm of this.editlayout) {
-        if (itm.type == "file") {
+        if (itm.type == "file" && this.filedata[itm.value]) {
           let s3path = s3File.getPath((this.isedit?this.id:this.editdata.INFO_ID), itm.value, this.filedata);
           this.editdata[itm.value]["s3key"] = s3path;
           this.$axios
