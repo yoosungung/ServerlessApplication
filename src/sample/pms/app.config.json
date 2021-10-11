@@ -1,11 +1,11 @@
 {
-  "API": "https://mshj94wl3i.execute-api.ap-northeast-2.amazonaws.com",
+  "API": "https://y0topzvoci.execute-api.ap-northeast-2.amazonaws.com",
   "UI": [
     {
       "value": "employee",
       "text": "직원",
       "icon": "mdi-account-tie",
-      "type": "master",
+      "type": "system",
       "visiblity": {
         "read": "all",
         "write": "owner"
@@ -13,7 +13,7 @@
       "fields": [
         {
           "text": "직원구분",
-          "value": "TeamsType",
+          "value": "GROUP",
           "type": "select",
           "code": [
             "솔루션랩",
@@ -44,13 +44,18 @@
           "text": "이메일",
           "type": "email",
           "summary": "require"
+        },
+        {
+          "value": "isadmin",
+          "text": "관리자",
+          "type": "bool"
         }
       ]
     },
     {
       "value": "TProcess",
       "text": "프로세스",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-checkbox-marked-circle",
       "type": "master",
       "visiblity": {
         "read": "group",
@@ -71,7 +76,12 @@
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_rank = :v_rank",
+                "ExpressionAttributeNames": {"#n_rank": "rank"},
+                "ExpressionAttributeValues": {":v_rank": "팀장"}
+              }
             }
           ],
           "summary": ""
@@ -96,6 +106,12 @@
         "write": "owner"
       },
       "fields": [
+        {
+          "text": "번호",
+          "value": "INFO_ID",
+          "type": "text",
+          "summary": ""
+        },
         {
           "text": "이름",
           "value": "Name",
@@ -129,7 +145,7 @@
     {
       "value": "TProject",
       "text": "프로젝트",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-silverware-fork-knife",
       "type": "master",
       "visiblity": {
         "read": "all",
@@ -150,7 +166,12 @@
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_rank = :v_rank",
+                "ExpressionAttributeNames": {"#n_rank": "rank"},
+                "ExpressionAttributeValues": {":v_rank": "팀장"}
+              }
             }
           ],
           "summary": ""
@@ -158,8 +179,7 @@
         {
           "text": "고객사",
           "value": "Customer",
-          "type": "text",
-          "summary": ""
+          "type": "text"
         },
         {
           "text": "시작일자",
@@ -209,7 +229,7 @@
     {
       "value": "TProjectProcess",
       "text": "프로젝트범위",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-arrange-bring-forward",
       "type": "child",
       "visiblity": {
         "read": "owner",
@@ -217,12 +237,12 @@
       },
       "fields": [
         {
-          "text": "프로젝트",
+          "text": "프로세스",
           "value": "Process",
           "type": "reference",
           "code": [
             {
-              "object": "TProject",
+              "object": "TProcess",
               "value": "INFO_ID",
               "text": "Name"
             }
@@ -232,7 +252,7 @@
           "text": "작업일수",
           "value": "TaskDays",
           "type": "number",
-          "code": [1, 5]
+          "code": [1, 365]
         },
         {
           "text": "설명",
@@ -244,7 +264,7 @@
     {
       "value": "TTeams",
       "text": "팀원",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-account-group",
       "type": "child",
       "visiblity": {
         "read": "owner",
@@ -252,14 +272,19 @@
       },
       "fields": [
         {
-          "text": "팀원",
+          "text": "직원",
           "value": "Teams",
           "type": "reference",
           "code": [
             {
               "object": "employee",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_rank IN (:v_leader, :v_teams)",
+                "ExpressionAttributeNames": {"#n_rank": "rank"},
+                "ExpressionAttributeValues": {":v_leader": "리더", ":v_teams": "팀원"}
+              }
             }
           ]
         },
@@ -299,7 +324,7 @@
     {
       "value": "TTask",
       "text": "작업",
-      "icon": "mdi-clipboard-check",
+      "icon": "mdi-ticket",
       "type": "child",
       "visiblity": {
         "read": "owner",

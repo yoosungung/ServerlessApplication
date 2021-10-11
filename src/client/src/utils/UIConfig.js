@@ -127,6 +127,53 @@ class UIConfig {
     }
     return this._reference.get(objname);
   }
+
+  _referencefilter = new Map();
+  _staticfilter = new Map();
+  getFilterJson(objname, value, valueResolve) {
+    const key = `${objname}.${value}`;
+    if (this._referencefilter.has(key) && this._staticfilter.get(key)) {
+      return this._referencefilter.get(key);
+    } else {
+      const obj = this._configs.get(objname);
+      for (const fld of obj) {
+        if (fld.type == "reference" && fld.value == value) {
+          let isdynamicfilter = false;
+          const filter = filterClone(fld.code[0].filter, dynamicvalue => {
+            isdynamicfilter = true;
+            return valueResolve(dynamicvalue);
+          });
+          this._referencefilter.set(key, filter);
+          this._referencefilter.set(this._staticfilter, !isdynamicfilter);
+          return filter;  
+        }
+      }
+      this._referencefilter.set(key, undefined);
+      return undefined;
+    }
+  }
+  isStaticFilter(objname, value) {
+    return this._staticfilter.has(`${objname}.${value}`);
+  }
+}
+
+function filterClone(obj, valueResolve) {
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+  const result = Array.isArray(obj) ? [] : {};
+  for (let key of Object.keys(obj)) {
+    if(typeof(obj[key]) == "string") {
+      if(obj[key].startsWith("$") == 0) {
+        result[key] = valueResolve(obj[key]);
+      } else {
+        result[key] = obj[key];
+      }
+    } else {
+      result[key] = filterClone(obj[key]);
+    }    
+  }
+  return result;
 }
 
 const _uiconfig = new UIConfig();

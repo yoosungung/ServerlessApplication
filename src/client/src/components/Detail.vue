@@ -150,13 +150,27 @@ export default {
       this.qryChildData();
     },
     async qryRefItems(itm) {
-      if ((!itm.refitems) || (itm.refitems.length == 0)) {
+      if ((!itm.refitems) || (itm.refitems.length == 0) || !this.$uiconfig.isStaticFilter(this.$props.objectname, itm.value)) {
         const params = {
           "value": itm.code[0].value,
           "text": itm.code[0].text
         };
         if(itm.code[0].filter) {
-          params["filter"] = itm.code[0].filter;
+          params["filter"] = this.$uiconfig.getFilterJson(this.$props.objectname, itm.value, dynamevalue => {
+            if(dynamevalue.startWith("$DATE:")) {
+              const vallist = dynamevalue.split(":");
+              return date.setDate(date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
+            } else if(dynamevalue.startWith("$VALUE:")) {
+              const vallist = dynamevalue.split(":");
+              return this.objectdata[vallist[1]];
+            } else if(dynamevalue.startWith("$PARENT:")) {
+              //const vallist = dynamevalue.split(":");
+              return this.objectid;
+            } else {
+              console.error('UIConfig.getFilterJson.valueEvaluation:' + dynamevalue);
+              return dynamevalue;
+            }
+          });
         }
         this.$axios
           .get(`/api/code/${itm.code[0].object}`, { params })

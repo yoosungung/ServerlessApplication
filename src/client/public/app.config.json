@@ -26,7 +26,7 @@
           "text": "이름",
           "value": "Name",
           "type": "text",
-          "summary": ""
+          "summary": "require"
         },
         {
           "value": "rank",
@@ -37,7 +37,7 @@
             "리더",
             "팀원"
           ],
-          "summary": ""
+          "summary": "require"
         },
         {
           "value": "INFO_ID",
@@ -110,13 +110,13 @@
           "text": "번호",
           "value": "INFO_ID",
           "type": "text",
-          "summary": ""
+          "summary": "require"
         },
         {
           "text": "이름",
           "value": "Name",
           "type": "text",
-          "summary": ""
+          "summary": "require"
         },
         {
           "text": "작업일수",
@@ -156,7 +156,7 @@
           "text": "이름",
           "value": "Name",
           "type": "text",
-          "summary": ""
+          "summary": "require"
         },
         {
           "text": "PM",
@@ -315,6 +315,15 @@
           "code": [1, 100]
         },
         {
+          "text": "투입형태",
+          "value": "CostType",
+          "type": "select",
+          "code": [
+            "유상",
+            "무상"
+          ]
+        },
+        {
           "text": "설명",
           "value": "Description",
           "type": "textarea"
@@ -332,6 +341,18 @@
       },
       "fields": [
         {
+          "text": "프로세스",
+          "value": "Process",
+          "type": "reference",
+          "code": [
+            {
+              "object": "TProcess",
+              "value": "INFO_ID",
+              "text": "Name"
+            }
+          ]
+        },
+        {
           "text": "클래스작업",
           "value": "ClassTask",
           "type": "reference",
@@ -339,7 +360,12 @@
             {
               "object": "TClassTask",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_process IN (:v_process)",
+                "ExpressionAttributeNames": {"#n_process": "INFO_GRP"},
+                "ExpressionAttributeValues": {":v_process": "$VALUE:Process"}
+              }
             }
           ]
         },
@@ -367,7 +393,12 @@
             {
               "object": "TTeams",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "Name",
+              "filter": {
+                "FilterExpression": "#n_project IN (:v_project)",
+                "ExpressionAttributeNames": {"#n_project": "INFO_GRP"},
+                "ExpressionAttributeValues": {":v_project": "$PARENT:INFO_ID"}
+              }
             }
           ]
         }

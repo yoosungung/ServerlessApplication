@@ -238,6 +238,21 @@ export default {
         };
         if(itm.code[0].filter) {
           params["filter"] = itm.code[0].filter;
+          params["filter"] = this.$uiconfig.getFilterJson(this.$props.objectype, itm.value, dynamevalue => {
+            if(dynamevalue.startWith("$DATE:")) {
+              const vallist = dynamevalue.split(":");
+              return date.setDate(date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
+            } else if(dynamevalue.startWith("$VALUE:")) {
+              const vallist = dynamevalue.split(":");
+              return this.objectdata[vallist[1]];
+            } else if(dynamevalue.startWith("$PARENT:")) {
+              //const vallist = dynamevalue.split(":");
+              return this.objectid;
+            } else {
+              console.error('UIConfig.getFilterJson.valueEvaluation:' + dynamevalue);
+              return dynamevalue;
+            }
+          });
         }
         this.$axios
           .get(`/api/code/${itm.code[0].object}`, { params })
