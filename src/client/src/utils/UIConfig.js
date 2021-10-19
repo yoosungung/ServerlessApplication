@@ -128,52 +128,110 @@ class UIConfig {
     return this._reference.get(objname);
   }
 
-  _referencefilter = new Map();
-  _staticfilter = new Map();
-  getFilterJson(objname, value, valueResolve) {
+  _codeitems = new Map();
+  getCodeItems(objname, value, axios) {
     const key = `${objname}.${value}`;
-    if (this._referencefilter.has(key) && this._staticfilter.get(key)) {
-      return this._referencefilter.get(key);
-    } else {
+    if(!this._codeitems.has(key)) {
       const obj = this._configs.get(objname);
-      for (const fld of obj) {
-        if (fld.type == "reference" && fld.value == value) {
-          let isdynamicfilter = false;
-          const filter = filterClone(fld.code[0].filter, dynamicvalue => {
-            isdynamicfilter = true;
-            return valueResolve(dynamicvalue);
-          });
-          this._referencefilter.set(key, filter);
-          this._referencefilter.set(this._staticfilter, !isdynamicfilter);
-          return filter;  
+      if(obj) {
+        const defcode = obj.fields.find(itm => {
+          return (itm.value === value) && (itm.type === "reference");
+        });
+        if(defcode) {
+          const cv = new CodeItem(axios, defcode);
+          this._codeitems.set(key, cv);
+        } else {
+          this._codeitems.set(key, undefined);
         }
+      } else {
+        this._codeitems.set(key, undefined);
       }
-      this._referencefilter.set(key, undefined);
-      return undefined;
-    }
-  }
-  isStaticFilter(objname, value) {
-    return this._staticfilter.has(`${objname}.${value}`);
+    }        
+    return this._codeitems.get(key);
   }
 }
 
-function filterClone(obj, valueResolve) {
-  if (obj === null || typeof obj !== "object") {
-    return obj;
+class CodeItem {
+  _axios = undefined;
+  _defcode = undefined;
+  _isdynamic = false;
+
+  _codes = new Map();
+
+  constructor(axios, defCode) {
+    this._axios = axios;
+    if(defCode.type == "reference") {
+      this._defcode = this._defClone(defCode, v => {
+        this._isdynamic = true;
+        return v;
+      });
+    }   
   }
-  const result = Array.isArray(obj) ? [] : {};
-  for (let key of Object.keys(obj)) {
-    if(typeof(obj[key]) == "string") {
-      if(obj[key].startsWith("$") == 0) {
-        result[key] = valueResolve(obj[key]);
+
+  _defClone(obj, fnResolve) {
+    if (obj === null || typeof obj !== "object") {
+      return obj;
+    }
+    const result = Array.isArray(obj) ? [] : {};
+    for (let key of Object.keys(obj)) {
+      if(typeof(obj[key]) == "string") {
+        if(obj[key].startsWith("$")) {
+          result[key] = fnResolve(obj[key]);
+        } else {
+          result[key] = obj[key];
+        }
       } else {
-        result[key] = obj[key];
+        result[key] = this._defClone(obj[key], fnResolve);
       }
-    } else {
-      result[key] = filterClone(obj[key]);
-    }    
+    }
+    return result;
   }
-  return result;
+
+  
+  async qryValue(infoId, fnResolve) {
+    let key = "_STATIC";
+    if(this._isdynamic) {
+      key = infoId;
+    }
+
+    if(!this._codes.has(key)) {
+      const pams = {
+        "value": this._defcode.code[0].value,
+        "text": this._defcode.code[0].text
+      };
+      if(this._defcode.code[0].filter) {
+        if(this._isdynamic) {
+          pams["filter"] = await this._defClone(this._defcode.code[0].filter, fnResolve);
+        } else {
+          pams["filter"] = this._defcode.code[0].filter;
+        }
+      }
+      try {
+        let res = await this._axios({
+          url: `/api/code/${this._defcode.code[0].object}`,
+          method: 'get',
+          params: pams
+        });
+        if(res.status == 200) {
+          const cval = res.data.map((row) => {
+            return { "value": row[pams.value], "text": row[pams.text] };
+          });
+          this._codes.set(key, cval);
+        } else {
+          return [];
+        }
+      } catch(e) {
+        console.error(e);
+        return [];
+      }
+    }
+
+    return this._codes.get(key);
+  }
+
+  get length() {
+    return this._codes.length;
+  }
 }
 
 const _uiconfig = new UIConfig();

@@ -220,56 +220,30 @@ export default {
           }
         } else if (itm.type == "date" || itm.type == "time") {
           itm[itm.value + "_picker"] = false;
-        } else if (
-          itm.type == "reference" &&
-          (itm.refitems === undefined || itm.refitems.length == 0) &&
-          itm.code &&
-          itm.code.length == 1
-        ) {
+        } else if (itm.type == "reference" && itm.code && itm.code.length == 1) {
           await this.getRefItems(itm);
         }
       }
     },
     async getRefItems(itm) {
-      if ((!itm.refitems) || (itm.refitems.length == 0)) {
-        const params = {
-          "value": itm.code[0].value,
-          "text": itm.code[0].text
-        };
-        if(itm.code[0].filter) {
-          params["filter"] = itm.code[0].filter;
-          params["filter"] = this.$uiconfig.getFilterJson(this.$props.objectype, itm.value, dynamevalue => {
-            if(dynamevalue.startWith("$DATE:")) {
-              const vallist = dynamevalue.split(":");
-              return date.setDate(date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
-            } else if(dynamevalue.startWith("$VALUE:")) {
-              const vallist = dynamevalue.split(":");
-              return this.objectdata[vallist[1]];
-            } else if(dynamevalue.startWith("$PARENT:")) {
-              //const vallist = dynamevalue.split(":");
-              return this.objectid;
-            } else {
-              console.error('UIConfig.getFilterJson.valueEvaluation:' + dynamevalue);
-              return dynamevalue;
-            }
-          });
-        }
-        this.$axios
-          .get(`/api/code/${itm.code[0].object}`, { params })
-          .then((r) => {
-            if (r && r.data) {
-              itm.refitems = r.data.map((row) => {
-                return { "value": row[params.value], "text": row[params.text] };
-              });
-            } else {
-              itm.refitems = [];  
-            }
-          })
-          .catch((e) => {
-            console.error(e);
-            itm.refitems = [];
-          });
+      if (!itm.codeitems) {
+        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
       }
+      itm.refitems = itm.codeitems.qryValue(this.$props.objectid, v => {
+        if(v.startWith("$DATE:")) {
+          const vallist = v.split(":");
+          return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
+        } else if(v.startWith("$VALUE:")) {
+          const vallist = v.split(":");
+          return this.objectdata[vallist[1]];
+        } else if(v.startWith("$PARENT:")) {
+          //const vallist = v.split(":");
+          return this.$props.objectid;
+        } else {
+          console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
+          return v;
+        }
+      });
     },
     inputTime(name) {
       this.$refs[name + "_picker"][0].save(this.editdata[name]);
