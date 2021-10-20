@@ -26,7 +26,7 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app>
+    <v-app-bar :clipped-left="clipped" color="primary" dark fixed app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn icon @click.stop="minVariant = !minVariant">
         <v-icon>mdi-{{ `chevron-${minVariant ? "right" : "left"}` }}</v-icon>
@@ -38,6 +38,7 @@
         solo
         append-icon="mdi-magnify"
         placeholder="search"
+        light
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-btn ref="btn_power" icon :color="signUser ? 'primery' : 'disable'" @click="onPower">
@@ -116,6 +117,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.v-main {
+  background-color: #fbf7f7;
 }
 </style>

@@ -9,7 +9,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" sm="7">
-        <v-toolbar flat>
+        <v-toolbar flat color="rgb(255 255 255 / 0%)">
           <v-text-field
             v-model="search"
             label="Search"
@@ -178,4 +178,7 @@ export default {
 </script>
 
 <style>
+.v-data-table-header {
+  color: #f3eeee;
+}
 </style>

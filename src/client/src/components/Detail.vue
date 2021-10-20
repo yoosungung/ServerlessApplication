@@ -136,6 +136,7 @@ export default {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);
       this.objectfields = this.$uiconfig.getLayout(this.$props.objectname);
       for (const fld of this.objectfields) {
+        console.log(fld.value);
         if (fld.type == "reference" && fld.code && fld.code.length == 1) {
           await this.qryRefItems(fld);
         }
@@ -150,13 +151,13 @@ export default {
       this.qryChildData();
     },
     async qryRefItems(itm) {
-      if (!itm.codeitems) {
-        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
+      if (!itm["codeitems"]) {
+        itm["codeitems"] = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
       }
-      itm.refitems = itm.codeitems.qryValue(this.$props.objectid, v => {
+      itm["refitems"] = await itm["codeitems"].qryValue(this.$props.objectid, v => {
         if(v.startWith("$DATE:")) {
           const vallist = v.split(":");
-          return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
+          return Date.now().setDate(parseInt(vallist[1]) || -1).format(vallist[2] || "yyyy/MM/dd");
         } else if(v.startWith("$VALUE:")) {
           const vallist = v.split(":");
           return this.objectdata[vallist[1]];
@@ -283,4 +284,10 @@ export default {
 </script>
 
 <style>
+.v-card__title {
+  background-color: #f3eeee;
+}
+.v-card__text {
+  margin-top: 10px;
+}
 </style>

@@ -229,7 +229,7 @@ export default {
       if (!itm.codeitems) {
         itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
       }
-      itm.refitems = itm.codeitems.qryValue(this.$props.objectid, v => {
+      itm.refitems = await itm.codeitems.qryValue(this.$props.objectid, v => {
         if(v.startWith("$DATE:")) {
           const vallist = v.split(":");
           return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
@@ -369,5 +369,8 @@ export default {
 .e4 {
   width: 400px;
   margin: auto;
+}
+.v-card-title {
+  background-color: #f3eeee;
 }
 </style>
