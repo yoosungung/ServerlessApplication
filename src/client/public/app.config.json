@@ -346,9 +346,15 @@
           "type": "reference",
           "code": [
             {
-              "object": "TProcess",
+              "object": "TProjectProcess",
               "value": "INFO_ID",
-              "text": "Name"
+              "text": "$TProjectProcess:Process",
+              "filter": {
+                "KeyConditionExpression": "INFO_GRP = :v_info_group",
+                "FilterExpression": "#n_childtype IN (:v_childtype)",
+                "ExpressionAttributeNames": {"#n_childtype": "INFO_TYPE"},
+                "ExpressionAttributeValues": {":v_childtype": "TProjectProcess", ":v_info_group": "$PARENT:objectid"}
+              }
             }
           ]
         },
@@ -396,8 +402,8 @@
               "text": "Name",
               "filter": {
                 "FilterExpression": "#n_project IN (:v_project)",
-                "ExpressionAttributeNames": {"#n_project": "INFO_GRP"},
-                "ExpressionAttributeValues": {":v_project": "$PARENT:INFO_ID"}
+                "ExpressionAttributeNames": {"#n_project": "INFO_TYPE"},
+                "ExpressionAttributeValues": {":v_project": "TTeams"}
               }
             }
           ]

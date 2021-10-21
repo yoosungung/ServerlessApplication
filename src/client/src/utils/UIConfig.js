@@ -138,7 +138,7 @@ class UIConfig {
           return (itm.value === value) && (itm.type === "reference");
         });
         if(defcode) {
-          const cv = new CodeItem(axios, defcode);
+          const cv = new CodeItem(axios, defcode, obj["type"] === "child");
           this._codeitems.set(key, cv);
         } else {
           this._codeitems.set(key, undefined);
@@ -155,14 +155,26 @@ class CodeItem {
   _axios = undefined;
   _defcode = undefined;
   _isdynamic = false;
+  _ischild = false;
 
+  _namecode = undefined;
   _codes = new Map();
 
-  constructor(axios, defCode) {
+  constructor(axios, defCode, ischild) {
     this._axios = axios;
+    this._ischild = ischild;
     if(defCode.type == "reference") {
-      this._defcode = this._defClone(defCode, v => {
-        this._isdynamic = true;
+      this._defcode = this._defClone(defCode, (v, k) => {
+        if(k == "text") {
+          const vallist = v.split(":");
+          const obj = _uiconfig.getLayout(vallist[0].slice(1));
+          const fld = obj.find(v => {
+            return v["value"] == vallist[1];
+          });
+          this._namecode = fld?.refintems;
+        } else {
+          this._isdynamic = true;
+        }        
         return v;
       });
     }   
@@ -176,7 +188,7 @@ class CodeItem {
     for (let key of Object.keys(obj)) {
       if(typeof(obj[key]) == "string") {
         if(obj[key].startsWith("$")) {
-          result[key] = fnResolve(obj[key]);
+          result[key] = fnResolve(obj[key], key);
         } else {
           result[key] = obj[key];
         }
@@ -197,14 +209,24 @@ class CodeItem {
     if(!this._codes.has(key)) {
       const pams = {
         "value": this._defcode.code[0].value,
-        "text": this._defcode.code[0].text
+        "text": (this._defcode.code[0].text.startsWith("$")?"NoName":this._defcode.code[0].text)
       };
+      let flt_stat = true;
       if(this._defcode.code[0].filter) {
         if(this._isdynamic) {
-          pams["filter"] = await this._defClone(this._defcode.code[0].filter, fnResolve);
+          pams["filter"] = await this._defClone(this._defcode.code[0].filter, v => {
+            const r = fnResolve(v);
+            if(!r) {
+              flt_stat = false;
+            }
+            return r;
+          });
         } else {
           pams["filter"] = this._defcode.code[0].filter;
         }
+      }
+      if(!flt_stat) {
+        return [];
       }
       try {
         let res = await this._axios({
@@ -214,7 +236,8 @@ class CodeItem {
         });
         if(res.status == 200) {
           const cval = res.data.map((row) => {
-            return { "value": row[pams.value], "text": row[pams.text] };
+            const vid = row[pams.value];
+            return { "value": vid, "text": (this._namecode?this._namecode.find(v => {v["value"] == vid}):row[pams.text]) };
           });
           this._codes.set(key, cval);
         } else {

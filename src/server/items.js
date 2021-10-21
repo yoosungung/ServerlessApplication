@@ -36,10 +36,13 @@ exports.GetListHandler = async (event, context) => {
     params["ExpressionAttributeNames"] = attrname;
     if(event.queryStringParameters?.filter) {
       const filter = JSON.parse(event.queryStringParameters.filter);
+      if(filter["KeyConditionExpression"]) {
+        params["KeyConditionExpression"] = filter["KeyConditionExpression"];
+        params["ExpressionAttributeValues"] = {};
+      }
       params["FilterExpression"] = filter["FilterExpression"];
       params["ExpressionAttributeValues"] = Object.assign(params["ExpressionAttributeValues"], filter["ExpressionAttributeValues"]);
       params["ExpressionAttributeNames"] = Object.assign(params["ExpressionAttributeNames"], filter["ExpressionAttributeNames"]);
-      
     }
   } else {
     if(event.queryStringParameters) {
