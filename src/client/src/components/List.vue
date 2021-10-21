@@ -178,6 +178,6 @@ export default {
 
 <style>
 .v-data-table-header {
-  color: #f3eeee;
+  background-color: #f3eeee;
 }
 </style>

@@ -291,6 +291,9 @@ export default {
 .v-card__title {
   background-color: #f3eeee;
 }
+.v-slide-group__content {
+  background-color: #f3eeee;
+}
 .v-card__text {
   margin-top: 10px;
 }
