@@ -136,9 +136,8 @@ export default {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);
       this.objectfields = this.$uiconfig.getLayout(this.$props.objectname);
       for (const fld of this.objectfields) {
-        console.log(fld.value);
         if (fld.type == "reference" && fld.code && fld.code.length == 1) {
-          await this.qryRefItems(fld);
+          await this.qryRefItems(this.$props.objectname, fld);
         }
       }
       this.qryParentData();
@@ -146,22 +145,27 @@ export default {
       this.childObjectList = this.$uiconfig.getChildren(this.$props.objectname);
       for (const cld of this.childObjectList) {
         this.childFieldDic[cld] = this.$uiconfig.getLayout(cld);
+        for (const fld of this.childFieldDic[cld]) {
+          if (fld.type == "reference" && fld.code && fld.code.length == 1) {
+            await this.qryRefItems(cld, fld);
+          }
+        }
         this.childRefDic[cld] = this.$uiconfig.isRefresh(cld)
       }
       this.qryChildData();
     },
-    async qryRefItems(itm) {
+    async qryRefItems(objname, itm) {
       if (!itm["codeitems"]) {
-        itm["codeitems"] = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
+        itm["codeitems"] = this.$uiconfig.getCodeItems(objname, itm.value, this.$axios);
       }
       itm["refitems"] = await itm["codeitems"].qryValue(this.$props.objectid, v => {
-        if(v.startWith("$DATE:")) {
+        if(v.startsWith("$DATE:")) {
           const vallist = v.split(":");
           return Date.now().setDate(parseInt(vallist[1]) || -1).format(vallist[2] || "yyyy/MM/dd");
-        } else if(v.startWith("$VALUE:")) {
+        } else if(v.startsWith("$VALUE:")) {
           const vallist = v.split(":");
           return this.objectdata[vallist[1]];
-        } else if(v.startWith("$PARENT:")) {
+        } else if(v.startsWith("$PARENT:")) {
           //const vallist = v.split(":");
           return this.$props.objectid;
         } else {
