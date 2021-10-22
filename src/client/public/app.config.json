@@ -368,9 +368,8 @@
               "value": "INFO_ID",
               "text": "Name",
               "filter": {
-                "FilterExpression": "#n_process IN (:v_process)",
-                "ExpressionAttributeNames": {"#n_process": "INFO_GRP"},
-                "ExpressionAttributeValues": {":v_process": "$VALUE:Process"}
+                "KeyConditionExpression": "INFO_GRP = :v_info_group",
+                "ExpressionAttributeValues": {":v_info_group": "$VALUE:Process"}
               }
             }
           ]

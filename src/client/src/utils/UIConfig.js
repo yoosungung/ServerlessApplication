@@ -138,7 +138,8 @@ class UIConfig {
           return (itm.value === value) && (itm.type === "reference");
         });
         if(defcode) {
-          const cv = new CodeItem(axios, defcode, obj["type"] === "child");
+          const cv = new CodeItem();
+          cv.loadCode(axios, defcode, obj["type"] === "child");
           this._codeitems.set(key, cv);
         } else {
           this._codeitems.set(key, undefined);
@@ -160,7 +161,7 @@ class CodeItem {
   _namecode = undefined;
   _codes = new Map();
 
-  constructor(axios, defCode, ischild) {
+  loadCode(axios, defCode, ischild) {
     this._axios = axios;
     this._ischild = ischild;
     if(defCode.type == "reference") {
@@ -171,9 +172,9 @@ class CodeItem {
           const fld = obj.find(v => {
             return v["value"] == vallist[1];
           });
-          this._namecode = fld?.refintems;
+          self._namecode = fld?.refintems;
         } else {
-          this._isdynamic = true;
+          self._isdynamic = true;
         }        
         return v;
       });
@@ -207,9 +208,10 @@ class CodeItem {
     }
 
     if(!this._codes.has(key)) {
+      const istextdynamic = this._defcode.code[0].text.startsWith("$");
       const pams = {
         "value": this._defcode.code[0].value,
-        "text": (this._defcode.code[0].text.startsWith("$")?"NoName":this._defcode.code[0].text)
+        "text": (istextdynamic?"NoName":this._defcode.code[0].text)
       };
       let flt_stat = true;
       if(this._defcode.code[0].filter) {
@@ -237,7 +239,7 @@ class CodeItem {
         if(res.status == 200) {
           const cval = res.data.map((row) => {
             const vid = row[pams.value];
-            return { "value": vid, "text": (this._namecode?this._namecode.find(v => {v["value"] == vid}):row[pams.text]) };
+            return { "value": vid, "text": (istextdynamic?self._namecode.find(v => {v["value"] == vid}):row[pams.text]) };
           });
           this._codes.set(key, cval);
         } else {
