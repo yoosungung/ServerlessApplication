@@ -347,7 +347,7 @@
           "code": [
             {
               "object": "TProjectProcess",
-              "value": "INFO_ID",
+              "value": "Process",
               "text": "$TProjectProcess:Process",
               "filter": {
                 "KeyConditionExpression": "INFO_GRP = :v_info_group",
@@ -397,12 +397,13 @@
           "code": [
             {
               "object": "TTeams",
-              "value": "INFO_ID",
-              "text": "Name",
+              "value": "Teams",
+              "text": "$TTeams:Teams",
               "filter": {
-                "FilterExpression": "#n_project IN (:v_project)",
-                "ExpressionAttributeNames": {"#n_project": "INFO_TYPE"},
-                "ExpressionAttributeValues": {":v_project": "TTeams"}
+                "KeyConditionExpression": "INFO_GRP = :v_info_group",
+                "FilterExpression": "#n_childtype IN (:v_childtype)",
+                "ExpressionAttributeNames": {"#n_childtype": "INFO_TYPE"},
+                "ExpressionAttributeValues": {":v_childtype": "TTeams", ":v_info_group": "$PARENT:objectid"}
               }
             }
           ]

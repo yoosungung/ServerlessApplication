@@ -164,21 +164,22 @@ class CodeItem {
   loadCode(axios, defCode, ischild) {
     this._axios = axios;
     this._ischild = ischild;
+    
     if(defCode.type == "reference") {
-      this._defcode = this._defClone(defCode, (v, k) => {
+      this._defcode = this._defClone(defCode, (v, k = "", t = this) => {
         if(k == "text") {
           const vallist = v.split(":");
           const obj = _uiconfig.getLayout(vallist[0].slice(1));
           const fld = obj.find(v => {
             return v["value"] == vallist[1];
           });
-          self._namecode = fld?.refintems;
+          t._namecode = fld?.refitems;
         } else {
-          self._isdynamic = true;
+          t._isdynamic = true;
         }        
         return v;
       });
-    }   
+    }
   }
 
   _defClone(obj, fnResolve) {
@@ -237,16 +238,18 @@ class CodeItem {
           params: pams
         });
         if(res.status == 200) {
-          const cval = res.data.map((row) => {
+          const cval = res.data.map((row, idx, alls, t = this) => {
             const vid = row[pams.value];
-            return { "value": vid, "text": (istextdynamic?self._namecode.find(v => {v["value"] == vid}):row[pams.text]) };
+            return { "value": vid, "text": (istextdynamic?t._namecode.find(v => {v["value"] == vid}):row[pams.text]) };
           });
           this._codes.set(key, cval);
         } else {
           return [];
         }
       } catch(e) {
+        console.info(`code = ${infoId} - ${this._defcode.code[0].object}`);
         console.error(e);
+
         return [];
       }
     }
