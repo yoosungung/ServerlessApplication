@@ -61,6 +61,7 @@
             :selectobject="editRef"
             :objectconfig="editConfig"
             :jsondata="editData"
+            :parentid="$props.objectid"
             v-on:close-editor="onCloseEdit"
           />
         </v-dialog>
@@ -159,14 +160,12 @@ export default {
         itm["codeitems"] = this.$uiconfig.getCodeItems(objname, itm.value, this.$axios);
       }
       itm["refitems"] = await itm["codeitems"].qryValue(this.$props.objectid, v => {
-        if(v.startsWith("$DATE:")) {
-          const vallist = v.split(":");
+        const vallist = v.split(":");
+        if(vallist[0] == "$DATE") {
           return Date.now().setDate(parseInt(vallist[1]) || -1).format(vallist[2] || "yyyy/MM/dd");
-        } else if(v.startsWith("$VALUE:")) {
-          const vallist = v.split(":");
+        } else if(vallist[0] == "$VALUE") {
           return this.objectdata[vallist[1]];
-        } else if(v.startsWith("$PARENT:")) {
-          //const vallist = v.split(":");
+        } else if(vallist[0] == "$PARENT") {
           return this.$props.objectid;
         } else {
           console.error('UIConfig.getFilterJson.valueEvaluation:' + v);

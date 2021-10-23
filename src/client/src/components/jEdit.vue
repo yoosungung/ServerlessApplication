@@ -170,6 +170,7 @@ export default {
     objectconfig: Array,
     selectobject: String,
     jsondata: Object,
+    parentid: String,
   },
   data() {
     return {
@@ -227,16 +228,16 @@ export default {
     },
     async getRefItems(itm) {
       if (!itm.codeitems) {
-        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
+        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectype, itm.value, this.$axios);
       }
-      itm.refitems = await itm.codeitems.qryValue(this.$props.objectid, v => {
+      itm.refitems = await itm.codeitems.qryValue(this.id, v => {
         const vallist = v.split(":");
         if(vallist[0] === "$DATE") {
           return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
         } else if(vallist[0] === "$VALUE") {
           return this.editdata[vallist[1]];
         } else if(vallist[0] === "$PARENT") {
-          return this.$props.objectid;
+          return this.$props.parentid;
         } else {
           console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
           return v;

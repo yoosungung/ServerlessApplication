@@ -239,8 +239,11 @@ class CodeItem {
         });
         if(res.status == 200) {
           const cval = res.data.map((row, idx, alls, t = this) => {
-            const vid = row[pams.value];
-            return { "value": vid, "text": (istextdynamic?t._namecode.find(v => {v["value"] == vid}):row[pams.text]) };
+            if(istextdynamic) {
+              return t._namecode.find(v => {return v["value"] == row[pams.value]});
+            } else {
+              return { "value": row[pams.value], "text": row[pams.text] };
+            }
           });
           this._codes.set(key, cval);
         } else {
