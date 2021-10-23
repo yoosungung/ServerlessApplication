@@ -16,6 +16,7 @@
                 v-if="itm.type == 'bool'"
                 v-model="editdata[itm.value]"
                 :label="itm.text"
+                :ref="itm.value"
               ></v-checkbox>
               <v-file-input
                 v-if="itm.type == 'file'"
@@ -25,10 +26,12 @@
                 append-outer-icon="mdi-download"
                 @change="onFileChange(itm.value)"
                 @click:append-outer="fileDownload(itm)"
+                :ref="itm.value"
               ></v-file-input>
               <v-radio-group
                 v-if="itm.type == 'code'"
                 v-model="editdata[itm.value]"
+                :ref="itm.value"
               >
                 <v-radio v-for="n in itm.code" :key="n.value" :value="n.value" :label="n.text">
                 </v-radio>
@@ -38,6 +41,7 @@
                 v-model="editdata[itm.value]"
                 :items="itm.code"
                 :label="itm.text"
+                :ref="itm.value"
               ></v-select>
               <v-select
                 v-if="itm.type == 'reference' && itm.code && itm.code.length == 1"
@@ -46,6 +50,7 @@
                 item-value="value"
                 item-text="text"
                 :label="itm.text"
+                :ref="itm.value"
               ></v-select>
               <v-slider
                 v-if="itm.type == 'number' && itm.code && itm.code.length == 2"
@@ -53,6 +58,7 @@
                 :min="itm.code[0]"
                 :max="itm.code[1]"
                 :label="itm.text"
+                :ref="itm.value"
               >
                 <template v-slot:append>
                   <v-text-field
@@ -71,6 +77,7 @@
                 transition="scale-transition"
                 offset-y
                 min-width="auto"
+                :ref="itm.value"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
@@ -106,7 +113,7 @@
                     prepend-icon="mdi-clock-time-four-outline"
                     readonly
                     v-bind="attrs"
-                    v-on="on"
+                    :ref="itm.value"
                   ></v-text-field>
                 </template>
                 <v-time-picker
@@ -120,6 +127,7 @@
                 v-model="editdata[itm.value]"
                 :label="itm.text"
                 rows="1"
+                :ref="itm.value"
               ></v-textarea>
               <v-text-field
                 v-if="
@@ -136,6 +144,7 @@
                 v-model="editdata[itm.value]"
                 :label="itm.text"
                 :type="itm.type"
+                :ref="itm.value"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -180,13 +189,13 @@ export default {
       editdata: {},
       filedata: {},
       valid: true,
-      viewselect: false
+      viewselect: false 
     };
   },
   computed: {
-    getObjecType() {
+    getObjecType: function() {
       return this.$uiconfig.getName(this.$props.objectype);
-    },
+    }
   },
   async beforeMount() {
     if(this.$props.objectconfig) {
@@ -206,6 +215,16 @@ export default {
       for (let itm of this.editlayout) {
         if(itm.type == 'file') {
           this.getFileData(itm.value);
+        }
+      }
+    }
+  },
+  mounted() {
+    for (let itm of this.editlayout) {
+      if(itm.event && itm.event.length > 0) {
+        for(let eh in itm.event) {
+          const fn = this[itm.event[eh].handler];
+          this.$refs[itm.value][0].$on(itm.event[eh].value, fn || function(evt) {console.log(evt);});
         }
       }
     }

@@ -151,6 +151,9 @@
         "read": "all",
         "write": "owner"
       },
+      "action": [
+        {"value": "relaod", "text": "Reload Default Tasks from Project", "icon": "mdi-reload", "handler": "OnReloadTask"}
+      ],
       "fields": [
         {
           "text": "이름",
@@ -356,7 +359,8 @@
                 "ExpressionAttributeValues": {":v_childtype": "TProjectProcess", ":v_info_group": "$PARENT:objectid"}
               }
             }
-          ]
+          ],
+          "event": [{"value": "change", "handler": "OnProcessSelect"}]
         },
         {
           "text": "클래스작업",

@@ -150,6 +150,19 @@ class UIConfig {
     }        
     return this._codeitems.get(key);
   }
+
+  _actions = new Map();
+  getAction(objname) {
+    if (!this._actions.has(objname)) {
+      const obj = this._configs.get(objname)
+      if (obj && obj.action) {
+        this._actions.set(objname, obj.action)
+      } else {
+        this._actions.set(objname, [])
+      }
+    }
+    return this._actions.get(objname)
+  }
 }
 
 class CodeItem {

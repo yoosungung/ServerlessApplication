@@ -13,6 +13,18 @@
               <v-btn icon @click="openDelete()">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
+              <v-tooltip top v-for="act in actionList" :key="act.value">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    v-bind="attrs"
+                    v-on="on"
+                    icon
+                    @click="OnAction(act)">
+                    <v-icon>{{act.icon}}</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{act.text}}</span>
+              </v-tooltip>
             </v-card-actions>
           </v-card-title>
           <v-card-text>
@@ -116,7 +128,9 @@ export default {
 
       childDataDic: {},
       childObjectData: {},
-      childTabKey: 0
+      childTabKey: 0,
+
+      actionList: []
     }
   },
   watch: {
@@ -136,6 +150,7 @@ export default {
     async getPageConfig() {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);
       this.objectfields = this.$uiconfig.getLayout(this.$props.objectname);
+      this.actionList = this.$uiconfig.getAction(this.$props.objectname);
       for (const fld of this.objectfields) {
         if (fld.type == "reference" && fld.code && fld.code.length == 1) {
           await this.qryRefItems(this.$props.objectname, fld);
@@ -282,6 +297,9 @@ export default {
           this.initEditValue();
         });
     },
+    OnAction(act) {
+      console.info(act);
+    }
   }
 }
 </script>
