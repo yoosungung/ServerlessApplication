@@ -23,7 +23,8 @@ class AppOnAwsStack extends cdk.Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
 
-    const appUrl = 'pms.slab-obzen.com';
+    // EDIT : site infomation
+    const appUrl = 'sample.eric-yoo.com';
     const secureKey = 'json_web_token_scure_key_is_abdacadabra_!!';
 
     // web site ( s3 bucket )
