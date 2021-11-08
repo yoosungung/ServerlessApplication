@@ -1,5 +1,5 @@
 {
-  "API": "https://y0topzvoci.execute-api.ap-northeast-2.amazonaws.com",
+  "API": "https://ap5ofv3ehl.execute-api.ap-northeast-2.amazonaws.com",
   "UI": [
     {
       "value": "employee",
@@ -53,9 +53,9 @@
       ]
     },
     {
-      "value": "TProcess",
-      "text": "프로세스",
-      "icon": "mdi-checkbox-marked-circle",
+      "value": "TWorkflow",
+      "text": "워크플로우",
+      "icon": "mdi-sitemap",
       "type": "master",
       "visiblity": {
         "read": "group",
@@ -69,20 +69,20 @@
           "summary": ""
         },
         {
-          "text": "PM",
-          "value": "PM",
-          "type": "reference",
+          "text": "시작일자",
+          "value": "StartDay",
+          "type": "date",
+          "summary": ""
+        },
+        {
+          "text": "상태",
+          "value": "Status",
+          "type": "select",
           "code": [
-            {
-              "object": "employee",
-              "value": "INFO_ID",
-              "text": "Name",
-              "filter": {
-                "FilterExpression": "#n_rank = :v_rank",
-                "ExpressionAttributeNames": {"#n_rank": "rank"},
-                "ExpressionAttributeValues": {":v_rank": "팀장"}
-              }
-            }
+            "준비",
+            "수행",
+            "중지",
+            "종료"
           ],
           "summary": ""
         },
@@ -93,11 +93,11 @@
         }
       ],
       "children": [
-        "TClassTask"
+        "TTask"
       ]
     },
     {
-      "value": "TClassTask",
+      "value": "TTask",
       "text": "테스크",
       "icon": "mdi-clipboard-check",
       "type": "child",
@@ -107,33 +107,10 @@
       },
       "fields": [
         {
-          "text": "번호",
-          "value": "INFO_ID",
-          "type": "text",
-          "summary": "require"
-        },
-        {
           "text": "이름",
           "value": "Name",
           "type": "text",
           "summary": "require"
-        },
-        {
-          "text": "작업일수",
-          "value": "TaskDays",
-          "type": "number",
-          "code": [1, 5],
-          "summary": ""
-        },
-        {
-          "text": "가이드",
-          "value": "Guid",
-          "type": "file"          
-        },
-        {
-          "text": "템플릿",
-          "value": "Template",
-          "type": "file"          
         },
         {
           "text": "설명",
@@ -143,17 +120,14 @@
       ]
     },
     {
-      "value": "TProject",
-      "text": "프로젝트",
-      "icon": "mdi-silverware-fork-knife",
-      "type": "master",
+      "value": "TTaskTemplate",
+      "text": "템플릿",
+      "icon": "mdi-file-tree",
+      "type": "system",
       "visiblity": {
         "read": "all",
         "write": "owner"
       },
-      "action": [
-        {"value": "relaod", "text": "Reload Default Tasks from Project", "icon": "mdi-reload", "handler": "OnReloadTask"}
-      ],
       "fields": [
         {
           "text": "이름",
@@ -162,255 +136,9 @@
           "summary": "require"
         },
         {
-          "text": "PM",
-          "value": "PM",
-          "type": "reference",
-          "code": [
-            {
-              "object": "employee",
-              "value": "INFO_ID",
-              "text": "Name",
-              "filter": {
-                "FilterExpression": "#n_rank = :v_rank",
-                "ExpressionAttributeNames": {"#n_rank": "rank"},
-                "ExpressionAttributeValues": {":v_rank": "팀장"}
-              }
-            }
-          ],
-          "summary": ""
-        },
-        {
-          "text": "고객사",
-          "value": "Customer",
-          "type": "text"
-        },
-        {
-          "text": "시작일자",
-          "value": "StartDate",
-          "type": "date",
-          "summary": ""
-        },
-        {
-          "text": "착수보고",
-          "value": "KickOffDate",
-          "type": "date"
-        },
-        {
-          "text": "중간보고",
-          "value": "MiddleDate",
-          "type": "date"
-        },
-        {
-          "text": "오픈일자",
-          "value": "OpenDate",
-          "type": "date",
-          "summary": ""
-        },
-        {
-          "text": "종료일자",
-          "value": "EndDate",
-          "type": "date",
-          "summary": ""
-        },
-        {
-          "text": "위치",
-          "value": "Location",
-          "type": "textarea"
-        },
-        {
           "text": "설명",
           "value": "Description",
           "type": "textarea"
-        }
-      ],
-      "children": [
-        "TProjectProcess",
-        "TTeams",
-        "TTask"
-      ]
-    },
-    {
-      "value": "TProjectProcess",
-      "text": "프로젝트범위",
-      "icon": "mdi-arrange-bring-forward",
-      "type": "child",
-      "visiblity": {
-        "read": "owner",
-        "write": "owner"
-      },
-      "fields": [
-        {
-          "text": "프로세스",
-          "value": "Process",
-          "type": "reference",
-          "code": [
-            {
-              "object": "TProcess",
-              "value": "INFO_ID",
-              "text": "Name"
-            }
-          ]
-        },
-        {
-          "text": "작업일수",
-          "value": "TaskDays",
-          "type": "number",
-          "code": [1, 365]
-        },
-        {
-          "text": "설명",
-          "value": "Description",
-          "type": "textarea"
-        }
-      ]
-    },
-    {
-      "value": "TTeams",
-      "text": "팀원",
-      "icon": "mdi-account-group",
-      "type": "child",
-      "visiblity": {
-        "read": "owner",
-        "write": "owner"
-      },
-      "fields": [
-        {
-          "text": "직원",
-          "value": "Teams",
-          "type": "reference",
-          "code": [
-            {
-              "object": "employee",
-              "value": "INFO_ID",
-              "text": "Name",
-              "filter": {
-                "FilterExpression": "#n_rank IN (:v_leader, :v_teams)",
-                "ExpressionAttributeNames": {"#n_rank": "rank"},
-                "ExpressionAttributeValues": {":v_leader": "리더", ":v_teams": "팀원"}
-              }
-            }
-          ]
-        },
-        {
-          "text": "직원구분",
-          "value": "TeamsType",
-          "type": "select",
-          "code": [
-            "리더",
-            "팀원",
-            "고객"
-          ]
-        },
-        {
-          "text": "투입일자",
-          "value": "RollupDate",
-          "type": "date"
-        },
-        {
-          "text": "철수일자",
-          "value": "RolloffDate",
-          "type": "date"
-        },
-        {
-          "text": "투입비율",
-          "value": "WorkRate",
-          "type": "number",
-          "code": [1, 100]
-        },
-        {
-          "text": "투입형태",
-          "value": "CostType",
-          "type": "select",
-          "code": [
-            "유상",
-            "무상"
-          ]
-        },
-        {
-          "text": "설명",
-          "value": "Description",
-          "type": "textarea"
-        }
-      ]
-    },
-    {
-      "value": "TTask",
-      "text": "작업",
-      "icon": "mdi-ticket",
-      "type": "child",
-      "visiblity": {
-        "read": "owner",
-        "write": "owner"
-      },
-      "fields": [
-        {
-          "text": "프로세스",
-          "value": "Process",
-          "type": "reference",
-          "code": [
-            {
-              "object": "TProjectProcess",
-              "value": "Process",
-              "text": "$TProjectProcess:Process",
-              "filter": {
-                "KeyConditionExpression": "INFO_GRP = :v_info_group",
-                "FilterExpression": "#n_childtype IN (:v_childtype)",
-                "ExpressionAttributeNames": {"#n_childtype": "INFO_TYPE"},
-                "ExpressionAttributeValues": {":v_childtype": "TProjectProcess", ":v_info_group": "$PARENT:objectid"}
-              }
-            }
-          ],
-          "event": [{"value": "change", "handler": "OnProcessSelect"}]
-        },
-        {
-          "text": "클래스작업",
-          "value": "ClassTask",
-          "type": "reference",
-          "code": [
-            {
-              "object": "TClassTask",
-              "value": "INFO_ID",
-              "text": "Name",
-              "filter": {
-                "KeyConditionExpression": "INFO_GRP = :v_info_group",
-                "ExpressionAttributeValues": {":v_info_group": "$VALUE:Process"}
-              }
-            }
-          ]
-        },
-        {
-          "text": "이름",
-          "value": "Name",
-          "type": "text"
-        },
-        {
-          "text": "작업일수",
-          "value": "TaskDays",
-          "type": "number",
-          "code": [1, 5]
-        },
-        {
-          "text": "시작일자",
-          "value": "StartDate",
-          "type": "date"
-        },
-        {
-          "text": "담당자",
-          "value": "Woker",
-          "type": "reference",
-          "code": [
-            {
-              "object": "TTeams",
-              "value": "Teams",
-              "text": "$TTeams:Teams",
-              "filter": {
-                "KeyConditionExpression": "INFO_GRP = :v_info_group",
-                "FilterExpression": "#n_childtype IN (:v_childtype)",
-                "ExpressionAttributeNames": {"#n_childtype": "INFO_TYPE"},
-                "ExpressionAttributeValues": {":v_childtype": "TTeams", ":v_info_group": "$PARENT:objectid"}
-              }
-            }
-          ]
         }
       ]
     }

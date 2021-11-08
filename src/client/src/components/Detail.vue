@@ -49,19 +49,22 @@
           </v-tabs>
           <v-tabs-items v-model="tabIdx" :key="childTabKey">
             <v-tab-item v-for="cld in childObjectList" :key="cld">
-              <v-card v-for="childData in childDataDic[cld]" :key="childData.INFO_ID">
-                <v-btn icon @click="openEdit(cld, childData)">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn icon @click="openDelete(cld, childData)">
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-                <jinfo
-                  :objectype="cld"
-                  :objectconfig="childFieldDic[cld]"
-                  :jsondata="childData"
-                />
-              </v-card>
+              <jdiagram v-if="getCustomViewer(cld) == 'AslDiagram'"></jdiagram>
+              <div v-else>
+                <v-card v-for="childData in childDataDic[cld]" :key="childData.INFO_ID">
+                  <v-btn icon @click="openEdit(cld, childData)">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="openDelete(cld, childData)">
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                  <jinfo
+                    :objectype="cld"
+                    :objectconfig="childFieldDic[cld]"
+                    :jsondata="childData"
+                  />
+                </v-card>
+              </div>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -97,6 +100,7 @@
 <script>
 import jedit from "./jEdit.vue";
 import jinfo from "./jInfo.vue";
+import jdiagram from "./AslDiagram.vue";
 
 export default {
   props: {
@@ -105,7 +109,8 @@ export default {
   },
   components: {
     jedit,
-    jinfo
+    jinfo,
+    jdiagram
   },
   data() {
     return {
@@ -146,6 +151,9 @@ export default {
       } else {
         return 'Noname';
       }
+    },
+    getCustomViewer(objname) {
+      return this.$uiconfig.getCustomViewer(objname);
     },
     async getPageConfig() {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);

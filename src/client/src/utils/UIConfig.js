@@ -163,6 +163,19 @@ class UIConfig {
     }
     return this._actions.get(objname)
   }
+  
+  _viewers = new Map();
+  getCustomViewer(objname) {
+    if (!this._viewers.has(objname)) {
+      const obj = this._configs.get(objname)
+      if (obj && obj.viewer) {
+        this._viewers.set(objname, obj.viewer)
+      } else {
+        this._viewers.set(objname, "jInfo")
+      }
+    }
+    return this._viewers.get(objname)
+  }
 }
 
 class CodeItem {
