@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default class Drawflow {
   constructor(container, render = null, parent = null) {
     this.events = {};
@@ -1426,40 +1427,42 @@ export default class Drawflow {
     const reroute_fix_curvature = this.reroute_fix_curvature
     const container = this.container;
     Object.keys(dataNode.outputs).map(function(output_item, index) {
-      Object.keys(dataNode.outputs[output_item].connections).map(function(input_item, index) {
-        const points = dataNode.outputs[output_item].connections[input_item].points
-        if(points !== undefined) {
-
-          points.forEach((item, i) => {
-            const input_id = dataNode.outputs[output_item].connections[input_item].node;
-            const input_class = dataNode.outputs[output_item].connections[input_item].output;
-            const ele = container.querySelector('.connection.node_in_node-'+input_id+'.node_out_node-'+dataNode.id+'.'+output_item+'.'+input_class);
-
-            if(reroute_fix_curvature) {
-              if(i === 0) {
-                for (var z = 0; z < points.length; z++) {
-                  var path = document.createElementNS('http://www.w3.org/2000/svg',"path");
-                  path.classList.add("main-path");
-                  path.setAttributeNS(null, 'd', '');
-                  ele.appendChild(path);
-
+      if(dataNode.outputs[output_item].connections) {
+        Object.keys(dataNode.outputs[output_item].connections).map(function(input_item, index) {
+          const points = dataNode.outputs[output_item].connections[input_item].points
+          if(points !== undefined) {
+  
+            points.forEach((item, i) => {
+              const input_id = dataNode.outputs[output_item].connections[input_item].node;
+              const input_class = dataNode.outputs[output_item].connections[input_item].output;
+              const ele = container.querySelector('.connection.node_in_node-'+input_id+'.node_out_node-'+dataNode.id+'.'+output_item+'.'+input_class);
+  
+              if(reroute_fix_curvature) {
+                if(i === 0) {
+                  for (var z = 0; z < points.length; z++) {
+                    var path = document.createElementNS('http://www.w3.org/2000/svg',"path");
+                    path.classList.add("main-path");
+                    path.setAttributeNS(null, 'd', '');
+                    ele.appendChild(path);
+  
+                  }
                 }
               }
-            }
-
-            const point = document.createElementNS('http://www.w3.org/2000/svg',"circle");
-            point.classList.add("point");
-            var pos_x = item.pos_x;
-            var pos_y = item.pos_y;
-
-            point.setAttributeNS(null, 'cx', pos_x);
-            point.setAttributeNS(null, 'cy', pos_y);
-            point.setAttributeNS(null, 'r', reroute_width);
-
-            ele.appendChild(point);
-          });
-        };
-      });
+  
+              const point = document.createElementNS('http://www.w3.org/2000/svg',"circle");
+              point.classList.add("point");
+              var pos_x = item.pos_x;
+              var pos_y = item.pos_y;
+  
+              point.setAttributeNS(null, 'cx', pos_x);
+              point.setAttributeNS(null, 'cy', pos_y);
+              point.setAttributeNS(null, 'r', reroute_width);
+  
+              ele.appendChild(point);
+            });
+          };
+        });
+      }
     });
   }
 
@@ -1944,3 +1947,4 @@ export default class Drawflow {
         return uuid;
     }
 }
+/* eslint-enable */

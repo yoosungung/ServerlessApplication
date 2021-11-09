@@ -49,10 +49,10 @@ exports.GetListHandler = async (event, context) => {
       if (event.queryStringParameters.visible && event.requestContext.authorizer && event.requestContext.authorizer.lambda) {
         if (event.queryStringParameters.visible === "owner") {
           params["FilterExpression"] = "INFO_BY = :v_info_by";
-          params.ExpressionAttributeValues[":v_info_by"] = `${event.requestContext.authorizer.lambda.GROUP || '솔루션랩'}:${event.requestContext.authorizer.lambda.INFO_ID}`;
+          params.ExpressionAttributeValues[":v_info_by"] = `${event.requestContext.authorizer.lambda.GROUP || 'Nogroup'}:${event.requestContext.authorizer.lambda.INFO_ID}`;
         } else if (event.queryStringParameters["visible"] === "group" ) {
           params["FilterExpression"] = "begins_with(INFO_BY, :v_info_by)";
-          params.ExpressionAttributeValues[":v_info_by"] = event.requestContext.authorizer.lambda.GROUP;
+          params.ExpressionAttributeValues[":v_info_by"] = event.requestContext.authorizer.lambda.GROUP || 'Nogroup';
         }
       }
     }
