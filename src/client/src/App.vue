@@ -71,7 +71,7 @@ export default {
     selectedItem: 0,
     items: [],
     minVariant: false,
-    title: "프로젝트 관리",
+    title: "AWS 업무 관리",
     snackbar: false,
     snackbar_message: "",
     snackbar_title: "",
