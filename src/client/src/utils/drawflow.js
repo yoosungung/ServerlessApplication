@@ -1874,6 +1874,7 @@ export default class Drawflow {
     this.precanvas.innerHTML = "";
     this.drawflow = { "drawflow": { "Home": { "data": {} }}};
   }
+  
   export () {
     const dataExport = JSON.parse(JSON.stringify(this.drawflow));
     this.dispatch('export', dataExport);

@@ -19,7 +19,7 @@
               <div class="btn-export" onclick="Swal.fire({ title: 'Export',
               html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
               })">Export</div>
-              <div class="btn-clear" v-on:click="$editor.clearModuleSelected()">Clear</div>
+              <div class="btn-clear" v-on:click="$editor.clearModuleSelected(); $editor.import(cleanAslJson());">Clear</div>
               <div class="btn-lock">
                 <i ref="lock" class="v-icon notranslate mdi theme--dark mdi-lock-open-variant-outline" v-on:click="$editor.editor_mode='fixed'; changeMode('lock');"></i>
                 <i ref="unlock" class="v-icon notranslate mdi theme--dark mdi-lock-outline" v-on:click="$editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
@@ -59,20 +59,19 @@ export default {
   },
 
   mounted() {
-    const data = this.getAslJson();
     this.$drawflow = document.getElementById("drawflow");
     this.$editor = new Drawflow(this.$drawflow);
     this.$editor.reroute = true;
     this.$editor.reroute_fix_curvature = true;
     this.$editor.force_first_input = false;
     this.$editor.start();
-    this.$editor.import(data);
+    this.$editor.import(this.queryAslJson());
 
     this.setEditorEvent();
   },
 
   methods: {
-    getAslJson() {
+    cleanAslJson() {
       this.aslJson = {
         "drawflow": {
           "Home": {
@@ -82,91 +81,44 @@ export default {
                 "name":"start",
                 "data":{},
                 "class":"start",
-                "html":
-`<div>
-  <div class="title-box">
-    <i class="fab fa-slack"></i>START
-  </div>
-</div>`, 
+                "html": `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play"></i>START</div></div>`, 
                 "typenode": false, 
                 "inputs":{},
                 "outputs":{
                   "output_1":{
                     "connections":[
-                      {"node":"1","input":"input_1"}
                     ]
                   }
                 },
                 "pos_x": 10,
-                "pos_y":10
+                "pos_y":50
               },
-              "1":{
-                "id":1,
+              "99999": {
+                "id":99999,
                 "name":"end",
                 "data":{},
                 "class":"end",
-                "html":
-`<div>
-  <div class="title-box">
-    <i class="fab fa-telegram-plane"></i> Telegram bot
-  </div>
-  <div class="box">
-    <p>Send to telegram</p>
-    <p>select channel</p>
-    <select df-channel>
-      <option value="channel_1">Channel 1</option>
-      <option value="channel_2">Channel 2</option>
-      <option value="channel_3">Channel 3</option>
-      <option value="channel_4">Channel 4</option>
-    </select>
-  </div>
-</div>`, 
+                "html":`<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-stop"></i>END</div></div>`, 
                 "typenode": false, 
                 "inputs":{
                   "input_1":{
                     "connections":[
-                      {"node":"0","input":"output_1"}
-                    ]
-                  }
-                },
-                "outputs":{
-                  "output_1":{
-                    "connections":[
-                      {"node":"9999","output":"input_1"}
-                    ]
-                  }
-                },
-                "pos_x":300,
-                "pos_y":10
-              },
-              "9999": {
-                "id":9999,
-                "name":"end",
-                "data":{},
-                "class":"end",
-                "html":
-`<div>
-  <div class="title-box">
-    <i class="fab fa-slack"></i>END
-  </div>
-</div>`, 
-                "typenode": false, 
-                "inputs":{
-                  "input_1":{
-                    "connections":[
-                      {"node":"1","input":"output_1"}
                     ]
                   }
                 },
                 "outputs":{},
                 "pos_x": 600,
-                "pos_y": 10
+                "pos_y": 50
               },
             }
           }
         }
       };
       return this.aslJson;
+    },
+
+    queryAslJson() {
+      return this.cleanAslJson();
     },
 
     setEditorEvent() {
@@ -574,11 +526,8 @@ export default {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-.drawflow-node.welcome {
-  width: 250px;
-}
-.drawflow-node.slack .title-box {
-  border-radius: 4px;
+.drawflow-node.start, .drawflow-node.end {
+  width: 110px;
 }
 .drawflow-node input, .drawflow-node select, .drawflow-node textarea {
   border-radius: 4px;
