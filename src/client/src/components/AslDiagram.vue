@@ -4,24 +4,30 @@
         <div class="wrapper">
           <div class="col-left">
             <div v-for="itm in preItems" :key="itm.name"
-              class="drag-drawflow" draggable="true" ondragstart="drag(event)" :data-node="itm.name">
+              class="drag-drawflow" 
+              :data-node="itm.name"
+              draggable="true" v-on:dragstart="drag" 
+              v-on:touchend="drop"
+              v-on:touchmove="positionMobile"
+              v-on:touchstart="drag"
+            >
               <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
             </div>
           </div>
           <div class="col-right">
-            <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="drawflow" v-on:drop="drop" v-on:dragover="allowDrop">
               <div class="btn-export" onclick="Swal.fire({ title: 'Export',
               html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
               })">Export</div>
-              <div class="btn-clear" onclick="editor.clearModuleSelected()">Clear</div>
+              <div class="btn-clear" v-on:click="$editor.clearModuleSelected()">Clear</div>
               <div class="btn-lock">
-                <i id="lock" class="v-icon notranslate mdi theme--dark mdi-lock-outline" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
-                <i id="unlock" class="v-icon notranslate mdi theme--dark mdi-lock-open-variant-outline" onclick="editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
+                <i ref="lock" class="v-icon notranslate mdi theme--dark mdi-lock-open-variant-outline" v-on:click="$editor.editor_mode='fixed'; changeMode('lock');"></i>
+                <i ref="unlock" class="v-icon notranslate mdi theme--dark mdi-lock-outline" v-on:click="$editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
               </div>
               <div class="bar-zoom">
-                <i class="v-icon notranslate mdi theme--dark mdi-magnify-minus-outline" onclick="editor.zoom_out()"></i>
-                <i class="v-icon notranslate mdi theme--dark mdi-magnify" onclick="editor.zoom_reset()"></i>
-                <i class="v-icon notranslate mdi theme--dark mdi-magnify-plus-outline" onclick="editor.zoom_in()"></i>
+                <i class="v-icon notranslate mdi theme--dark mdi-magnify-minus-outline" v-on:click="$editor.zoom_out()"></i>
+                <i class="v-icon notranslate mdi theme--dark mdi-magnify" v-on:click="$editor.zoom_reset()"></i>
+                <i class="v-icon notranslate mdi theme--dark mdi-magnify-plus-outline" v-on:click="$editor.zoom_in()"></i>
               </div>
             </div>
           </div>
@@ -37,15 +43,18 @@ export default {
   data() {
     return {
       preItems: [
-        { name: "Facebook", icon: "mdi-facebook", descript: "test 1"},
-        { name: "Google", icon: "mdi-google", descript: "test 2"},
-        { name: "Microsoft", icon: "mdi-microsoft", descript: "test 3"},
-        { name: "Apple", icon: "mdi-apple", descript: "test 4"},
+        { name: "Facebook", icon: "mdi-facebook", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-facebook"></i> Facebook</div></div>`},
+        { name: "Google", icon: "mdi-google", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-google"></i> Google</div></div>`},
+        { name: "Microsoft", icon: "mdi-microsoft", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-microsoft"></i> Microsoft</div></div>`},
+        { name: "Apple", icon: "mdi-apple", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-apple"></i> Apple</div></div>`},
       ],
 
       $drawflow: null,
       $editor: null,
-      aslJson: {}
+      aslJson: {},
+
+      mobile_item_selec: '',
+      mobile_last_move: null,
     }
   },
 
@@ -58,6 +67,8 @@ export default {
     this.$editor.force_first_input = false;
     this.$editor.start();
     this.$editor.import(data);
+
+    this.setEditorEvent();
   },
 
   methods: {
@@ -158,18 +169,124 @@ export default {
       return this.aslJson;
     },
 
-    changeMode(mode) {
-      console.log('changeMode', mode);
+    setEditorEvent() {
+      /*
+      this.$editor.on('nodeCreated', function(id) {
+        console.log("Node created " + id);
+      });
+      this.$editor.on('nodeRemoved', function(id) {
+        console.log("Node removed " + id);
+      });
+      */
+      this.$editor.on('nodeSelected', function(id) {
+        console.log("Node selected " + id);
+      });
+      /*
+      this.$editor.on('moduleCreated', function(name) {
+        console.log("Module Created " + name);
+      });
+      this.$editor.on('moduleChanged', function(name) {
+        console.log("Module Changed " + name);
+      });
+      this.$editor.on('connectionCreated', function(connection) {
+        console.log('Connection created');
+        console.log(connection);
+      });
+      this.$editor.on('connectionRemoved', function(connection) {
+        console.log('Connection removed');
+        console.log(connection);
+      });
+      this.$editor.on('mouseMove', function(position) {
+        console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+      });
+      this.$editor.on('nodeMoved', function(id) {
+        console.log("Node moved " + id);
+      });
+      this.$editor.on('zoom', function(zoom) {
+        console.log('Zoom level ' + zoom);
+      });
+      this.$editor.on('translate', function(position) {
+        console.log('Translate x:' + position.x + ' y:'+ position.y);
+      });
+      this.$editor.on('addReroute', function(id) {
+        console.log("Reroute added " + id);
+      });
+      this.$editor.on('removeReroute', function(id) {
+        console.log("Reroute removed " + id);
+      });
+      */
     },
 
-    drop(event) {
-      console.log('drop', event);
+    changeMode(option) {
+      //console.log('changeMode', option);
+      if(option == 'lock') {
+        this.$refs.lock.style.display = 'none';
+        this.$refs.unlock.style.display = 'block';
+      } else {
+        this.$refs.lock.style.display = 'block';
+        this.$refs.unlock.style.display = 'none';
+      }
     },
 
-    allowDrop(event) {
-      console.log('allowDrop', event);
+    positionMobile(ev) {
+      //console.log('positionMobile', ev);
+      this.mobile_last_move = ev;
+    },
+    drag(ev) {
+      //console.log('drag', ev);
+      if (ev.type === "touchstart") {
+        this.mobile_item_selec = ev.target.closest(".drag-drawflow").getAttribute('data-node');
+      } else {
+        ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+      }
+    },
+    drop(ev) {
+      //console.log('drop', ev);
+      if (ev.type === "touchend") {
+        var parentdrawflow = document.elementFromPoint( this.mobile_last_move.touches[0].clientX, this.mobile_last_move.touches[0].clientY).closest("#drawflow");
+        if(parentdrawflow != null) {
+          this.addNodeToDrawFlow(this.mobile_item_selec, this.mobile_last_move.touches[0].clientX, this.mobile_last_move.touches[0].clientY);
+        }
+        this.mobile_item_selec = '';
+      } else {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("node");
+        this.addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+      }
+    },
+    allowDrop(ev) {
+      //console.log('allowDrop', ev);
+      ev.preventDefault();
+    },
+
+    addNodeToDrawFlow(name, pos_x, pos_y) {
+      if(this.$editor.editor_mode === 'fixed') {
+        return false;
+      }
+      pos_x = pos_x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)));
+      pos_y = pos_y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)));
+
+      const itm = this.preItems.find(v => { return v.name == name; });
+      this.$editor.addNode(name, itm?.inputcnt || 1,  itm?.outputcnt || 1, pos_x, pos_y, name, itm?.dataformat || {}, itm?.html || `<div><div class="title-box">${name}</div></div>`);
+      /*
+        <div>
+          <div class="title-box"><i class="fab fa-facebook"></i> Facebook Message</div>
+          <div class="box">
+            <p>Enter repository url</p>
+            <input type="text" df-name>
+            <input type="text" df-db-key placeholder="DB key">
+            <select df-channel>
+              <option value="channel_1">Channel 1</option>
+              <option value="channel_2">Channel 2</option>
+            </select>
+            <span class="close" onclick="closemodal(event)">&times;</span>
+            Change your variable {name} !
+            <input type="text" df-name>
+          </div>
+        </div>
+        editor.addNode('aws', 1, 1, pos_x, pos_y, 'aws', { "db": { "dbname": '', "key": '' }}, aws );
+      */
     }
-
   }
 }
 </script>
