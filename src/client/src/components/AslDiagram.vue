@@ -3,65 +3,25 @@
       <div class="asldigram">
         <div class="wrapper">
           <div class="col-left">
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="facebook">
-              <i class="fab fa-facebook"></i><span> Facebook</span>
+            <div v-for="itm in preItems" :key="itm.name"
+              class="drag-drawflow" draggable="true" ondragstart="drag(event)" :data-node="itm.name">
+              <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
             </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="slack">
-              <i class="fab fa-slack"></i><span> Slack recive message</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="github">
-              <i class="fab fa-github"></i><span> Github Star</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="telegram">
-              <i class="fab fa-telegram"></i><span> Telegram send message</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="aws">
-              <i class="fab fa-aws"></i><span> AWS</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="log">
-              <i class="fas fa-file-signature"></i><span> File Log</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="google">
-              <i class="fab fa-google-drive"></i><span> Google Drive save</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="email">
-              <i class="fas fa-at"></i><span> Email send</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="template">
-              <i class="fas fa-code"></i><span> Template</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="multiple">
-              <i class="fas fa-code-branch"></i><span> Multiple inputs/outputs</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="personalized">
-              <i class="fas fa-fill"></i><span> Personalized</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="dbclick">
-              <i class="fas fa-mouse"></i><span> DBClick!</span>
-            </div>
-
-
           </div>
           <div class="col-right">
-            <!-- div class="menu">
-              <ul>
-                <li onclick="editor.changeModule('Home'); changeModule(event);" class="selected">Home</li>
-                <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li>
-              </ul>
-            </div -->
             <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
               <div class="btn-export" onclick="Swal.fire({ title: 'Export',
               html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
               })">Export</div>
               <div class="btn-clear" onclick="editor.clearModuleSelected()">Clear</div>
               <div class="btn-lock">
-                <i id="lock" class="fas fa-lock" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
-                <i id="unlock" class="fas fa-lock-open" onclick="editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
+                <i id="lock" class="v-icon notranslate mdi theme--dark mdi-lock-outline" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
+                <i id="unlock" class="v-icon notranslate mdi theme--dark mdi-lock-open-variant-outline" onclick="editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
               </div>
               <div class="bar-zoom">
-                <i class="fas fa-search-minus" onclick="editor.zoom_out()"></i>
-                <i class="fas fa-search" onclick="editor.zoom_reset()"></i>
-                <i class="fas fa-search-plus" onclick="editor.zoom_in()"></i>
+                <i class="v-icon notranslate mdi theme--dark mdi-magnify-minus-outline" onclick="editor.zoom_out()"></i>
+                <i class="v-icon notranslate mdi theme--dark mdi-magnify" onclick="editor.zoom_reset()"></i>
+                <i class="v-icon notranslate mdi theme--dark mdi-magnify-plus-outline" onclick="editor.zoom_in()"></i>
               </div>
             </div>
           </div>
@@ -77,10 +37,10 @@ export default {
   data() {
     return {
       preItems: [
-        { name: "test1", icon: "", descript: "test 1"},
-        { name: "test2", icon: "", descript: "test 2"},
-        { name: "test3", icon: "", descript: "test 3"},
-        { name: "test4", icon: "", descript: "test 4"},
+        { name: "Facebook", icon: "mdi-facebook", descript: "test 1"},
+        { name: "Google", icon: "mdi-google", descript: "test 2"},
+        { name: "Microsoft", icon: "mdi-microsoft", descript: "test 3"},
+        { name: "Apple", icon: "mdi-apple", descript: "test 4"},
       ],
 
       $drawflow: null,
@@ -106,30 +66,79 @@ export default {
         "drawflow": {
           "Home": {
             "data": {
-              "1": {
-                "id":1,
-                "name":"slack",
+              "0": {
+                "id":0,
+                "name":"start",
                 "data":{},
-                "class":"slack",
-                "html":"\n          <div>\n            <div class=\"title-box\"><i class=\"fab fa-slack\"></i> Slack chat message</div>\n          </div>\n          ", 
+                "class":"start",
+                "html":
+`<div>
+  <div class="title-box">
+    <i class="fab fa-slack"></i>START
+  </div>
+</div>`, 
                 "typenode": false, 
                 "inputs":{},
                 "outputs":{
                   "output_1":{
                     "connections":[
-                      {"node":"2","input":"input_1"}
+                      {"node":"1","input":"input_1"}
                     ]
                   }
                 },
                 "pos_x": 10,
                 "pos_y":10
               },
-              "2":{
-                "id":2,
-                "name":"telegram",
-                "data":{"channel":"channel_2"},
-                "class":"telegram",
-                "html":"\n          <div>\n            <div class=\"title-box\"><i class=\"fab fa-telegram-plane\"></i> Telegram bot</div>\n            <div class=\"box\">\n              <p>Send to telegram</p>\n              <p>select channel</p>\n              <select df-channel>\n                <option value=\"channel_1\">Channel 1</option>\n                <option value=\"channel_2\">Channel 2</option>\n                <option value=\"channel_3\">Channel 3</option>\n                <option value=\"channel_4\">Channel 4</option>\n              </select>\n            </div>\n          </div>\n          ", 
+              "1":{
+                "id":1,
+                "name":"end",
+                "data":{},
+                "class":"end",
+                "html":
+`<div>
+  <div class="title-box">
+    <i class="fab fa-telegram-plane"></i> Telegram bot
+  </div>
+  <div class="box">
+    <p>Send to telegram</p>
+    <p>select channel</p>
+    <select df-channel>
+      <option value="channel_1">Channel 1</option>
+      <option value="channel_2">Channel 2</option>
+      <option value="channel_3">Channel 3</option>
+      <option value="channel_4">Channel 4</option>
+    </select>
+  </div>
+</div>`, 
+                "typenode": false, 
+                "inputs":{
+                  "input_1":{
+                    "connections":[
+                      {"node":"0","input":"output_1"}
+                    ]
+                  }
+                },
+                "outputs":{
+                  "output_1":{
+                    "connections":[
+                      {"node":"9999","output":"input_1"}
+                    ]
+                  }
+                },
+                "pos_x":300,
+                "pos_y":10
+              },
+              "9999": {
+                "id":9999,
+                "name":"end",
+                "data":{},
+                "class":"end",
+                "html":
+`<div>
+  <div class="title-box">
+    <i class="fab fa-slack"></i>END
+  </div>
+</div>`, 
                 "typenode": false, 
                 "inputs":{
                   "input_1":{
@@ -139,9 +148,9 @@ export default {
                   }
                 },
                 "outputs":{},
-                "pos_x":300,
-                "pos_y":300
-              }
+                "pos_x": 600,
+                "pos_y": 10
+              },
             }
           }
         }
@@ -189,6 +198,7 @@ export default {
   width: 30%;
   max-width: 300px;
   height: 100%;
+  min-height: 600px;
   background: var(--background-color);
   border-right: 1px solid var(--border-color);
   z-index: 3;

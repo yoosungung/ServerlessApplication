@@ -16,8 +16,7 @@
           "value": "GROUP",
           "type": "select",
           "code": [
-            "솔루션랩",
-            "프로젝트서비스",
+            "서비스",
             "고객사"
           ],
           "summary": "require"
@@ -54,7 +53,7 @@
     },
     {
       "value": "TWorkflow",
-      "text": "워크플로우",
+      "text": "작업흐름",
       "icon": "mdi-sitemap",
       "type": "master",
       "visiblity": {
@@ -122,7 +121,7 @@
     },
     {
       "value": "TTaskTemplate",
-      "text": "템플릿",
+      "text": "작업템플릿",
       "icon": "mdi-file-tree",
       "type": "master",
       "visiblity": {
