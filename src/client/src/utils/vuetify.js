@@ -12,10 +12,10 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: '#A81866'
+        primary: '#6C0E41'
       },
       dark: {
-        primary: '#A81866'
+        primary: '6C0E41'
       }
     }
   }
