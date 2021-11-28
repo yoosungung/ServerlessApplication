@@ -19,7 +19,7 @@
                     v-bind="attrs"
                     v-on="on"
                     icon
-                    @click="OnAction(act)">
+                    @click="onAction(act)">
                     <v-icon>{{act.icon}}</v-icon>
                   </v-btn>
                 </template>
@@ -29,7 +29,7 @@
           </v-card-title>
           <v-card-text>
             <jinfo
-              :objectype="$props.objectype"
+              :objectype="$props.objectname"
               :objectconfig="objectfields"
               :jsondata="objectdata"
             />
@@ -49,7 +49,17 @@
           </v-tabs>
           <v-tabs-items v-model="tabIdx" :key="childTabKey">
             <v-tab-item v-for="cld in childObjectList" :key="cld">
-              <jdiagram v-if="getCustomViewer(cld) == 'AslDiagram'"></jdiagram>
+              <jdiagram
+                v-if="getCustomViewer(cld) == 'AslDiagram'"
+                v-on:message-bar="(title, message) => { $emit('message-bar', title, message); }"
+              />
+              <gantt
+                v-else-if="getCustomViewer(cld) == 'Gantt'"
+                :parentid="$props.objectid"
+                :objectname="$props.objectname"
+                v-on:open-task="onGanttOpen"
+                v-on:message-bar="(title, message) => { $emit('message-bar', title, message); }"
+              />
               <div v-else>
                 <v-card v-for="childData in childDataDic[cld]" :key="childData.INFO_ID">
                   <v-btn icon @click="openEdit(cld, childData)">
@@ -101,17 +111,21 @@
 import jedit from "./jEdit.vue";
 import jinfo from "./jInfo.vue";
 import jdiagram from "./AslDiagram.vue";
+import gantt from "./Gantt.vue";
 
 export default {
   props: {
     objectname: String,
     objectid: String,
   },
+  
   components: {
     jedit,
     jinfo,
-    jdiagram
+    jdiagram,
+    gantt
   },
+  
   data() {
     return {
       objecttype: "",
@@ -138,12 +152,15 @@ export default {
       actionList: []
     }
   },
+  
   watch: {
     $route: "getPageConfig",
   },
+
   async beforeMount() {
     await this.getPageConfig();
   },
+  
   methods: {
     getTitle(objdat) {
       if (objdat) {
@@ -159,12 +176,12 @@ export default {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);
       this.objectfields = this.$uiconfig.getLayout(this.$props.objectname);
       this.actionList = this.$uiconfig.getAction(this.$props.objectname);
-      for (const fld of this.objectfields) {
-        if (fld.type == "reference" && fld.code && fld.code.length == 1) {
-          await this.qryRefItems(this.$props.objectname, fld);
-        }
-      }
-      this.qryParentData();
+      //for (const fld of this.objectfields) {
+      //  if (fld.type == "reference" && fld.code && fld.code.length == 1) {
+      //    await this.qryRefItems(this.$props.objectname, fld);
+      //  }
+      //}
+      await this.qryParentData();
 
       this.childObjectList = this.$uiconfig.getChildren(this.$props.objectname);
       for (const cld of this.childObjectList) {
@@ -178,34 +195,29 @@ export default {
       }
       this.qryChildData();
     },
-    async qryRefItems(objname, itm) {
-      if (!itm["codeitems"]) {
-        itm["codeitems"] = this.$uiconfig.getCodeItems(objname, itm.value, this.$axios);
-      }
-      itm["refitems"] = await itm["codeitems"].qryValue(this.$props.objectid, v => {
-        const vallist = v.split(":");
-        if(vallist[0] == "$DATE") {
-          return Date.now().setDate(parseInt(vallist[1]) || -1).format(vallist[2] || "yyyy/MM/dd");
-        } else if(vallist[0] == "$VALUE") {
-          return this.objectdata[vallist[1]];
-        } else if(vallist[0] == "$PARENT") {
-          return this.$props.objectid;
-        } else {
-          console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
-          return v;
+    async qryRefItems(objnm, itm) {
+      //console.log("detail.qryRefItems:", objnm, itm);
+      const cis = this.$uiconfig.getCodeItems(objnm, itm.value);
+      //console.log("getCodeItems:", cis, cis.isDynamicFilter, cis.hasValueFilter, cis.hasParentFilter);
+      if(cis.isDynamicFilter) {
+        if(cis.hasParentFilter) {
+          //console.log("befor cis.qryValue:", this.objectdata);
+          itm.refitems = await cis.qryValue(this.objectdata);
+          //console.log("after itm.refitems:", itm.refitems);
+        } 
+      } else {
+        if(! itm.refitems) {
+          itm.refitems = await cis.qryValue();
         }
-      });
+      }
     },
-    qryParentData() {
-      this.$axios
-        .get(`/api/info/${this.$props.objectname}/${this.$props.objectid}`)
-        .then((r) => {
-          this.objectdata = r.data;
-        })
-        .catch((e) => {
-          console.error(e);
-          this.objectdata = {};
-        });
+    async qryParentData() {
+      let res = await this.$axios.get(`/api/info/${this.$props.objectname}/${this.$props.objectid}`);
+      if(res.status == 200) {
+        this.objectdata = res.data;
+      } else {
+        this.objectdata = {};
+      }
     },
     qryChildData() {
       this.$axios
@@ -252,16 +264,21 @@ export default {
     openNewChild() {
       this.editGroup = this.$props.objectid;
       this.editType = this.childObjectList[this.tabIdx];
+      if(this.$props.objectname == "TProcess") {
+        this.editType = "TClassTask";
+      } else {
+        this.editType = "TTask";
+      }
       this.editConfig = this.childFieldDic[this.editType];
       this.editRef = this.childRefDic[this.editType];
       this.editData = {};
       this.viewEdit = true;
     },
-    onCloseEdit(refresh) {
+    async onCloseEdit(refresh) {
       this.viewEdit = false;
       if (refresh) {
         if(this.editGroup === this.editType) {
-          this.qryParentData();
+          await this.qryParentData();
         } else {
           this.qryChildData();
         }
@@ -305,8 +322,17 @@ export default {
           this.initEditValue();
         });
     },
-    OnAction(act) {
+    onAction(act) {
       console.info(act);
+    },
+    onGanttOpen(task, cld) {
+      const cldata = this.childDataDic[cld].find(v => v.INFO_ID === task?.id);
+      if(cld && cldata) {
+        cldata['start'] = task['start'].toISOString().substring(0,10);
+        this.openEdit(cld, cldata);
+      } else {
+        console.error('onGanttOpen', task, cld, cldata);
+      }
     }
   }
 }

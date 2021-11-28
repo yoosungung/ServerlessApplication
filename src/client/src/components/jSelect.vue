@@ -61,10 +61,10 @@ export default {
       for (let itm of this.headers) {
         if (
           itm.type == "reference" && 
-          (itm.refitems === undefined || itm.refitems.length == 0) &&
+          itm.refitems === undefined &&
           itm.code && itm.code.length == 1
         ) {
-          await this.getRefItems(itm);
+          itm.refitems = this.$$uiconfig.getCodeItems(this.$props.objectname, itm.value);
         }
       }
       this.editconfig = this.$uiconfig.getLayout(this.$props.objectname);
@@ -83,7 +83,7 @@ export default {
                 for(const f of this.editconfig) {
                   if(f.type === "reference" && f.refitems) {
                     const cval = row[f.value];
-                    const nval = f.refitems.find(c => c.value === cval);
+                    const nval = f.refitems().find(c => c.value === cval);
                     if(nval) {
                       row[f.value] = nval['text'] || cval;  
                     }
@@ -104,23 +104,18 @@ export default {
         });
       this.dataloading = false;
     },
-    async getRefItems(itm) {
-      if (!itm.codeitems) {
-        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
+    evalRefItems(v) {
+      const vallist = v.split(":");
+      if(vallist[0] === "$DATE") {
+        return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
+      } else if(vallist[0] === "$VALUE") {
+        return 'this.[vallist[1]]';
+      } else if(vallist[0] === "$PARENT") {
+        return this.$props.objectid;
+      } else {
+        console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
+        return v;
       }
-      itm.refitems = await itm.codeitems.qryValue(this.$props.objectid, v => {
-        const vallist = v.split(":");
-        if(vallist[0] === "$DATE") {
-          return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
-        } else if(vallist[0] === "$VALUE") {
-          return 'this.[vallist[1]]';
-        } else if(vallist[0] === "$PARENT") {
-          return this.$props.objectid;
-        } else {
-          console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
-          return v;
-        }
-      });
     },
     hasReference(fields) {
       for(const f of fields) {

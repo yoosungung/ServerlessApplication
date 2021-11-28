@@ -16,9 +16,7 @@
           </div>
           <div class="col-right">
             <div id="drawflow" v-on:drop="drop" v-on:dragover="allowDrop">
-              <div class="btn-export" onclick="Swal.fire({ title: 'Export',
-              html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
-              })">Export</div>
+              <div class="btn-export" onclick="">Export</div>
               <div class="btn-clear" v-on:click="$editor.clearModuleSelected(); $editor.import(cleanAslJson());">Clear</div>
               <div class="btn-lock">
                 <i ref="lock" class="v-icon notranslate mdi theme--dark mdi-lock-open-variant-outline" v-on:click="$editor.editor_mode='fixed'; changeMode('lock');"></i>

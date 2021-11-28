@@ -87,7 +87,7 @@ export default {
       this.headers = this.$uiconfig.getListHeaders(this.$props.objectname);
       for (let itm of this.headers) {
         if (itm.type == "reference" && itm.code && itm.code.length == 1) {
-          this.getRefItems(itm);
+          this.qryRefItems(itm);
         }
       }
       this.editconfig = this.$uiconfig.getLayout(this.$props.objectname);
@@ -133,22 +133,13 @@ export default {
         });
       this.dataloading = false;
     },
-    async getRefItems(itm) {
-      if (!itm.codeitems) {
-        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value, this.$axios);
+    async qryRefItems(itm) {
+      const codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value);
+      if(codeitems.isDynamicFilter) {
+        console.error('List.qryRefItems: Not alloe dynamic filter !',itm);
+      } else {
+        itm.refitems = await codeitems.qryValue();
       }
-      itm.refitems = await itm.codeitems.qryValue(this.$props.objectname, v => {
-        const vallist = v.split(":");
-        if(vallist[0] === "$DATE") {
-          return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
-        } else if(vallist[0] === "$PARENT") {
-          return this.$props.objectname;
-        } else {
-          console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
-          return v;
-        }
-
-      });
     },
     hasReference(fields) {
       for(const f of fields) {

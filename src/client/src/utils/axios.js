@@ -26,6 +26,7 @@ _axios.use = (app, apiUrl) => {
 
   _axios.interceptors.request.use(
     function(config) {
+      //console.log("_axios.interceptors.request.use:", config);
       return config;
     },
     function(error) {
@@ -37,7 +38,8 @@ _axios.use = (app, apiUrl) => {
   // Add a response interceptor
   _axios.interceptors.response.use(
     function(response) {
-      const autho = response.headers.authorization || response.data.Authorization;
+      //console.log("_axios.interceptors.response.use:", response);
+      const autho = response.headers['authorization'] || response.data['Authorization'] || response.headers['Authorization'] || response.data['authorization'];
       if(autho) {
         _axios.defaults.headers['Authorization'] = autho;
       }

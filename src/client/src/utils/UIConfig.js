@@ -25,6 +25,12 @@ class UIConfig {
     return this._apiurl;
   }
 
+  setAxios(axios) {
+    if(axios) {
+      _axios = axios;
+    }
+  }
+
   _names = new Map();
   getName(objname) {
     if (!this._names.has(objname)) {
@@ -129,7 +135,7 @@ class UIConfig {
   }
 
   _codeitems = new Map();
-  getCodeItems(objname, value, axios) {
+  getCodeItems(objname, value) {
     const key = `${objname}.${value}`;
     if(!this._codeitems.has(key)) {
       const obj = this._configs.get(objname);
@@ -139,7 +145,7 @@ class UIConfig {
         });
         if(defcode) {
           const cv = new CodeItem();
-          cv.loadCode(axios, defcode, obj["type"] === "child");
+          cv.loadCode(defcode);
           this._codeitems.set(key, cv);
         } else {
           this._codeitems.set(key, undefined);
@@ -163,7 +169,7 @@ class UIConfig {
     }
     return this._actions.get(objname)
   }
-  
+
   _viewers = new Map();
   getCustomViewer(objname) {
     if (!this._viewers.has(objname)) {
@@ -179,18 +185,13 @@ class UIConfig {
 }
 
 class CodeItem {
-  _axios = undefined;
   _defcode = undefined;
   _isdynamic = false;
-  _ischild = false;
-
+  _isparent = false;
+  _isvalue = false;
   _namecode = undefined;
-  _codes = new Map();
 
-  loadCode(axios, defCode, ischild) {
-    this._axios = axios;
-    this._ischild = ischild;
-    
+  loadCode(defCode) {
     if(defCode.type == "reference") {
       this._defcode = this._defClone(defCode, (v, k = "", t = this) => {
         if(k == "text") {
@@ -202,6 +203,8 @@ class CodeItem {
           t._namecode = fld?.refitems;
         } else {
           t._isdynamic = true;
+          if(v.startsWith("$VALUE:")) { this._isvalue = true; }
+          if(v.startsWith("$PARENT:")) { this._isparent = true; }
         }        
         return v;
       });
@@ -226,71 +229,79 @@ class CodeItem {
     }
     return result;
   }
-
   
-  async qryValue(infoId, fnResolve) {
-    let key = "_STATIC";
-    if(this._isdynamic) {
-      key = infoId;
-    }
-
-    if(!this._codes.has(key)) {
-      const istextdynamic = this._defcode.code[0].text.startsWith("$");
-      const pams = {
-        "value": this._defcode.code[0].value,
-        "text": (istextdynamic?"NoName":this._defcode.code[0].text)
-      };
-      let flt_stat = true;
-      if(this._defcode.code[0].filter) {
-        if(this._isdynamic) {
-          pams["filter"] = await this._defClone(this._defcode.code[0].filter, v => {
-            const r = fnResolve(v);
-            if(!r) {
-              flt_stat = false;
-            }
-            return r;
-          });
-        } else {
-          pams["filter"] = this._defcode.code[0].filter;
-        }
-      }
-      if(!flt_stat) {
-        return [];
-      }
-      try {
-        let res = await this._axios({
-          url: `/api/code/${this._defcode.code[0].object}`,
-          method: 'get',
-          params: pams
-        });
-        if(res.status == 200) {
-          const cval = res.data.map((row, idx, alls, t = this) => {
-            if(istextdynamic) {
-              return t._namecode.find(v => {return v["value"] == row[pams.value]});
-            } else {
-              return { "value": row[pams.value], "text": row[pams.text] };
-            }
-          });
-          this._codes.set(key, cval);
-        } else {
-          return [];
-        }
-      } catch(e) {
-        console.info(`code = ${infoId} - ${this._defcode.code[0].object}`);
-        console.error(e);
-
-        return [];
-      }
-    }
-
-    return this._codes.get(key);
+  get isDynamicFilter() {
+    return this._isdynamic;
+  }
+  get hasParentFilter() {
+    return this._isparent;
+  }
+  get hasValueFilter() {
+    return this._isvalue;
   }
 
-  get length() {
-    return this._codes.length;
+  async qryValue(parentData, currentData) {
+    const pams = {
+      "value": this._defcode.code[0].value,
+      "text": (this._namecode?"NoName":this._defcode.code[0].text)
+    };
+    let flt_stat = true;
+    if(this._defcode.code[0].filter) {
+      if(this._isdynamic) {
+        pams["filter"] = await this._defClone(this._defcode.code[0].filter, v => {
+          const vallist = v.split(":");
+          if(vallist[0] === "$DATE") {
+            return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
+          } else if((vallist[0] === "$VALUE") && currentData) {
+            return currentData[vallist[1]];
+          } else if((vallist[0] === "$PARENT") && parentData) {
+            return parentData[vallist[1]];
+          } else {
+            console.error('UIConfig.qryValue:', v, parentData, currentData);
+            flt_stat = false;
+            return v;
+          }
+        });
+      } else {
+        pams["filter"] = this._defcode.code[0].filter;
+      }
+    }
+    if(!flt_stat) {
+      return [];
+    }
+    try {
+      let res = await _axios({
+        url: `/api/code/${this._defcode.code[0].object}`,
+        method: 'get',
+        params: pams
+      });
+      if(res.status == 200) {
+        const cval = res.data.map((row, idx, alls, t = this) => {
+          if(t._namecode) {
+            return t._namecode.find(v => {return v["value"] == row[pams.value]});
+          } else {
+            return JSON.parse(`{ "value": "${row[pams.value]}", "text": "${row[pams.text]}" }`);
+          }
+        });
+        cval.sort((a, b) => {
+          if(a.text > b.text) { return 1; }
+          else if(a.text < b.text) { return -1; }
+          else { return 0; }
+        });
+        return cval;
+      } else {
+        return [];
+      }
+    } catch(e) {
+      console.info("CodeITems.qryValue:", parentData, currentData);
+      console.error(e);
+
+      return [];
+    }
   }
 }
 
+let _axios = null;
 const _uiconfig = new UIConfig();
 
 export default {

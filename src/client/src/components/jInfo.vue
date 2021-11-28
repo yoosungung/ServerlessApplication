@@ -37,7 +37,7 @@
         <v-select
           v-else-if="itm.type == 'reference'"
           v-model="jsondata[itm.value]"
-          :items="itm.refitems"
+          :items="qryRefItems(itm)"
           item-value="value"
           item-text="text"
           :label="itm.text"
@@ -64,27 +64,41 @@ import s3File from "../utils/s3file.js";
 
 export default {
   props: {
-    objectname: String,
+    objectype: String,
     objectconfig: Array,
-    objectid: String,
     jsondata: Object
-  },
-  beforeMount() {
-  },
-  computed: {
-    getTitle() {
-      return this.$props.jsondata['title'] || this.$props.jsondata['name'] || this.$props.jsondata['caption'];
-    }
   },
   data() {
     return {
-      filedata: {},
+      filedata: {}
     }
   },
   methods: {
+    qryRefItems(item) {
+      //console.log("jinfo.qryRefItems:", item);
+      const cis = this.$uiconfig.getCodeItems(this.$props.objectype, item.value);
+      if(cis) {
+        if(cis.isDynamicFilter) {
+          if(cis.hasValueFilter) {
+            cis.qryValue(null, this.$props.jsondata)
+            .then(r => {return r;})
+            .catch(e => {
+              console.error(e);
+              return [];
+            });
+          } else {
+            return item.refitems;
+          }
+        } else {
+          return item.refitems;
+        }
+      } else {
+        return item.refitems;
+      }
+    },
     fileDownload(item) {
       const f = this.$props.jsondata[item?.value];
-      const s3path = f["s3key"] || s3File.getPath(this.$props.objectid, item?.value, this.filedata);
+      const s3path = f["s3key"] || s3File.getPath(this.$props.jsondata?.INFO_ID, item?.value, this.filedata);
       this.$axios
         .get(`/api/file/${s3path}`)
         .then((r) => {
@@ -106,5 +120,4 @@ export default {
 </script>
 
 <style>
-
 </style>

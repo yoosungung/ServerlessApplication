@@ -137,10 +137,7 @@
                   itm.type == 'email' ||
                   itm.type == 'password' ||
                   itm.type == 'tel' ||
-                  itm.type == 'url' ||
-                  (itm.type == 'reference' &&
-                    (!itm.code || itm.code.length != 1))
-                "
+                  itm.type == 'url'"
                 v-model="editdata[itm.value]"
                 :label="itm.text"
                 :type="itm.type"
@@ -205,10 +202,10 @@ export default {
     }    
     await this.setEditLayout();
 
-    if (this.$props.jsondata && this.$props.jsondata.INFO_ID) {
+    if (this.$props.jsondata?.INFO_ID) {
       this.isedit = true;
       this.id = this.$props.jsondata.INFO_ID;
-      this.qryEditData();
+      this.qryEditData(this.$props.jsondata);
     } else {
       this.isedit = false;
       this.editdata = this.$props.jsondata || {};
@@ -241,27 +238,17 @@ export default {
         } else if (itm.type == "date" || itm.type == "time") {
           itm[itm.value + "_picker"] = false;
         } else if (itm.type == "reference" && itm.code && itm.code.length == 1) {
-          await this.getRefItems(itm);
+          await this.qryRefItems(itm);
         }
       }
     },
-    async getRefItems(itm) {
-      if (!itm.codeitems) {
-        itm.codeitems = this.$uiconfig.getCodeItems(this.$props.objectype, itm.value, this.$axios);
-      }
-      itm.refitems = await itm.codeitems.qryValue(this.id, v => {
-        const vallist = v.split(":");
-        if(vallist[0] === "$DATE") {
-          return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
-        } else if(vallist[0] === "$VALUE") {
-          return this.editdata[vallist[1]];
-        } else if(vallist[0] === "$PARENT") {
-          return this.$props.parentid;
-        } else {
-          console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
-          return v;
+    async qryRefItems(itm) {
+      const cis = this.$uiconfig.getCodeItems(this.$props.objectype, itm.value);
+      if(cis.isDynamicFilter) {
+        if(cis.hasValueFilter) {
+          itm.refitems = await cis.qryValue(null, this.editdata);
         }
-      });
+      }
     },
     inputTime(name) {
       this.$refs[name + "_picker"][0].save(this.editdata[name]);
@@ -276,7 +263,7 @@ export default {
     fileDownload(item) {
       s3File.getFile(this.filedata[item?.value]);
     },
-    qryEditData() {
+    qryEditData(preEditData = {}) {
       this.$axios
         .get(`/api/info/${this.$props.objectgroup}/${this.id}`)
         .then((r) => {
@@ -285,11 +272,17 @@ export default {
             for (let itm of this.editlayout) {
               if(itm.type == 'file') {
                 this.getFileData(itm.value);
+              } else if (itm.type == "reference" && itm.code && itm.code.length == 1) {
+                this.qryRefItems(itm);
               }
             }
           } else {
             this.editdata = {};
           }
+          this.editdata = {
+            ...(this.editdata),
+            ...preEditData
+          };
         })
         .catch((e) => {
           console.error(e);
@@ -378,7 +371,7 @@ export default {
         this.editdata = data;
       }
       this.viewselect = false;
-    }
+    },
   },
 };
 </script>

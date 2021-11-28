@@ -78,13 +78,11 @@ export default {
     timeout: 2000,
     signUser: undefined
   }),
-  created() {
-    //this.$axios.use(this);
-  },
   async beforeMount() {
     if(await this.$uiconfig.loadConfigs()) {
       this.items = this.$uiconfig.getMenus(false);
       this.$axios.use(this, this.$uiconfig.getApiUrl());
+      this.$uiconfig.setAxios(this.$axios);
     }    
   },
   methods: {
