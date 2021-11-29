@@ -176,11 +176,6 @@ export default {
       this.objecttype = this.$uiconfig.getName(this.$props.objectname);
       this.objectfields = this.$uiconfig.getLayout(this.$props.objectname);
       this.actionList = this.$uiconfig.getAction(this.$props.objectname);
-      //for (const fld of this.objectfields) {
-      //  if (fld.type == "reference" && fld.code && fld.code.length == 1) {
-      //    await this.qryRefItems(this.$props.objectname, fld);
-      //  }
-      //}
       await this.qryParentData();
 
       this.childObjectList = this.$uiconfig.getChildren(this.$props.objectname);
@@ -196,14 +191,10 @@ export default {
       this.qryChildData();
     },
     async qryRefItems(objnm, itm) {
-      //console.log("detail.qryRefItems:", objnm, itm);
       const cis = this.$uiconfig.getCodeItems(objnm, itm.value);
-      //console.log("getCodeItems:", cis, cis.isDynamicFilter, cis.hasValueFilter, cis.hasParentFilter);
       if(cis.isDynamicFilter) {
         if(cis.hasParentFilter) {
-          //console.log("befor cis.qryValue:", this.objectdata);
           itm.refitems = await cis.qryValue(this.objectdata);
-          //console.log("after itm.refitems:", itm.refitems);
         } 
       } else {
         if(! itm.refitems) {
@@ -264,24 +255,24 @@ export default {
     openNewChild() {
       this.editGroup = this.$props.objectid;
       this.editType = this.childObjectList[this.tabIdx];
-      if(this.$props.objectname == "TProcess") {
-        this.editType = "TClassTask";
-      } else {
-        this.editType = "TTask";
+      if(this.getCustomViewer(this.editType) == 'Gantt') {
+        if(this.$props.objectname == "TProcess") {
+          this.editType = "TClassTask";
+        } else {
+          this.editType = "TTask";
+        }
       }
       this.editConfig = this.childFieldDic[this.editType];
       this.editRef = this.childRefDic[this.editType];
       this.editData = {};
       this.viewEdit = true;
     },
-    async onCloseEdit(refresh) {
+    async onCloseEdit() {
       this.viewEdit = false;
-      if (refresh) {
-        if(this.editGroup === this.editType) {
-          await this.qryParentData();
-        } else {
-          this.qryChildData();
-        }
+      if(this.editGroup === this.editType) {
+        await this.qryParentData();
+      } else {
+        this.qryChildData();
       }
       this.initEditValue();
     },
