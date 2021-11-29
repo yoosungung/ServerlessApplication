@@ -104,18 +104,8 @@ export default {
         });
       this.dataloading = false;
     },
-    evalRefItems(v) {
-      const vallist = v.split(":");
-      if(vallist[0] === "$DATE") {
-        return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
-      } else if(vallist[0] === "$VALUE") {
-        return 'this.[vallist[1]]';
-      } else if(vallist[0] === "$PARENT") {
-        return this.$props.objectid;
-      } else {
-        console.error('UIConfig.getFilterJson.valueEvaluation:' + v);
-        return v;
-      }
+    qryRefItems(item) {
+      return [];
     },
     hasReference(fields) {
       for(const f of fields) {

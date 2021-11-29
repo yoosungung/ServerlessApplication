@@ -5,7 +5,7 @@
       "value": "employee",
       "text": "직원",
       "icon": "mdi-account-tie",
-      "type": "master",
+      "type": "system",
       "visiblity": {
         "read": "all",
         "write": "owner"
@@ -13,7 +13,7 @@
       "fields": [
         {
           "text": "직원구분",
-          "value": "GROUP",
+          "value": "Group",
           "type": "select",
           "code": [
             "서비스",
@@ -28,7 +28,7 @@
           "summary": "require"
         },
         {
-          "value": "rank",
+          "value": "Rank",
           "text": "직위",
           "type": "select",
           "code": [
@@ -45,7 +45,7 @@
           "summary": "require"
         },
         {
-          "value": "isadmin",
+          "value": "IsAdmin",
           "text": "관리자",
           "type": "bool"
         }
@@ -92,12 +92,12 @@
         }
       ],
       "children": [
-        "TTask"
+        "TStep"
       ]
     },
     {
-      "value": "TTask",
-      "text": "테스크",
+      "value": "TStep",
+      "text": "차트",
       "icon": "mdi-clipboard-check",
       "type": "child",
       "visiblity": {
@@ -131,13 +131,41 @@
       "fields": [
         {
           "text": "이름",
-          "value": "Name",
+          "value": "name",
           "type": "text",
           "summary": "require"
         },
         {
+          "text": "아이콘",
+          "value": "icon",
+          "type": "icon-select",
+          "summary": ""
+        },
+        {
+          "text": "입력개수",
+          "value": "inputcnt",
+          "type": "number",
+          "summary": ""
+        },
+        {
+          "text": "출력개수",
+          "value": "outputcnt",
+          "type": "number",
+          "summary": ""
+        },
+        {
+          "text": "데이터포멧",
+          "value": "dataformat",
+          "type": "textarea"
+        },
+        {
+          "text": "HTML",
+          "value": "html",
+          "type": "textarea"
+        },
+        {
           "text": "설명",
-          "value": "Description",
+          "value": "description",
           "type": "textarea"
         }
       ]

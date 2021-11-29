@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 
-import '../assets/gantt.css';
+//import '../assets/gantt.css';
 
 Vue.use(Vuetify);
 

@@ -53,7 +53,7 @@
                 v-if="getCustomViewer(cld) == 'AslDiagram'"
                 v-on:message-bar="(title, message) => { $emit('message-bar', title, message); }"
               />
-              <gantt
+              <jgantt
                 v-else-if="getCustomViewer(cld) == 'Gantt'"
                 :parentid="$props.objectid"
                 :objectname="$props.objectname"
@@ -111,7 +111,7 @@
 import jedit from "./jEdit.vue";
 import jinfo from "./jInfo.vue";
 import jdiagram from "./AslDiagram.vue";
-import gantt from "./Gantt.vue";
+import jgantt from "./Gantt.vue";
 
 export default {
   props: {
@@ -123,7 +123,7 @@ export default {
     jedit,
     jinfo,
     jdiagram,
-    gantt
+    jgantt
   },
   
   data() {
@@ -164,7 +164,7 @@ export default {
   methods: {
     getTitle(objdat) {
       if (objdat) {
-        return objdat['title'] || objdat['name'] || objdat['caption'] || 'Noname';
+        return objdat['Title'] || objdat['Name'] || objdat['Caption'] || 'Noname';
       } else {
         return 'Noname';
       }

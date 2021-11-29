@@ -298,4 +298,17 @@ const NS = 'http://www.w3.org/2000/svg';
 </script>
 
 <style>
+.gantt-bar:hover circle {
+  display: block!important;
+}
+.gantt-ctrl-start:hover, .gantt-ctrl-finish:hover {
+  fill: #ffbf5e!important;
+  stroke: #ffa011!important;
+}
+.gantt-label {
+  cursor: pointer;
+}
+.gantt-label:hover {
+  fill: #1582dc!important;
+}
 </style>

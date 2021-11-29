@@ -6,6 +6,17 @@
         :key="itm.value"
         cols="12" sm="6" lg="3"
       >
+        <v-select
+          v-if="itm.type == 'icon-select'"
+          v-model="jsondata[itm.value]"
+          :items="[jsondata[itm.value]]"
+          menu-props="auto"
+          :label="itm.text"
+          :prepend-icon="jsondata[itm.value]"
+          readonly
+          dense
+          hide-details="true"
+        ></v-select>
         <v-textarea
           v-if="itm.type == 'textarea'"
           :value="jsondata[itm.value]"
