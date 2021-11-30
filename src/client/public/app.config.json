@@ -137,8 +137,8 @@
         },
         {
           "text": "아이콘",
-          "value": "icon",
-          "type": "icon-select",
+          "value": "mdicon",
+          "type": "icon",
           "summary": ""
         },
         {

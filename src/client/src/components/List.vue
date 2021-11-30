@@ -58,8 +58,12 @@
 import jedit from "./jEdit.vue";
 
 export default {
-  props: { objectname: String },
-  components: { jedit },
+  props: { 
+    objectname: String
+  },
+  components: {
+    jedit
+  },
   data() {
     return {
       visible: [],

@@ -6,19 +6,14 @@
         :key="itm.value"
         cols="12" sm="6" lg="3"
       >
-        <v-select
-          v-if="itm.type == 'icon-select'"
+        <jicon
+          v-if="itm.type == 'icon'"
           v-model="jsondata[itm.value]"
-          :items="[jsondata[itm.value]]"
-          menu-props="auto"
           :label="itm.text"
-          :prepend-icon="jsondata[itm.value]"
           readonly
-          dense
-          hide-details="true"
-        ></v-select>
+        ></jicon>
         <v-textarea
-          v-if="itm.type == 'textarea'"
+          v-else-if="itm.type == 'textarea'"
           :value="jsondata[itm.value]"
           :label="itm.text"
           rows="1"
@@ -71,9 +66,13 @@
 </template>
 
 <script>
+import jicon from "./jIconSelect.vue";
 import s3File from "../utils/s3file.js";
 
 export default {
+  components: {
+    jicon
+  },
   props: {
     objectype: String,
     objectconfig: Array,

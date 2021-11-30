@@ -12,14 +12,20 @@
               :key="itm.value"
               cols="12" sm="6" lg="3"
             >
+              <jicon
+                v-if="itm.type == 'icon'"
+                v-model="editdata[itm.value]"
+                :label="itm.text"
+                :ref="itm.value"
+              ></jicon>
               <v-checkbox
-                v-if="itm.type == 'bool'"
+                v-else-if="itm.type == 'bool'"
                 v-model="editdata[itm.value]"
                 :label="itm.text"
                 :ref="itm.value"
               ></v-checkbox>
               <v-file-input
-                v-if="itm.type == 'file'"
+                v-else-if="itm.type == 'file'"
                 v-model="filedata[itm.value]"
                 :label="itm.text"
                 prepend-icon="mdi-paperclip"
@@ -29,7 +35,7 @@
                 :ref="itm.value"
               ></v-file-input>
               <v-radio-group
-                v-if="itm.type == 'code'"
+                v-else-if="itm.type == 'code'"
                 v-model="editdata[itm.value]"
                 :ref="itm.value"
               >
@@ -37,14 +43,14 @@
                 </v-radio>
               </v-radio-group>
               <v-select
-                v-if="itm.type == 'select'"
+                v-else-if="itm.type == 'select'"
                 v-model="editdata[itm.value]"
                 :items="itm.code"
                 :label="itm.text"
                 :ref="itm.value"
               ></v-select>
               <v-select
-                v-if="itm.type == 'reference' && itm.code && itm.code.length == 1"
+                v-else-if="itm.type == 'reference' && itm.code && itm.code.length == 1"
                 v-model="editdata[itm.value]"
                 :items="itm.refitems"
                 item-value="value"
@@ -53,7 +59,7 @@
                 :ref="itm.value"
               ></v-select>
               <v-slider
-                v-if="itm.type == 'number' && itm.code && itm.code.length == 2"
+                v-else-if="itm.type == 'number' && itm.code && itm.code.length == 2"
                 v-model="editdata[itm.value]"
                 :min="itm.code[0]"
                 :max="itm.code[1]"
@@ -70,7 +76,7 @@
                 </template>
               </v-slider>
               <v-menu
-                v-if="itm.type == 'date'"
+                v-else-if="itm.type == 'date'"
                 v-model="itm[itm.value + '_picker']"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -95,7 +101,7 @@
                 ></v-date-picker>
               </v-menu>
               <v-menu
-                v-if="itm.type == 'time'"
+                v-else-if="itm.type == 'time'"
                 :ref="itm.value + '_picker'"
                 v-model="itm[itm.value + '_picker']"
                 :close-on-content-click="false"
@@ -106,7 +112,7 @@
                 max-width="290px"
                 min-width="290px"
               >
-                <template v-slot:activator="{ on, attrs }">
+                <template v-slot:activator="{ attrs }">
                   <v-text-field
                     v-model="editdata[itm.value]"
                     :label="itm.text"
@@ -123,21 +129,14 @@
                 ></v-time-picker>
               </v-menu>
               <v-textarea
-                v-if="itm.type == 'textarea'"
+                v-else-if="itm.type == 'textarea'"
                 v-model="editdata[itm.value]"
                 :label="itm.text"
                 rows="1"
                 :ref="itm.value"
               ></v-textarea>
               <v-text-field
-                v-if="
-                  itm.type == 'text' ||
-                  (itm.type == 'number' &&
-                    (!itm.code || itm.code.length != 2)) ||
-                  itm.type == 'email' ||
-                  itm.type == 'password' ||
-                  itm.type == 'tel' ||
-                  itm.type == 'url'"
+                v-else
                 v-model="editdata[itm.value]"
                 :label="itm.text"
                 :type="itm.type"
@@ -165,11 +164,13 @@
 </template>
 
 <script>
-import jselect from "./jSelect.vue";
+import jicon from "./jIconSelect.vue";
 import s3File from "../utils/s3file.js";
 
 export default {
-  components: { jselect },
+  components: {
+    jicon
+  },
   props: {
     objectgroup: String,
     objectype: String,
