@@ -228,18 +228,25 @@ export default class Drawflow {
         }
         break;
       case 'output':
-        this.connection = true;
-        if(this.node_selected != null) {
-          this.node_selected.classList.remove("selected");
-          this.node_selected = null;
-          this.dispatch('nodeUnselected', true);
+        //edit by YSU
+        const output_id = e.target.parentElement.parentElement.id;
+        const id_output = output_id.substr(5);
+        const output_class = e.target.classList[1];
+        var outputNode = this.getNodeFromId(id_output);
+        if(outputNode.outputs[output_class].connections?.length <= 0) {
+          this.connection = true;
+          if(this.node_selected != null) {
+            this.node_selected.classList.remove("selected");
+            this.node_selected = null;
+            this.dispatch('nodeUnselected', true);
+          }
+          if(this.connection_selected != null) {
+            this.connection_selected.classList.remove("selected");
+            this.removeReouteConnectionSelected();
+            this.connection_selected = null;
+          }
+          this.drawConnection(e.target);
         }
-        if(this.connection_selected != null) {
-          this.connection_selected.classList.remove("selected");
-          this.removeReouteConnectionSelected();
-          this.connection_selected = null;
-        }
-        this.drawConnection(e.target);
         break;
       case 'parent-drawflow':
         if(this.node_selected != null) {
@@ -1158,7 +1165,7 @@ export default class Drawflow {
   }
 
   getNodeFromId(id) {
-    var moduleName = this.getModuleFromNodeId(id)
+    var moduleName = this.getModuleFromNodeId(id);
     return JSON.parse(JSON.stringify(this.drawflow.drawflow[moduleName].data[id]));
   }
   getNodesFromName(name) {

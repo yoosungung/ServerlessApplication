@@ -3,16 +3,26 @@
       <div class="asldigram">
         <div class="wrapper">
           <div class="col-left">
-            <div v-for="itm in preItems" :key="itm.name"
-              class="drag-drawflow" 
-              :data-node="itm.name"
-              draggable="true" v-on:dragstart="drag" 
-              v-on:touchend="drop"
-              v-on:touchmove="positionMobile"
-              v-on:touchstart="drag"
-            >
-              <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
-            </div>
+            <v-tabs v-model="tabIdx">
+              <v-tab key="Tasks">Tasks</v-tab>
+              <v-tab key="Flows">Flows</v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="tabIdx">
+              <v-tab-item key="Tasks">
+              </v-tab-item>
+              <v-tab-item key="Flows">
+                <div v-for="itm in flowItems" :key="itm.name"
+                  class="drag-drawflow" 
+                  :data-node="itm.name"
+                  draggable="true" v-on:dragstart="drag" 
+                  v-on:touchend="drop"
+                  v-on:touchmove="positionMobile"
+                  v-on:touchstart="drag"
+                >
+                  <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
+                </div>
+              </v-tab-item>
+            </v-tabs-items>
           </div>
           <div class="col-right">
             <div id="drawflow" v-on:drop="drop" v-on:dragover="allowDrop">
@@ -40,12 +50,9 @@ import Drawflow from "../utils/drawflow";
 export default {
   data() {
     return {
-      preItems: [
-        { name: "Facebook", icon: "mdi-facebook", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-facebook"></i> Facebook</div></div>`},
-        { name: "Google", icon: "mdi-google", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-google"></i> Google</div></div>`},
-        { name: "Microsoft", icon: "mdi-microsoft", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-microsoft"></i> Microsoft</div></div>`},
-        { name: "Apple", icon: "mdi-apple", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-apple"></i> Apple</div></div>`},
-      ],
+      tabIdx: 0,
+      flowItems: [],
+      TaskItems: [],
 
       $drawflow: null,
       $editor: null,
@@ -57,6 +64,8 @@ export default {
   },
 
   mounted() {
+    this.qryStates();
+
     this.$drawflow = document.getElementById("drawflow");
     this.$editor = new Drawflow(this.$drawflow);
     this.$editor.reroute = true;
@@ -69,6 +78,17 @@ export default {
   },
 
   methods: {
+    qryStates() {
+      this.flowItems = [
+        { name: "Pass", icon: "mdi-arrow-right-circle-outline", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-arrow-right-circle-outline"></i> PASS</div></div>`},
+        { name: "Choice", icon: "mdi-call-split", inputcnt: 1, outputcnt: 2, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-call-split"></i> CHOICE</div></div>`},
+        { name: "Wait", icon: "mdi-alarm", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-alarm"></i> WAIT</div></div>`},
+        { name: "Succeed", icon: "mdi-check-underline", inputcnt: 1, outputcnt: -1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-check-underline"></i> SUCCEED</div></div>`},
+        { name: "Fail", icon: "mdi-message-alert", inputcnt: 1, outputcnt: -1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-message-alert"></i> FAIL</div></div>`},
+        { name: "Parallel", icon: "mdi-play-box-multiple", inputcnt: 1, outputcnt: 2, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play-box-multiple"></i> PARALLEL</div></div>`},
+        { name: "Map", icon: "mdi-reload", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-reload"></i> MAP</div></div>`},
+      ];
+    },
     cleanAslJson() {
       this.aslJson = {
         "drawflow": {
@@ -91,8 +111,8 @@ export default {
                 "pos_x": 10,
                 "pos_y":50
               },
-              "99999": {
-                "id":99999,
+              "999999": {
+                "id":999999,
                 "name":"end",
                 "data":{},
                 "class":"end",
@@ -216,7 +236,7 @@ export default {
       pos_x = pos_x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)));
       pos_y = pos_y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)));
 
-      const itm = this.preItems.find(v => { return v.name == name; });
+      const itm = this.flowItems.find(v => { return v.name == name; });
       this.$editor.addNode(name, itm?.inputcnt || 1,  itm?.outputcnt || 1, pos_x, pos_y, name, itm?.dataformat || {}, itm?.html || `<div><div class="title-box">${name}</div></div>`);
       /*
         <div>

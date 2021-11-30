@@ -105,6 +105,7 @@ export default {
       this.dataloading = false;
     },
     qryRefItems(item) {
+      console.log(item);
       return [];
     },
     hasReference(fields) {
