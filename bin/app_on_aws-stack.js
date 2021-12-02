@@ -165,7 +165,7 @@ class AppOnAwsStack extends cdk.Stack {
       corsPreflight: {
         allowHeaders: ['*'],
         allowMethods: ['*'],
-        allowOrigins: [`http://${appUrl}`, 'http://localhost:8080'],
+        allowOrigins: [`https://${appUrl}`, 'http://localhost:8080'],
         exposeHeaders: ['authorization'],
         allowCredentials: false,
         maxAge: cdk.Duration.minutes(10)
