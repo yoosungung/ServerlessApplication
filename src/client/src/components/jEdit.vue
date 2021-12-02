@@ -61,7 +61,7 @@
                 :label="itm.text"
                 :ref="itm.value"
               ></v-select>
-              <v-select
+              <v-autocomplete
                 v-else-if="itm.type == 'reference' && itm.code && itm.code.length == 1"
                 v-model="editdata[itm.value]"
                 :items="itm.refitems"
@@ -69,7 +69,7 @@
                 item-text="text"
                 :label="itm.text"
                 :ref="itm.value"
-              ></v-select>
+              ></v-autocomplete>
               <v-slider
                 v-else-if="itm.type == 'number' && itm.code && itm.code.length == 2"
                 v-model="editdata[itm.value]"
