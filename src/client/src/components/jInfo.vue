@@ -6,12 +6,15 @@
         :key="itm.value"
         cols="12" sm="6" lg="3"
       >
-        <jicon
+        <v-text-field
           v-if="itm.type == 'icon'"
+          :prepend-icon="jsondata[itm.value]"
           v-model="jsondata[itm.value]"
           :label="itm.text"
           readonly
-        ></jicon>
+          dense
+          hide-details="true"
+        ></v-text-field>
         <v-textarea
           v-else-if="itm.type == 'textarea'"
           :value="jsondata[itm.value]"
@@ -66,13 +69,9 @@
 </template>
 
 <script>
-import jicon from "./jIconSelect.vue";
 import s3File from "../utils/s3file.js";
 
 export default {
-  components: {
-    jicon
-  },
   props: {
     objectype: String,
     objectconfig: Array,

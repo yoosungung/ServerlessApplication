@@ -12,12 +12,24 @@
               :key="itm.value"
               cols="12" sm="6" lg="3"
             >
-              <jicon
+              <v-autocomplete
                 v-if="itm.type == 'icon'"
-                v-model="editdata[itm.value]"
                 :label="itm.text"
-                :ref="itm.value"
-              ></jicon>
+                :prepend-icon="editdata[itm.value]"
+                v-model="editdata[itm.value]"
+                :items="mdiIconList"
+                item-value="value"
+                item-text="text"
+                :loading="isLoading"
+              >
+                <template v-slot:item="{ item }">
+                  <v-list-item-content>
+                    <v-list-item-title style="text-align: left;">
+                      <v-icon>{{ item['value'] }}</v-icon> {{ item['text'] }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </template>
+              </v-autocomplete>
               <v-checkbox
                 v-else-if="itm.type == 'bool'"
                 v-model="editdata[itm.value]"
@@ -164,13 +176,9 @@
 </template>
 
 <script>
-import jicon from "./jIconSelect.vue";
 import s3File from "../utils/s3file.js";
 
 export default {
-  components: {
-    jicon
-  },
   props: {
     objectgroup: String,
     objectype: String,
@@ -183,17 +191,22 @@ export default {
     return {
       id: null,
       isedit: false,
+      
       editlayout: [],
       editdata: {},
+      
       filedata: {},
+      mdiIconList: [ { "value":"mdi-help", "text": "help" } ],
+      isLoading: true,
+      
       valid: true,
-      viewselect: false 
+      viewselect: false
     };
   },
   computed: {
     getObjecType: function() {
       return this.$uiconfig.getName(this.$props.objectype);
-    }
+    },
   },
   async beforeMount() {
     if(this.$props.objectconfig) {
@@ -242,6 +255,7 @@ export default {
           await this.qryRefItems(itm);
         }
       }
+      this.qryMdiIconList();
     },
     async qryRefItems(itm) {
       const cis = this.$uiconfig.getCodeItems(this.$props.objectype, itm.value);
@@ -249,6 +263,33 @@ export default {
         if(cis.hasValueFilter) {
           itm.refitems = await cis.qryValue(null, this.editdata);
         }
+      }
+    },
+    async qryMdiIconList() {
+      if (this.isLoading) {
+        const response = await fetch("https://raw.githubusercontent.com/Templarian/MaterialDesign-Meta/master/meta.json");
+        const reader = response.body.getReader();
+        const contentLength = +response.headers.get('Content-Length');
+        let receivedLength = 0;
+        const chunks = [];
+
+        let chk = await reader.read();
+        while(!chk.done) {
+          chunks.push(chk.value);
+          receivedLength += chk.value.length;
+          console.log(`Received ${receivedLength} of ${contentLength}`);
+          chk = await reader.read();
+        }
+        const chunksAll = new Uint8Array(receivedLength);
+        let position = 0;
+        for(let chunk of chunks) {
+          chunksAll.set(chunk, position);
+          position += chunk.length;
+        }
+        const result = new TextDecoder("utf-8").decode(chunksAll);
+        const jsonArray = JSON.parse(result);
+        this.mdiIconList = jsonArray.map(v => ({ "value": `mdi-${v.name}`, "text": v.name }));
+        this.isLoading = false;
       }
     },
     inputTime(name) {
