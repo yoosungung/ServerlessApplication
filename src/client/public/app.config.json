@@ -52,6 +52,57 @@
       ]
     },
     {
+      "value": "TTaskTemplate",
+      "text": "작업템플릿",
+      "icon": "mdi-file-tree",
+      "type": "master",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "fields": [
+        {
+          "text": "이름",
+          "value": "name",
+          "type": "text",
+          "summary": "require"
+        },
+        {
+          "text": "아이콘",
+          "value": "icon",
+          "type": "icon",
+          "summary": ""
+        },
+        {
+          "text": "입력개수",
+          "value": "inputcnt",
+          "type": "number",
+          "summary": ""
+        },
+        {
+          "text": "출력개수",
+          "value": "outputcnt",
+          "type": "number",
+          "summary": ""
+        },
+        {
+          "text": "데이터포멧",
+          "value": "dataformat",
+          "type": "textarea"
+        },
+        {
+          "text": "HTML",
+          "value": "html",
+          "type": "textarea"
+        },
+        {
+          "text": "설명",
+          "value": "description",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
       "value": "TWorkflow",
       "text": "작업흐름",
       "icon": "mdi-sitemap",
@@ -115,57 +166,6 @@
         {
           "text": "설명",
           "value": "Description",
-          "type": "textarea"
-        }
-      ]
-    },
-    {
-      "value": "TTaskTemplate",
-      "text": "작업템플릿",
-      "icon": "mdi-file-tree",
-      "type": "master",
-      "visiblity": {
-        "read": "all",
-        "write": "owner"
-      },
-      "fields": [
-        {
-          "text": "이름",
-          "value": "name",
-          "type": "text",
-          "summary": "require"
-        },
-        {
-          "text": "아이콘",
-          "value": "mdicon",
-          "type": "icon",
-          "summary": ""
-        },
-        {
-          "text": "입력개수",
-          "value": "inputcnt",
-          "type": "number",
-          "summary": ""
-        },
-        {
-          "text": "출력개수",
-          "value": "outputcnt",
-          "type": "number",
-          "summary": ""
-        },
-        {
-          "text": "데이터포멧",
-          "value": "dataformat",
-          "type": "textarea"
-        },
-        {
-          "text": "HTML",
-          "value": "html",
-          "type": "textarea"
-        },
-        {
-          "text": "설명",
-          "value": "description",
           "type": "textarea"
         }
       ]

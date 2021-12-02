@@ -9,6 +9,16 @@
             </v-tabs>
             <v-tabs-items v-model="tabIdx">
               <v-tab-item key="Tasks">
+                <div v-for="itm in TaskItems" :key="itm.name"
+                  class="drag-drawflow" 
+                  :data-node="itm.name"
+                  draggable="true" v-on:dragstart="drag" 
+                  v-on:touchend="drop"
+                  v-on:touchmove="positionMobile"
+                  v-on:touchstart="drag"
+                >
+                  <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
+                </div>
               </v-tab-item>
               <v-tab-item key="Flows">
                 <div v-for="itm in flowItems" :key="itm.name"
@@ -88,6 +98,19 @@ export default {
         { name: "Parallel", icon: "mdi-play-box-multiple", inputcnt: 1, outputcnt: 2, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play-box-multiple"></i> PARALLEL</div></div>`},
         { name: "Map", icon: "mdi-reload", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-reload"></i> MAP</div></div>`},
       ];
+      this.$axios
+        .get(`/api/list/TTaskTemplate`)
+        .then((r) => {
+          if (r && r.data) {
+            this.TaskItems = r.data;
+          } else {
+            this.TaskItems = [];
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          this.TaskItems = [];
+        });
     },
     cleanAslJson() {
       this.aslJson = {
@@ -236,7 +259,8 @@ export default {
       pos_x = pos_x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)));
       pos_y = pos_y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)));
 
-      const itm = this.flowItems.find(v => { return v.name == name; });
+      let itm;
+      itm = this.TaskItems.find(v => { return v.name == name; }) || this.flowItems.find(v => { return v.name == name; });
       this.$editor.addNode(name, itm?.inputcnt || 1,  itm?.outputcnt || 1, pos_x, pos_y, name, itm?.dataformat || {}, itm?.html || `<div><div class="title-box">${name}</div></div>`);
       /*
         <div>
