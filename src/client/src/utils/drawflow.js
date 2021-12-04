@@ -96,30 +96,30 @@ export default class Drawflow {
   }
 
   pointermove_handler(ev) {
-   for (var i = 0; i < this.evCache.length; i++) {
-     if (ev.pointerId == this.evCache[i].pointerId) {
+    for (var i = 0; i < this.evCache.length; i++) {
+      if (ev.pointerId == this.evCache[i].pointerId) {
         this.evCache[i] = ev;
-     break;
-     }
-   }
+        break;
+      }
+    }
 
-   if (this.evCache.length == 2) {
-     // Calculate the distance between the two pointers
-     var curDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
+    if (this.evCache.length == 2) {
+      // Calculate the distance between the two pointers
+      var curDiff = Math.abs(this.evCache[0].clientX - this.evCache[1].clientX);
 
-     if (this.prevDiff > 100) {
-       if (curDiff > this.prevDiff) {
-         // The distance between the two pointers has increased
+      if (this.prevDiff > 100) {
+        if (curDiff > this.prevDiff) {
+          // The distance between the two pointers has increased
 
-         this.zoom_in();
-       }
-       if (curDiff < this.prevDiff) {
-         // The distance between the two pointers has decreased
-         this.zoom_out();
-       }
-     }
-     this.prevDiff = curDiff;
-   }
+          this.zoom_in();
+        }
+        if (curDiff < this.prevDiff) {
+          // The distance between the two pointers has decreased
+          this.zoom_out();
+        }
+      }
+      this.prevDiff = curDiff;
+    }
   }
 
   pointerup_handler(ev) {
@@ -129,13 +129,13 @@ export default class Drawflow {
     }
   }
   remove_event(ev) {
-   // Remove this event from the target's cache
-   for (var i = 0; i < this.evCache.length; i++) {
-     if (this.evCache[i].pointerId == ev.pointerId) {
-       this.evCache.splice(i, 1);
-       break;
-     }
-   }
+    // Remove this event from the target's cache
+    for (var i = 0; i < this.evCache.length; i++) {
+      if (this.evCache[i].pointerId == ev.pointerId) {
+        this.evCache.splice(i, 1);
+        break;
+      }
+    }
   }
   /* End Mobile Zoom */
   load() {
@@ -345,18 +345,18 @@ export default class Drawflow {
       var e_pos_y = e.clientY;
     }
 
-
     if(this.connection) {
       this.updateConnection(e_pos_x, e_pos_y);
     }
+
     if(this.editor_selected) {
       x =  this.canvas_x + (-(this.pos_x - e_pos_x))
       y = this.canvas_y + (-(this.pos_y - e_pos_y))
       this.dispatch('translate', { x: x, y: y});
       this.precanvas.style.transform = "translate("+x+"px, "+y+"px) scale("+this.zoom+")";
     }
-    if(this.drag) {
 
+    if(this.drag) {
       var x = (this.pos_x - e_pos_x) * this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom);
       var y = (this.pos_y - e_pos_y) * this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom);
       this.pos_x = e_pos_x;
@@ -372,7 +372,6 @@ export default class Drawflow {
     }
 
     if(this.drag_point) {
-
       var x = (this.pos_x - e_pos_x) * this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom);
       var y = (this.pos_y - e_pos_y) * this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom);
       this.pos_x = e_pos_x;
@@ -447,61 +446,56 @@ export default class Drawflow {
       this.canvas_y = this.canvas_y + (-(this.pos_y - e_pos_y));
       this.editor_selected = false;
     }
+
     if(this.connection === true) {
       if(ele_last.classList[0] === 'input' || (this.force_first_input && (ele_last.closest(".drawflow_content_node") != null || ele_last.classList[0] === 'drawflow-node'))) {
-
         if(this.force_first_input && (ele_last.closest(".drawflow_content_node") != null || ele_last.classList[0] === 'drawflow-node')) {
           if(ele_last.closest(".drawflow_content_node") != null) {
             var input_id = ele_last.closest(".drawflow_content_node").parentElement.id;
           } else {
             var input_id = ele_last.id;
           }
-         if(Object.keys(this.getNodeFromId(input_id.slice(5)).inputs).length === 0) {
-           var input_class = false;
-         } else {
-          var input_class = "input_1";
-         }
-
-
-       } else {
-         // Fix connection;
-         var input_id = ele_last.parentElement.parentElement.id;
-         var input_class = ele_last.classList[1];
-       }
-       var output_id = this.ele_selected.parentElement.parentElement.id;
-       var output_class = this.ele_selected.classList[1];
+          if(Object.keys(this.getNodeFromId(input_id.slice(5)).inputs).length === 0) {
+            var input_class = false;
+          } else {
+           var input_class = "input_1";
+          }
+        } else {
+          // Fix connection;
+          var input_id = ele_last.parentElement.parentElement.id;
+          var input_class = ele_last.classList[1];
+        }
+        var output_id = this.ele_selected.parentElement.parentElement.id;
+        var output_class = this.ele_selected.classList[1];
 
         if(output_id !== input_id && input_class !== false) {
-
           if(this.container.querySelectorAll('.connection.node_in_'+input_id+'.node_out_'+output_id+'.'+output_class+'.'+input_class).length === 0) {
-          // Conection no exist save connection
+            // Conection no exist save connection
 
-          this.connection_ele.classList.add("node_in_"+input_id);
-          this.connection_ele.classList.add("node_out_"+output_id);
-          this.connection_ele.classList.add(output_class);
-          this.connection_ele.classList.add(input_class);
-          var id_input = input_id.slice(5);
-          var id_output = output_id.slice(5);
+            this.connection_ele.classList.add("node_in_"+input_id);
+            this.connection_ele.classList.add("node_out_"+output_id);
+            this.connection_ele.classList.add(output_class);
+            this.connection_ele.classList.add(input_class);
+            var id_input = input_id.slice(5);
+            var id_output = output_id.slice(5);
 
-          this.drawflow.drawflow[this.module].data[id_output].outputs[output_class].connections.push( {"node": id_input, "output": input_class});
-          this.drawflow.drawflow[this.module].data[id_input].inputs[input_class].connections.push( {"node": id_output, "input": output_class});
-          this.updateConnectionNodes('node-'+id_output);
-          this.updateConnectionNodes('node-'+id_input);
-          this.dispatch('connectionCreated', { output_id: id_output, input_id: id_input, output_class:  output_class, input_class: input_class});
+            this.drawflow.drawflow[this.module].data[id_output].outputs[output_class].connections.push( {"node": id_input, "output": input_class});
+            this.drawflow.drawflow[this.module].data[id_input].inputs[input_class].connections.push( {"node": id_output, "input": output_class});
+            this.updateConnectionNodes('node-'+id_output);
+            this.updateConnectionNodes('node-'+id_input);
+            this.dispatch('connectionCreated', { output_id: id_output, input_id: id_input, output_class:  output_class, input_class: input_class});
 
+          } else {
+            this.dispatch('connectionCancel', true);
+            this.connection_ele.remove();
+          }
+          this.connection_ele = null;
         } else {
+          // Connection exists Remove Connection;
           this.dispatch('connectionCancel', true);
           this.connection_ele.remove();
-        }
-
           this.connection_ele = null;
-      } else {
-        // Connection exists Remove Connection;
-        this.dispatch('connectionCancel', true);
-        this.connection_ele.remove();
-        this.connection_ele = null;
-      }
-
+        }
       } else {
         // Remove Connection;
         this.dispatch('connectionCancel', true);
@@ -518,6 +512,7 @@ export default class Drawflow {
 
     this.dispatch('mouseUp', e);
   }
+  
   contextmenu(e) {
     this.dispatch('contextmenu', e);
     e.preventDefault();
@@ -532,20 +527,18 @@ export default class Drawflow {
       deletebox.classList.add("drawflow-delete");
       deletebox.innerHTML = "x";
       if(this.node_selected) {
+        
         this.node_selected.appendChild(deletebox);
-
       }
       if(this.connection_selected) {
         deletebox.style.top = e.clientY * ( this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom)) - (this.precanvas.getBoundingClientRect().y *  ( this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom)) ) + "px";
         deletebox.style.left = e.clientX * ( this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom)) - (this.precanvas.getBoundingClientRect().x *  ( this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom)) ) + "px";
-
+        
         this.precanvas.appendChild(deletebox);
-
       }
-
     }
-
   }
+
   contextmenuDel() {
     if(this.precanvas.getElementsByClassName("drawflow-delete").length) {
       this.precanvas.getElementsByClassName("drawflow-delete")[0].remove()
@@ -614,6 +607,7 @@ export default class Drawflow {
     var y = end_pos_y;
     var curvature = curvature_value;
     //type openclose open close other
+    /* by YSU
     switch (type) {
       case 'open':
         if(start_pos_x >= end_pos_x) {
@@ -635,6 +629,7 @@ export default class Drawflow {
           var hx2 = x - Math.abs(x - line_x) * curvature;
         }
         return ' M '+ line_x +' '+ line_y +' C '+ hx1 +' '+ line_y +' '+ hx2 +' ' + y +' ' + x +'  ' + y;
+
         break;
       case 'other':
         if(start_pos_x >= end_pos_x) {
@@ -645,13 +640,52 @@ export default class Drawflow {
           var hx2 = x - Math.abs(x - line_x) * curvature;
         }
         return ' M '+ line_x +' '+ line_y +' C '+ hx1 +' '+ line_y +' '+ hx2 +' ' + y +' ' + x +'  ' + y;
+
         break;
       default:
-
         var hx1 = line_x + Math.abs(x - line_x) * curvature;
         var hx2 = x - Math.abs(x - line_x) * curvature;
-
         return ' M '+ line_x +' '+ line_y +' C '+ hx1 +' '+ line_y +' '+ hx2 +' ' + y +' ' + x +'  ' + y;
+    }
+    */
+    switch (type) {
+      case 'open':
+        if(start_pos_y >= end_pos_y) {
+          var hy1 = line_y + Math.abs(y - line_y) * curvature;
+          var hy2 = y - Math.abs(y - line_y) * (curvature*-1);
+        } else {
+          var hy1 = line_y + Math.abs(y - line_y) * curvature;
+          var hy2 = y - Math.abs(y - line_y) * curvature;
+        }
+        return ' M '+ line_x +' '+ line_y +' C '+ line_x +' '+ hy1 +' '+ x +' ' + hy2 +' ' + x +'  ' + y;
+
+        break
+      case 'close':
+        if(start_pos_y >= end_pos_y) {
+          var hy1 = line_y + Math.abs(y - line_y) * (curvature*-1);
+          var hy2 = y - Math.abs(y - line_y) * curvature;
+        } else {
+          var hy1 = line_y + Math.abs(y - line_y) * curvature;
+          var hy2 = y - Math.abs(y - line_y) * curvature;
+        }
+        return ' M '+ line_x +' '+ line_y +' C '+ line_x +' '+ hy1 +' '+ x +' ' + hy2 +' ' + x +'  ' + y;
+
+        break;
+      case 'other':
+        if(start_pos_y >= end_pos_y) {
+          var hy1 = line_y + Math.abs(y - line_y) * (curvature*-1);
+          var hy2 = y - Math.abs(y - line_y) * (curvature*-1);
+        } else {
+          var hy1 = line_y + Math.abs(y - line_y) * curvature;
+          var hy2 = y - Math.abs(y - line_y) * curvature;
+        }
+        return ' M '+ line_x +' '+ line_y +' C '+ line_x +' '+ hy1 +' '+ x +' ' + hy2 +' ' + x +'  ' + y;
+
+        break;
+      default:
+        var hy1 = line_y + Math.abs(y - line_y) * curvature;
+        var hy2 = y - Math.abs(y - line_y) * curvature;
+        return ' M '+ line_x +' '+ line_y +' C '+ line_x +' '+ hy1 +' '+ x +' ' + hy2 +' ' + x +'  ' + y;
     }
 
   }
@@ -668,6 +702,7 @@ export default class Drawflow {
     this.precanvas.appendChild(connection);
     var id_output = ele.parentElement.parentElement.id.slice(5);
     var output_class = ele.classList[1];
+
     this.dispatch('connectionStart', { output_id: id_output, output_class:  output_class });
 
   }
@@ -736,7 +771,6 @@ export default class Drawflow {
   }
 
   updateConnectionNodes(id) {
-
     // Aquí nos quedamos;
     const idSearch = 'node_in_'+id;
     const idSearchOut = 'node_out_'+id;
@@ -1065,69 +1099,69 @@ export default class Drawflow {
   }
 
   createReroutePoint(ele) {
-      this.connection_selected.classList.remove("selected");
-      const nodeUpdate = this.connection_selected.parentElement.classList[2].slice(9);
-      const nodeUpdateIn = this.connection_selected.parentElement.classList[1].slice(13);
-      const output_class = this.connection_selected.parentElement.classList[3];
-      const input_class = this.connection_selected.parentElement.classList[4];
-      this.connection_selected = null;
-      const point = document.createElementNS('http://www.w3.org/2000/svg',"circle");
-      point.classList.add("point");
-      var pos_x = this.pos_x * ( this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom)) - (this.precanvas.getBoundingClientRect().x * ( this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom)));
-      var pos_y = this.pos_y * ( this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom)) - (this.precanvas.getBoundingClientRect().y * ( this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom)));
+    this.connection_selected.classList.remove("selected");
+    const nodeUpdate = this.connection_selected.parentElement.classList[2].slice(9);
+    const nodeUpdateIn = this.connection_selected.parentElement.classList[1].slice(13);
+    const output_class = this.connection_selected.parentElement.classList[3];
+    const input_class = this.connection_selected.parentElement.classList[4];
+    this.connection_selected = null;
+    const point = document.createElementNS('http://www.w3.org/2000/svg',"circle");
+    point.classList.add("point");
+    var pos_x = this.pos_x * ( this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom)) - (this.precanvas.getBoundingClientRect().x * ( this.precanvas.clientWidth / (this.precanvas.clientWidth * this.zoom)));
+    var pos_y = this.pos_y * ( this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom)) - (this.precanvas.getBoundingClientRect().y * ( this.precanvas.clientHeight / (this.precanvas.clientHeight * this.zoom)));
 
-      point.setAttributeNS(null, 'cx', pos_x);
-      point.setAttributeNS(null, 'cy', pos_y);
-      point.setAttributeNS(null, 'r', this.reroute_width);
+    point.setAttributeNS(null, 'cx', pos_x);
+    point.setAttributeNS(null, 'cy', pos_y);
+    point.setAttributeNS(null, 'r', this.reroute_width);
 
-      let position_add_array_point = 0;
-      if(this.reroute_fix_curvature) {
+    let position_add_array_point = 0;
+    if(this.reroute_fix_curvature) {
 
-        const numberPoints = ele.parentElement.querySelectorAll(".main-path").length;
-        var path = document.createElementNS('http://www.w3.org/2000/svg',"path");
-        path.classList.add("main-path");
-        path.setAttributeNS(null, 'd', '');
+      const numberPoints = ele.parentElement.querySelectorAll(".main-path").length;
+      var path = document.createElementNS('http://www.w3.org/2000/svg',"path");
+      path.classList.add("main-path");
+      path.setAttributeNS(null, 'd', '');
 
-        ele.parentElement.insertBefore(path, ele.parentElement.children[numberPoints]);
-        if(numberPoints === 1) {
-          ele.parentElement.appendChild(point);
-        }  else {
-          const search_point = Array.from(ele.parentElement.children).indexOf(ele)
-          position_add_array_point = search_point;
-          ele.parentElement.insertBefore(point, ele.parentElement.children[search_point+numberPoints+1]);
-        }
-
-      } else {
+      ele.parentElement.insertBefore(path, ele.parentElement.children[numberPoints]);
+      if(numberPoints === 1) {
         ele.parentElement.appendChild(point);
+      }  else {
+        const search_point = Array.from(ele.parentElement.children).indexOf(ele)
+        position_add_array_point = search_point;
+        ele.parentElement.insertBefore(point, ele.parentElement.children[search_point+numberPoints+1]);
       }
 
-      const nodeId = nodeUpdate.slice(5);
-      const searchConnection = this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections.findIndex(function(item,i) {
-        return item.node ===  nodeUpdateIn && item.output === input_class;
-      });
+    } else {
+      ele.parentElement.appendChild(point);
+    }
 
-      if(this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points === undefined)  {
-        this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points = [];
-      }
+    const nodeId = nodeUpdate.slice(5);
+    const searchConnection = this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections.findIndex(function(item,i) {
+      return item.node ===  nodeUpdateIn && item.output === input_class;
+    });
 
-      if(this.reroute_fix_curvature) {
-        //console.log(position_add_array_point)
-        if(position_add_array_point > 0) {
-          this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points.splice(position_add_array_point, 0, { pos_x: pos_x, pos_y: pos_y });
-        } else {
-          this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points.push({ pos_x: pos_x, pos_y: pos_y });
-        }
+    if(this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points === undefined)  {
+      this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points = [];
+    }
 
-        ele.parentElement.querySelectorAll(".main-path").forEach((item, i) => {
-          item.classList.remove("selected");
-        });
-
+    if(this.reroute_fix_curvature) {
+      //console.log(position_add_array_point)
+      if(position_add_array_point > 0) {
+        this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points.splice(position_add_array_point, 0, { pos_x: pos_x, pos_y: pos_y });
       } else {
         this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points.push({ pos_x: pos_x, pos_y: pos_y });
       }
 
-      this.dispatch('addReroute', nodeId);
-      this.updateConnectionNodes(nodeUpdate);
+      ele.parentElement.querySelectorAll(".main-path").forEach((item, i) => {
+        item.classList.remove("selected");
+      });
+
+    } else {
+      this.drawflow.drawflow[this.module].data[nodeId].outputs[output_class].connections[searchConnection].points.push({ pos_x: pos_x, pos_y: pos_y });
+    }
+
+    this.dispatch('addReroute', nodeId);
+    this.updateConnectionNodes(nodeUpdate);
   }
 
   removeReroutePoint(ele) {
@@ -1283,6 +1317,7 @@ export default class Drawflow {
         });
       }
     }
+
     node.appendChild(inputs);
     node.appendChild(content);
     node.appendChild(outputs);
@@ -1307,6 +1342,7 @@ export default class Drawflow {
     if (!this.useuuid) {
       this.nodeId++;
     }
+
     return newNodeId;
   }
 
@@ -1381,6 +1417,7 @@ export default class Drawflow {
           ...this.noderegister[dataNode.html].options
         }).$mount()
         content.appendChild(wrapper.$el);
+
       }
     }
 
@@ -1420,6 +1457,7 @@ export default class Drawflow {
         });
       }
     }
+
     node.appendChild(inputs);
     node.appendChild(content);
     node.appendChild(outputs);
@@ -1574,7 +1612,7 @@ export default class Drawflow {
     this.drawflow.drawflow[moduleName].data[id].outputs["output_"+(numOutputs+1)] = { "connections": []};
   }
 
-  removeNodeInput(id, input_class) {
+  removeNodeInput(id, input_class) {    
     var moduleName = this.getModuleFromNodeId(id)
     const infoNode = this.getNodeFromId(id)
     if(this.module === moduleName) {
@@ -1899,60 +1937,60 @@ export default class Drawflow {
 
   /* Events */
   on (event, callback) {
-       // Check if the callback is not a function
-       if (typeof callback !== 'function') {
-           console.error(`The listener callback must be a function, the given type is ${typeof callback}`);
-           return false;
-       }
-       // Check if the event is not a string
-       if (typeof event !== 'string') {
-           console.error(`The event name must be a string, the given type is ${typeof event}`);
-           return false;
-       }
-       // Check if this event not exists
-       if (this.events[event] === undefined) {
-           this.events[event] = {
-               listeners: []
-           }
-       }
-       this.events[event].listeners.push(callback);
-   }
-
-   removeListener (event, callback) {
-       // Check if this event not exists
-       if (this.events[event] === undefined) {
-           //console.error(`This event: ${event} does not exist`);
-           return false;
-       }
-     this.events[event].listeners = this.events[event].listeners.filter(listener => {
-         return listener.toString() !== callback.toString();
-     });
-   }
-
-   dispatch (event, details) {
-       // Check if this event not exists
-       if (this.events[event] === undefined) {
-           // console.error(`This event: ${event} does not exist`);
-           return false;
-       }
-       this.events[event].listeners.forEach((listener) => {
-           listener(details);
-       });
-   }
-
-    getUuid() {
-        // http://www.ietf.org/rfc/rfc4122.txt
-        var s = [];
-        var hexDigits = "0123456789abcdef";
-        for (var i = 0; i < 36; i++) {
-            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-        }
-        s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
-        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-        s[8] = s[13] = s[18] = s[23] = "-";
-
-        var uuid = s.join("");
-        return uuid;
+    // Check if the callback is not a function
+    if (typeof callback !== 'function') {
+      console.error(`The listener callback must be a function, the given type is ${typeof callback}`);
+      return false;
     }
+    // Check if the event is not a string
+    if (typeof event !== 'string') {
+      console.error(`The event name must be a string, the given type is ${typeof event}`);
+      return false;
+    }
+    // Check if this event not exists
+    if (this.events[event] === undefined) {
+      this.events[event] = {
+        listeners: []
+      }
+    }
+    this.events[event].listeners.push(callback);
+   }
+
+  removeListener (event, callback) {
+    // Check if this event not exists
+    if (this.events[event] === undefined) {
+      //console.error(`This event: ${event} does not exist`);
+      return false;
+    }
+    this.events[event].listeners = this.events[event].listeners.filter(listener => {
+      return listener.toString() !== callback.toString();
+    });
+   }
+
+  dispatch (event, details) {
+    // Check if this event not exists
+    if (this.events[event] === undefined) {
+      // console.error(`This event: ${event} does not exist`);
+      return false;
+    }
+    this.events[event].listeners.forEach((listener) => {
+      listener(details);
+    });
+   }
+
+  getUuid() {
+    // http://www.ietf.org/rfc/rfc4122.txt
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "-";
+
+    var uuid = s.join("");
+    return uuid;
+  }
 }
 /* eslint-enable */

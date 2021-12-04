@@ -100,6 +100,86 @@
           "value": "description",
           "type": "textarea"
         }
+      ],
+      "children": [
+        "TDataPath",
+        "TAwsService"
+      ]
+    },
+    {
+      "value": "TDataPath",
+      "text": "데이터경로",
+      "icon": "mdi-code-json",
+      "type": "child",
+      "visiblity": {
+        "read": "group",
+        "write": "owner"
+      },
+      "fields": [
+        {
+          "text": "입력경로",
+          "value": "InputPath",
+          "type": "textarea"
+        },
+        {
+          "text": "파라메터",
+          "value": "Parameters",
+          "type": "textarea"
+        },
+        {
+          "text": "결과선택자",
+          "value": "ResultSelector",
+          "type": "textarea"
+        },
+        {
+          "text": "결과경로",
+          "value": "ResultPath",
+          "type": "textarea"
+        },
+        {
+          "text": "출력경로",
+          "value": "OutputPath",
+          "type": "textarea"
+        }
+      ]
+    },
+    {
+      "value": "TAwsService",
+      "text": "서비스",
+      "icon": "mdi-toolbox-outline",
+      "type": "child",
+      "visiblity": {
+        "read": "group",
+        "write": "owner"
+      },
+      "fields": [
+        {
+          "text": "리소스",
+          "value": "Resource",
+          "type": "text"
+        },
+        {
+          "text": "재수행규칙",
+          "value": "Retry",
+          "type": "textarea"
+        },
+        {
+          "text": "오류규칙",
+          "value": "Catch",
+          "type": "textarea"
+        },
+        {
+          "text": "타임아웃",
+          "value": "TimeoutSeconds",
+          "type": "number",
+          "code": [1, 999]
+        },
+        {
+          "text": "하트비트",
+          "value": "HeartbeatSeconds",
+          "type": "number",
+          "code": [1, 999]
+        }        
       ]
     },
     {
@@ -143,11 +223,11 @@
         }
       ],
       "children": [
-        "TStep"
+        "TStepFunction"
       ]
     },
     {
-      "value": "TStep",
+      "value": "TStepFunction",
       "text": "차트",
       "icon": "mdi-clipboard-check",
       "type": "child",
@@ -158,16 +238,50 @@
       "viewer": "AslDiagram",
       "fields": [
         {
-          "text": "이름",
-          "value": "Name",
-          "type": "text",
-          "summary": "require"
-        },
-        {
-          "text": "설명",
-          "value": "Description",
+          "text": "정의",
+          "value": "Define",
           "type": "textarea"
         }
+      ]
+    },
+    {
+      "value": "TTriger",
+      "text": "트리거",
+      "icon": "mdi-clock-start",
+      "type": "master",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "fields": [
+      ],
+      "children": [
+        "TSchedule",
+        "TCondition"
+      ]
+    },
+    {
+      "value": "TSchedule",
+      "text": "스켸줄",
+      "icon": "mdi-alarm",
+      "type": "child",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "fields": [
+      ]
+    },
+    {
+      "value": "TCondition",
+      "text": "트리거",
+      "icon": "mdi-fire",
+      "type": "child",
+      "visiblity": {
+        "read": "all",
+        "write": "owner"
+      },
+      "fields": [
       ]
     }
   ]

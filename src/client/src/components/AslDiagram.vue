@@ -81,6 +81,7 @@ export default {
     this.$editor.reroute = true;
     this.$editor.reroute_fix_curvature = true;
     this.$editor.force_first_input = false;
+    // this.editor.node_style = 'Vertical'; //'Horitzontal'
     this.$editor.start();
     this.$editor.import(this.queryAslJson());
 
@@ -97,12 +98,18 @@ export default {
         { name: "Fail", icon: "mdi-message-alert", inputcnt: 1, outputcnt: -1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-message-alert"></i> FAIL</div></div>`},
         { name: "Parallel", icon: "mdi-play-box-multiple", inputcnt: 1, outputcnt: 2, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play-box-multiple"></i> PARALLEL</div></div>`},
         { name: "Map", icon: "mdi-reload", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-reload"></i> MAP</div></div>`},
+        { name: "Merge", icon: "mdi-merge", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-merge"></i> MERGE</div></div>`},
       ];
       this.$axios
         .get(`/api/list/TTaskTemplate`)
         .then((r) => {
           if (r && r.data) {
-            this.TaskItems = r.data;
+            this.TaskItems = r.data.map(v => { 
+              if(!v.html) {
+                v.html = `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light ${v.icon}"></i> ${v.name}</div></div>`;
+              }
+              return v;
+            });
           } else {
             this.TaskItems = [];
           }
@@ -131,7 +138,7 @@ export default {
                     ]
                   }
                 },
-                "pos_x": 10,
+                "pos_x": 400,
                 "pos_y":50
               },
               "999999": {
@@ -148,8 +155,8 @@ export default {
                   }
                 },
                 "outputs":{},
-                "pos_x": 600,
-                "pos_y": 50
+                "pos_x": 400,
+                "pos_y": 500
               },
             }
           }
@@ -429,7 +436,15 @@ export default {
   cursor: move;
 }
 .drawflow .drawflow-node .inputs, .drawflow .drawflow-node .outputs {
-  width: 0px;
+  /* by YSU
+  width: 0px; */
+  height: 0px;
+
+  display: flex;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .drawflow .drawflow-node .drawflow_content_node {
   width: 100%;
@@ -461,7 +476,9 @@ export default {
 
 /* Editing Drawflow */
 .drawflow .drawflow-node {
-  display: flex;
+  /* by YSU
+  display: flex; */
+  display: block;
   align-items: center;
   position: absolute;
   min-height: 40px;
@@ -509,14 +526,19 @@ export default {
   background: #4ea9ff;
 }
 .drawflow .drawflow-node .output {
+  /* by YSU
   top: 2px;
-
-  right: 10px;
+  right: 10px; */
+  top: 5px;
+  right: 0px;
 }
 .drawflow .drawflow-node .input {
+  top: -0px;
+  left: 0px;
+  /* by YSU
   top: 2px;
+  left: -10px; */
 
-  left: -10px;
   background: white;
 }
 .drawflow > .drawflow-delete {
