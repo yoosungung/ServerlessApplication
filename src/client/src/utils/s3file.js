@@ -1,8 +1,8 @@
 
-module.exports.file2api = function(fileIndex, files, datas) {
-  if(fileIndex && files && datas) {
+module.exports.file2api = function (fileIndex, files, datas) {
+  if (fileIndex && files && datas) {
     const fileObject = files[fileIndex];
-    if(fileObject) {
+    if (fileObject) {
       datas[fileIndex] = {
         'lastModified': fileObject['lastModified'],
         'lastModifiedDate': fileObject['lastModifiedDate'],
@@ -14,10 +14,10 @@ module.exports.file2api = function(fileIndex, files, datas) {
   }
 }
 
-module.exports.api2file = function(fileIndex, files, datas) {
-  if(fileIndex && files && datas) {
+module.exports.api2file = function (fileIndex, files, datas) {
+  if (fileIndex && files && datas) {
     const fileData = datas[fileIndex];
-    if(fileData?.name) {
+    if (fileData?.name) {
       files[fileIndex] = new File([], fileData['name'], {
         'lastModified': fileData['lastModified'],
         'lastModifiedDate': fileData['lastModifiedDate'],
@@ -27,7 +27,7 @@ module.exports.api2file = function(fileIndex, files, datas) {
   }
 }
 
-module.exports.getPath = function(objectId, fileIndex, files) {
+module.exports.getPath = function (objectId, fileIndex, files) {
   return `${objectId}\\${fileIndex}\\${files[fileIndex]['name']}`;
 }
 

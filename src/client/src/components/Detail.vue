@@ -4,7 +4,7 @@
       <v-col cols="12">
         <v-card elevation="2">
           <v-card-title primary-title>
-            <div>{{objecttype}}</div>
+            <div>{{ objecttype }}</div>
             <v-spacer></v-spacer>
             <v-card-actions>
               <v-btn icon @click="openEdit()">
@@ -15,15 +15,11 @@
               </v-btn>
               <v-tooltip top v-for="act in actionList" :key="act.value">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    v-bind="attrs"
-                    v-on="on"
-                    icon
-                    @click="onAction(act)">
-                    <v-icon>{{act.icon}}</v-icon>
+                  <v-btn v-bind="attrs" v-on="on" icon @click="onAction(act)">
+                    <v-icon>{{ act.icon }}</v-icon>
                   </v-btn>
                 </template>
-                <span>{{act.text}}</span>
+                <span>{{ act.text }}</span>
               </v-tooltip>
             </v-card-actions>
           </v-card-title>
@@ -41,7 +37,9 @@
       <v-col cols="12">
         <v-card elevation="2">
           <v-tabs v-model="tabIdx">
-            <v-tab v-for="cld in childObjectList" :key="cld">{{$uiconfig.getName(cld)}}</v-tab>
+            <v-tab v-for="cld in childObjectList" :key="cld">{{
+              $uiconfig.getName(cld)
+            }}</v-tab>
             <v-spacer></v-spacer>
             <v-btn icon @click="openNewChild()">
               <v-icon>mdi-plus</v-icon>
@@ -51,17 +49,28 @@
             <v-tab-item v-for="cld in childObjectList" :key="cld">
               <jdiagram
                 v-if="getCustomViewer(cld) == 'AslDiagram'"
-                v-on:message-bar="(title, message) => { $emit('message-bar', title, message); }"
+                v-on:message-bar="
+                  (title, message) => {
+                    $emit('message-bar', title, message);
+                  }
+                "
               />
               <jgantt
                 v-else-if="getCustomViewer(cld) == 'Gantt'"
                 :parentid="$props.objectid"
                 :objectname="$props.objectname"
                 v-on:open-task="onGanttOpen"
-                v-on:message-bar="(title, message) => { $emit('message-bar', title, message); }"
+                v-on:message-bar="
+                  (title, message) => {
+                    $emit('message-bar', title, message);
+                  }
+                "
               />
               <div v-else>
-                <v-card v-for="childData in childDataDic[cld]" :key="childData.INFO_ID">
+                <v-card
+                  v-for="childData in childDataDic[cld]"
+                  :key="childData.INFO_ID"
+                >
                   <v-btn icon @click="openEdit(cld, childData)">
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
@@ -118,14 +127,14 @@ export default {
     objectname: String,
     objectid: String,
   },
-  
+
   components: {
     jedit,
     jinfo,
     jdiagram,
-    jgantt
+    jgantt,
   },
-  
+
   data() {
     return {
       objecttype: "",
@@ -149,10 +158,10 @@ export default {
       childObjectData: {},
       childTabKey: 0,
 
-      actionList: []
-    }
+      actionList: [],
+    };
   },
-  
+
   watch: {
     $route: "getPageConfig",
   },
@@ -160,13 +169,15 @@ export default {
   async beforeMount() {
     await this.getPageConfig();
   },
-  
+
   methods: {
     getTitle(objdat) {
       if (objdat) {
-        return objdat['Title'] || objdat['Name'] || objdat['Caption'] || 'Noname';
+        return (
+          objdat["Title"] || objdat["Name"] || objdat["Caption"] || "Noname"
+        );
       } else {
-        return 'Noname';
+        return "Noname";
       }
     },
     getCustomViewer(objname) {
@@ -186,25 +197,27 @@ export default {
             await this.qryRefItems(cld, fld);
           }
         }
-        this.childRefDic[cld] = this.$uiconfig.isRefresh(cld)
+        this.childRefDic[cld] = this.$uiconfig.isRefresh(cld);
       }
       this.qryChildData();
     },
     async qryRefItems(objnm, itm) {
       const cis = this.$uiconfig.getCodeItems(objnm, itm.value);
-      if(cis.isDynamicFilter) {
-        if(cis.hasParentFilter) {
+      if (cis.isDynamicFilter) {
+        if (cis.hasParentFilter) {
           itm.refitems = await cis.qryValue(this.objectdata);
-        } 
+        }
       } else {
-        if(! itm.refitems) {
+        if (!itm.refitems) {
           itm.refitems = await cis.qryValue();
         }
       }
     },
     async qryParentData() {
-      let res = await this.$axios.get(`/api/info/${this.$props.objectname}/${this.$props.objectid}`);
-      if(res.status == 200) {
+      let res = await this.$axios.get(
+        `/api/info/${this.$props.objectname}/${this.$props.objectid}`
+      );
+      if (res.status == 200) {
         this.objectdata = res.data;
       } else {
         this.objectdata = {};
@@ -215,30 +228,30 @@ export default {
         .get(`/api/info/${this.$props.objectid}`)
         .then((r) => {
           for (const cld of this.childObjectList) {
-            const cldData = []
+            const cldData = [];
             for (const dat of r.data) {
               if (dat.INFO_TYPE === cld) {
                 cldData.push(dat);
               }
             }
             this.childDataDic[cld] = cldData;
-          }          
+          }
           this.childTabKey += 1;
         })
         .catch((e) => {
           console.error(e);
           this.childDataDic = {};
         });
-    },    
+    },
     initEditValue() {
-      this.editGroup="";
-      this.editType="";
-      this.editConfig=[];
+      this.editGroup = "";
+      this.editType = "";
+      this.editConfig = [];
       this.editRef = "";
-      this.editData={};
+      this.editData = {};
     },
     openEdit(target, objdata) {
-      if(target && target.length > 0) {
+      if (target && target.length > 0) {
         this.editGroup = this.$props.objectid;
         this.editType = target;
         this.editConfig = this.childFieldDic[target];
@@ -255,8 +268,8 @@ export default {
     openNewChild() {
       this.editGroup = this.$props.objectid;
       this.editType = this.childObjectList[this.tabIdx];
-      if(this.getCustomViewer(this.editType) == 'Gantt') {
-        if(this.$props.objectname == "TProcess") {
+      if (this.getCustomViewer(this.editType) == "Gantt") {
+        if (this.$props.objectname == "TProcess") {
           this.editType = "TClassTask";
         } else {
           this.editType = "TTask";
@@ -269,7 +282,7 @@ export default {
     },
     async onCloseEdit() {
       this.viewEdit = false;
-      if(this.editGroup === this.editType) {
+      if (this.editGroup === this.editType) {
         await this.qryParentData();
       } else {
         this.qryChildData();
@@ -277,7 +290,7 @@ export default {
       this.initEditValue();
     },
     openDelete(target, objdata) {
-      if(target && target.length > 0) {
+      if (target && target.length > 0) {
         this.editGroup = this.$props.objectid;
         this.editType = target;
         this.editData = objdata;
@@ -298,8 +311,12 @@ export default {
         .delete(`/api/info/${this.editData.INFO_GRP}/${this.editData.INFO_ID}`)
         .then((r) => {
           if (r) {
-            this.$emit("message-bar", "Infomation", `Deleted "${this.getTitle(this.editData)}" (${this.editType}) !`);
-            if(this.editGroup === this.editType) {
+            this.$emit(
+              "message-bar",
+              "Infomation",
+              `Deleted "${this.getTitle(this.editData)}" (${this.editType}) !`
+            );
+            if (this.editGroup === this.editType) {
               this.$router.back();
             } else {
               this.qryChildData();
@@ -317,16 +334,16 @@ export default {
       console.info(act);
     },
     onGanttOpen(task, cld) {
-      const cldata = this.childDataDic[cld].find(v => v.INFO_ID === task?.id);
-      if(cld && cldata) {
-        cldata['start'] = task['start'].toISOString().substring(0,10);
+      const cldata = this.childDataDic[cld].find((v) => v.INFO_ID === task?.id);
+      if (cld && cldata) {
+        cldata["start"] = task["start"].toISOString().substring(0, 10);
         this.openEdit(cld, cldata);
       } else {
-        console.error('onGanttOpen', task, cld, cldata);
+        console.error("onGanttOpen", task, cld, cldata);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>

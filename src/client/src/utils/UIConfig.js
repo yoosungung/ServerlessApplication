@@ -15,7 +15,7 @@ class UIConfig {
       this._apiurl = appconfig["API"];
 
       return true;
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       return false;
     }
@@ -26,7 +26,7 @@ class UIConfig {
   }
 
   setAxios(axios) {
-    if(axios) {
+    if (axios) {
       _axios = axios;
     }
   }
@@ -75,7 +75,7 @@ class UIConfig {
     }
     return this._visibles.get(objname)
   }
- 
+
   _listheaders = new Map();
   getListHeaders(objname) {
     if (!this._listheaders.has(objname)) {
@@ -137,13 +137,13 @@ class UIConfig {
   _codeitems = new Map();
   getCodeItems(objname, value) {
     const key = `${objname}.${value}`;
-    if(!this._codeitems.has(key)) {
+    if (!this._codeitems.has(key)) {
       const obj = this._configs.get(objname);
-      if(obj) {
+      if (obj) {
         const defcode = obj.fields.find(itm => {
           return (itm.value === value) && (itm.type === "reference");
         });
-        if(defcode) {
+        if (defcode) {
           const cv = new CodeItem();
           cv.loadCode(defcode);
           this._codeitems.set(key, cv);
@@ -153,7 +153,7 @@ class UIConfig {
       } else {
         this._codeitems.set(key, undefined);
       }
-    }        
+    }
     return this._codeitems.get(key);
   }
 
@@ -192,9 +192,9 @@ class CodeItem {
   _namecode = undefined;
 
   loadCode(defCode) {
-    if(defCode.type == "reference") {
+    if (defCode.type == "reference") {
       this._defcode = this._defClone(defCode, (v, k = "", t = this) => {
-        if(k == "text") {
+        if (k == "text") {
           const vallist = v.split(":");
           const obj = _uiconfig.getLayout(vallist[0].slice(1));
           const fld = obj.find(v => {
@@ -203,9 +203,9 @@ class CodeItem {
           t._namecode = fld?.refitems;
         } else {
           t._isdynamic = true;
-          if(v.startsWith("$VALUE:")) { this._isvalue = true; }
-          if(v.startsWith("$PARENT:")) { this._isparent = true; }
-        }        
+          if (v.startsWith("$VALUE:")) { this._isvalue = true; }
+          if (v.startsWith("$PARENT:")) { this._isparent = true; }
+        }
         return v;
       });
     }
@@ -217,8 +217,8 @@ class CodeItem {
     }
     const result = Array.isArray(obj) ? [] : {};
     for (let key of Object.keys(obj)) {
-      if(typeof(obj[key]) == "string") {
-        if(obj[key].startsWith("$")) {
+      if (typeof (obj[key]) == "string") {
+        if (obj[key].startsWith("$")) {
           result[key] = fnResolve(obj[key], key);
         } else {
           result[key] = obj[key];
@@ -229,7 +229,7 @@ class CodeItem {
     }
     return result;
   }
-  
+
   get isDynamicFilter() {
     return this._isdynamic;
   }
@@ -243,18 +243,18 @@ class CodeItem {
   async qryValue(parentData, currentData) {
     const pams = {
       "value": this._defcode.code[0].value,
-      "text": (this._namecode?"NoName":this._defcode.code[0].text)
+      "text": (this._namecode ? "NoName" : this._defcode.code[0].text)
     };
     let flt_stat = true;
-    if(this._defcode.code[0].filter) {
-      if(this._isdynamic) {
+    if (this._defcode.code[0].filter) {
+      if (this._isdynamic) {
         pams["filter"] = await this._defClone(this._defcode.code[0].filter, v => {
           const vallist = v.split(":");
-          if(vallist[0] === "$DATE") {
+          if (vallist[0] === "$DATE") {
             return this.date.setDate(this.date.getDate() + (parseInt(vallist[1]) || -1)).format(vallist[2] || "yyyy/MM/dd");
-          } else if((vallist[0] === "$VALUE") && currentData) {
+          } else if ((vallist[0] === "$VALUE") && currentData) {
             return currentData[vallist[1]];
-          } else if((vallist[0] === "$PARENT") && parentData) {
+          } else if ((vallist[0] === "$PARENT") && parentData) {
             return parentData[vallist[1]];
           } else {
             console.error('UIConfig.qryValue:', v, parentData, currentData);
@@ -266,7 +266,7 @@ class CodeItem {
         pams["filter"] = this._defcode.code[0].filter;
       }
     }
-    if(!flt_stat) {
+    if (!flt_stat) {
       return [];
     }
     try {
@@ -275,24 +275,24 @@ class CodeItem {
         method: 'get',
         params: pams
       });
-      if(res.status == 200) {
+      if (res.status == 200) {
         const cval = res.data.map((row, idx, alls, t = this) => {
-          if(t._namecode) {
-            return t._namecode.find(v => {return v["value"] == row[pams.value]});
+          if (t._namecode) {
+            return t._namecode.find(v => { return v["value"] == row[pams.value] });
           } else {
             return JSON.parse(`{ "value": "${row[pams.value]}", "text": "${row[pams.text]}" }`);
           }
         });
         cval.sort((a, b) => {
-          if(a.text > b.text) { return 1; }
-          else if(a.text < b.text) { return -1; }
+          if (a.text > b.text) { return 1; }
+          else if (a.text < b.text) { return -1; }
           else { return 0; }
         });
         return cval;
       } else {
         return [];
       }
-    } catch(e) {
+    } catch (e) {
       console.info("CodeITems.qryValue:", parentData, currentData);
       console.error(e);
 
@@ -308,7 +308,7 @@ export default {
   install: async (Vue) => {
     Vue.uiconfig = _uiconfig;
     window.uiconfig = _uiconfig;
-    
+
     Object.defineProperties(Vue.prototype, {
       uiconfig: {
         get() {

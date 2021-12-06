@@ -43,7 +43,7 @@ export default {
         password: "",
       },
       valid: true,
-      dialog: true
+      dialog: true,
     };
   },
   methods: {
@@ -57,10 +57,10 @@ export default {
           })
         )
         .then((r) => {
-          if(r.data.signin === "ok") {
+          if (r.data.signin === "ok") {
             this.setsign(r.data.employee);
-            this.$router.push({ name: 'home', path: '/' });
-          }          
+            this.$router.push({ name: "home", path: "/" });
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -72,7 +72,7 @@ export default {
     },
     setsign(employee) {
       this.$root.$children[0].onSignin(employee);
-    }
+    },
   },
 };
 </script>

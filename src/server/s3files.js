@@ -38,9 +38,9 @@ exports.GetS3FileHandler = async (event, context) => {
       "Content-Type": "application/json"
     },
     "isBase64Encoded": false,
-    "body": JSON.stringify({key: event.pathParameters.key, url: signedUrl, method: event.requestContext.http.method})
+    "body": JSON.stringify({ key: event.pathParameters.key, url: signedUrl, method: event.requestContext.http.method })
   };
-  if(event.requestContext?.authorizer?.lambda?.jwtoken) {
+  if (event.requestContext?.authorizer?.lambda?.jwtoken) {
     response.headers['Authorization'] = event.requestContext.authorizer.lambda.jwtoken;
   }
 

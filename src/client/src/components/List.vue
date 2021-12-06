@@ -58,11 +58,11 @@
 import jedit from "./jEdit.vue";
 
 export default {
-  props: { 
-    objectname: String
+  props: {
+    objectname: String,
   },
   components: {
-    jedit
+    jedit,
   },
   data() {
     return {
@@ -105,20 +105,20 @@ export default {
         })
         .then((r) => {
           if (r.data) {
-            if(this.hasReference(this.editconfig)) {
+            if (this.hasReference(this.editconfig)) {
               this.items = r.data.map((row) => {
-                for(const f of this.editconfig) {
-                  if(f.type === "reference" && f.refitems) {
+                for (const f of this.editconfig) {
+                  if (f.type === "reference" && f.refitems) {
                     const cval = row[f.value];
-                    const nval = f.refitems.find(c => c.value === cval);
-                    if(nval) {
-                      row[f.value] = nval['text'] || cval;
+                    const nval = f.refitems.find((c) => c.value === cval);
+                    if (nval) {
+                      row[f.value] = nval["text"] || cval;
                     }
-                  } else if(f.type == "code" && f.code?.length > 0) {
+                  } else if (f.type == "code" && f.code?.length > 0) {
                     const cval = row[f.value];
-                    const nval = f.code.find(c => c.value === cval);
-                    if(nval) {
-                      row[f.value] = nval['text'] || cval;
+                    const nval = f.code.find((c) => c.value === cval);
+                    if (nval) {
+                      row[f.value] = nval["text"] || cval;
                     }
                   }
                 }
@@ -138,16 +138,19 @@ export default {
       this.dataloading = false;
     },
     async qryRefItems(itm) {
-      const codeitems = this.$uiconfig.getCodeItems(this.$props.objectname, itm.value);
-      if(codeitems.isDynamicFilter) {
-        console.error('List.qryRefItems: Not alloe dynamic filter !',itm);
+      const codeitems = this.$uiconfig.getCodeItems(
+        this.$props.objectname,
+        itm.value
+      );
+      if (codeitems.isDynamicFilter) {
+        console.error("List.qryRefItems: Not alloe dynamic filter !", itm);
       } else {
         itm.refitems = await codeitems.qryValue();
       }
     },
     hasReference(fields) {
-      for(const f of fields) {
-        if(f.type === "reference" || f.type === "code") {
+      for (const f of fields) {
+        if (f.type === "reference" || f.type === "code") {
           return true;
         }
       }

@@ -28,7 +28,7 @@ exports.InHandler = async (event, context) => {
     "isBase64Encoded": false,
     "body": "{\"message\": \"Internal error !\"}"
   };
-  
+
   try {
     const smtpAuth = Object.assign(mailConfig);
     smtpAuth.auth.user = data.id;
@@ -38,20 +38,20 @@ exports.InHandler = async (event, context) => {
     const res = await conntion.verify();
     if (res) {
       const res = await docClient.send(new GetCommand({
-        "TableName" : tableName, 
-        "Key" : {
-          "INFO_GRP": "employee", 
-          "INFO_ID": data.id 
+        "TableName": tableName,
+        "Key": {
+          "INFO_GRP": "employee",
+          "INFO_ID": data.id
         }
       }));
       const token = await jwt.sign(
-                      res.Item || { "INFO_ID" :  data.id },
-                      jwtSecretKey,
-                      { expiresIn: jwtExpiresIn }
-                    );
+        res.Item || { "INFO_ID": data.id },
+        jwtSecretKey,
+        { expiresIn: jwtExpiresIn }
+      );
       reponse.statusCode = 200;
       reponse.headers.Authorization = token;
-      reponse.body = JSON.stringify({"signin": "ok", "employee": res.Item});
+      reponse.body = JSON.stringify({ "signin": "ok", "employee": res.Item });
     } else {
       console.info('smtp return: ', conntion);
       reponse.statusCode = 535;
@@ -82,7 +82,7 @@ exports.CheckHandler = async (event, context) => {
     "principalId": "user:app-on-aws-authn",
     "policyDocument": {
       "Version": "2012-10-17",
-      "Statement": [ statLambda ]
+      "Statement": [statLambda]
     },
     "context": {}
   };
@@ -98,7 +98,7 @@ exports.CheckHandler = async (event, context) => {
     res.context = decoded;
     const refreshToken = await jwt.sign(decoded, jwtSecretKey, { expiresIn: jwtExpiresIn });
     res.context['jwtoken'] = refreshToken;
-  } catch(err) {
+  } catch (err) {
     console.info('verify error:', err);
   }
   //}

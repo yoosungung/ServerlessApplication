@@ -25,27 +25,27 @@ _axios.use = (app, apiUrl) => {
   _axios = axios.create(_config);
 
   _axios.interceptors.request.use(
-    function(config) {
+    function (config) {
       //console.log("_axios.interceptors.request.use:", config);
       return config;
     },
-    function(error) {
+    function (error) {
       _app.onMessageBar("Service error", error);
       return Promise.reject(error);
     }
   );
-  
+
   // Add a response interceptor
   _axios.interceptors.response.use(
-    function(response) {
+    function (response) {
       //console.log("_axios.interceptors.response.use:", response);
       const autho = response.headers['authorization'] || response.data['Authorization'] || response.headers['Authorization'] || response.data['authorization'];
-      if(autho) {
+      if (autho) {
         _axios.defaults.headers['Authorization'] = autho;
       }
       return response;
     },
-    function(error) {
+    function (error) {
       if (error.response && [401, 403].includes(error.response.status)) {
         _axios.defaults.headers['Authorization'] = "";
 
@@ -55,10 +55,10 @@ _axios.use = (app, apiUrl) => {
       }
       return Promise.reject(error);
     }
-  );  
+  );
 }
 
-Plugin.install = function(Vue) {
+Plugin.install = function (Vue) {
   Vue.axios = _axios;
   window.axios = _axios;
   Object.defineProperties(Vue.prototype, {

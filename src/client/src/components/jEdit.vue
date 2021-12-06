@@ -1,7 +1,7 @@
 <template>
   <v-card light class="elevation-12">
     <v-card-title>
-      <div>{{this.isedit ? "[수정]" : "[신규]"}} {{getObjecType}}</div>
+      <div>{{ this.isedit ? "[수정]" : "[신규]" }} {{ getObjecType }}</div>
     </v-card-title>
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
@@ -10,7 +10,9 @@
             <v-col
               v-for="itm in editlayout"
               :key="itm.value"
-              cols="12" sm="6" lg="3"
+              cols="12"
+              sm="6"
+              lg="3"
             >
               <v-autocomplete
                 v-if="itm.type == 'icon'"
@@ -24,8 +26,8 @@
               >
                 <template v-slot:item="{ item }">
                   <v-list-item-content>
-                    <v-list-item-title style="text-align: left;">
-                      <v-icon>{{ item['value'] }}</v-icon> {{ item['text'] }}
+                    <v-list-item-title style="text-align: left">
+                      <v-icon>{{ item["value"] }}</v-icon> {{ item["text"] }}
                     </v-list-item-title>
                   </v-list-item-content>
                 </template>
@@ -51,7 +53,12 @@
                 v-model="editdata[itm.value]"
                 :ref="itm.value"
               >
-                <v-radio v-for="n in itm.code" :key="n.value" :value="n.value" :label="n.text">
+                <v-radio
+                  v-for="n in itm.code"
+                  :key="n.value"
+                  :value="n.value"
+                  :label="n.text"
+                >
                 </v-radio>
               </v-radio-group>
               <v-select
@@ -62,7 +69,9 @@
                 :ref="itm.value"
               ></v-select>
               <v-autocomplete
-                v-else-if="itm.type == 'reference' && itm.code && itm.code.length == 1"
+                v-else-if="
+                  itm.type == 'reference' && itm.code && itm.code.length == 1
+                "
                 v-model="editdata[itm.value]"
                 :items="itm.refitems"
                 item-value="value"
@@ -71,7 +80,9 @@
                 :ref="itm.value"
               ></v-autocomplete>
               <v-slider
-                v-else-if="itm.type == 'number' && itm.code && itm.code.length == 2"
+                v-else-if="
+                  itm.type == 'number' && itm.code && itm.code.length == 2
+                "
                 v-model="editdata[itm.value]"
                 :min="itm.code[0]"
                 :max="itm.code[1]"
@@ -163,7 +174,9 @@
       <v-btn color="primary" @click="saveEditData">save</v-btn>
       <v-btn color="secondary" @click="closeEdit">cancel</v-btn>
       <v-spacer></v-spacer>
-      <v-btn v-if="$props.selectobject" color="third" @click="openSelect">select</v-btn>
+      <v-btn v-if="$props.selectobject" color="third" @click="openSelect"
+        >select</v-btn
+      >
       <v-dialog v-model="viewselect" persistent>
         <jselect
           v-if="viewselect"
@@ -191,29 +204,29 @@ export default {
     return {
       id: null,
       isedit: false,
-      
+
       editlayout: [],
       editdata: {},
-      
+
       filedata: {},
-      mdiIconList: [ { "value":"mdi-help", "text": "help" } ],
+      mdiIconList: [{ value: "mdi-help", text: "help" }],
       isLoading: true,
-      
+
       valid: true,
-      viewselect: false
+      viewselect: false,
     };
   },
   computed: {
-    getObjecType: function() {
+    getObjecType: function () {
       return this.$uiconfig.getName(this.$props.objectype);
     },
   },
   async beforeMount() {
-    if(this.$props.objectconfig) {
+    if (this.$props.objectconfig) {
       this.editlayout = this.$props.objectconfig;
     } else {
       this.editlayout = this.$uiconfig.getLayout(this.$props.objectype);
-    }    
+    }
     await this.setEditLayout();
 
     if (this.$props.jsondata?.INFO_ID) {
@@ -224,7 +237,7 @@ export default {
       this.isedit = false;
       this.editdata = this.$props.jsondata || {};
       for (let itm of this.editlayout) {
-        if(itm.type == 'file') {
+        if (itm.type == "file") {
           this.getFileData(itm.value);
         }
       }
@@ -232,10 +245,16 @@ export default {
   },
   mounted() {
     for (let itm of this.editlayout) {
-      if(itm.event && itm.event.length > 0) {
-        for(let eh in itm.event) {
+      if (itm.event && itm.event.length > 0) {
+        for (let eh in itm.event) {
           const fn = this[itm.event[eh].handler];
-          this.$refs[itm.value][0].$on(itm.event[eh].value, fn || function(evt) {console.log(evt);});
+          this.$refs[itm.value][0].$on(
+            itm.event[eh].value,
+            fn ||
+              function (evt) {
+                console.log(evt);
+              }
+          );
         }
       }
     }
@@ -251,7 +270,11 @@ export default {
           }
         } else if (itm.type == "date" || itm.type == "time") {
           itm[itm.value + "_picker"] = false;
-        } else if (itm.type == "reference" && itm.code && itm.code.length == 1) {
+        } else if (
+          itm.type == "reference" &&
+          itm.code &&
+          itm.code.length == 1
+        ) {
           await this.qryRefItems(itm);
         }
       }
@@ -259,22 +282,24 @@ export default {
     },
     async qryRefItems(itm) {
       const cis = this.$uiconfig.getCodeItems(this.$props.objectype, itm.value);
-      if(cis.isDynamicFilter) {
-        if(cis.hasValueFilter) {
+      if (cis.isDynamicFilter) {
+        if (cis.hasValueFilter) {
           itm.refitems = await cis.qryValue(null, this.editdata);
         }
       }
     },
     async qryMdiIconList() {
       if (this.isLoading) {
-        const response = await fetch("https://raw.githubusercontent.com/Templarian/MaterialDesign-Meta/master/meta.json");
+        const response = await fetch(
+          "https://raw.githubusercontent.com/Templarian/MaterialDesign-Meta/master/meta.json"
+        );
         const reader = response.body.getReader();
-        const contentLength = +response.headers.get('Content-Length');
+        const contentLength = +response.headers.get("Content-Length");
         let receivedLength = 0;
         const chunks = [];
 
         let chk = await reader.read();
-        while(!chk.done) {
+        while (!chk.done) {
           chunks.push(chk.value);
           receivedLength += chk.value.length;
           console.log(`Received ${receivedLength} of ${contentLength}`);
@@ -282,13 +307,16 @@ export default {
         }
         const chunksAll = new Uint8Array(receivedLength);
         let position = 0;
-        for(let chunk of chunks) {
+        for (let chunk of chunks) {
           chunksAll.set(chunk, position);
           position += chunk.length;
         }
         const result = new TextDecoder("utf-8").decode(chunksAll);
         const jsonArray = JSON.parse(result);
-        this.mdiIconList = jsonArray.map(v => ({ "value": `mdi-${v.name}`, "text": v.name }));
+        this.mdiIconList = jsonArray.map((v) => ({
+          value: `mdi-${v.name}`,
+          text: v.name,
+        }));
         this.isLoading = false;
       }
     },
@@ -312,9 +340,13 @@ export default {
           if (r && r.data) {
             this.editdata = r.data;
             for (let itm of this.editlayout) {
-              if(itm.type == 'file') {
+              if (itm.type == "file") {
                 this.getFileData(itm.value);
-              } else if (itm.type == "reference" && itm.code && itm.code.length == 1) {
+              } else if (
+                itm.type == "reference" &&
+                itm.code &&
+                itm.code.length == 1
+              ) {
                 this.qryRefItems(itm);
               }
             }
@@ -322,38 +354,41 @@ export default {
             this.editdata = {};
           }
           this.editdata = {
-            ...(this.editdata),
-            ...preEditData
+            ...this.editdata,
+            ...preEditData,
           };
         })
         .catch((e) => {
           console.error(e);
-          this.editdata = {}
+          this.editdata = {};
         });
     },
     async saveFiles() {
       for (let itm of this.editlayout) {
         if (itm.type == "file" && this.filedata[itm.value]) {
-          let s3path = s3File.getPath((this.isedit?this.id:this.editdata.INFO_ID), itm.value, this.filedata);
+          let s3path = s3File.getPath(
+            this.isedit ? this.id : this.editdata.INFO_ID,
+            itm.value,
+            this.filedata
+          );
           this.editdata[itm.value]["s3key"] = s3path;
           this.$axios
             .put(`/api/file/${s3path}`)
             .then((r) => {
               if (r?.data) {
                 const f = this.filedata[itm.value];
-                fetch(r.data.url,
-                  {
-                    method: r.data.method,
-                    headers: { "Content-Type": f.type},
-                    body: f
-                  }
-                ).then((response) => console.log("response:", response))
+                fetch(r.data.url, {
+                  method: r.data.method,
+                  headers: { "Content-Type": f.type },
+                  body: f,
+                })
+                  .then((response) => console.log("response:", response))
                   .catch((error) => console.error("error:", error));
               }
             })
             .catch((e) => {
               console.error(e);
-              this.onMessageBox('Erorr', 'File down load error !');
+              this.onMessageBox("Erorr", "File down load error !");
             });
         }
       }
@@ -364,7 +399,7 @@ export default {
     async saveEditData() {
       await this.saveFiles();
 
-      this.editdata['INFO_TYPE'] = this.$props.objectype;
+      this.editdata["INFO_TYPE"] = this.$props.objectype;
       if (this.isedit) {
         this.$axios
           .put(`/api/info/${this.$props.objectgroup}/${this.id}`, this.editdata)
@@ -376,9 +411,12 @@ export default {
             console.error(e);
           });
       } else {
-        if(this.editdata.INFO_ID) {
+        if (this.editdata.INFO_ID) {
           this.$axios
-            .post(`/api/info/${this.$props.objectgroup}/${this.editdata.INFO_ID}`, this.editdata)
+            .post(
+              `/api/info/${this.$props.objectgroup}/${this.editdata.INFO_ID}`,
+              this.editdata
+            )
             .then((r) => {
               //console.info(r);
               this.$emit("close-editor", r.data);
@@ -403,11 +441,11 @@ export default {
       this.viewselect = true;
     },
     onCloseSelector(selectData) {
-      if(selectData) {
+      if (selectData) {
         let data = {};
-        for(const itm of this.editlayout) {
-          if(selectData[itm.value]) {
-            data[itm.value] = selectData[itm.value]
+        for (const itm of this.editlayout) {
+          if (selectData[itm.value]) {
+            data[itm.value] = selectData[itm.value];
           }
         }
         this.editdata = data;

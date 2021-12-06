@@ -21,12 +21,12 @@ exports.GetListHandler = async (event, context) => {
   }
 
   let params = {
-    "TableName" : tableName, 
+    "TableName": tableName,
     "KeyConditionExpression": "INFO_GRP = :v_info_group",
     "ExpressionAttributeValues": { ":v_info_group": name }
   };
 
-  if(event.routeKey === "GET /api/code/{name}") {
+  if (event.routeKey === "GET /api/code/{name}") {
     const v_name = event.queryStringParameters?.value || "INFO_ID";
     const t_name = event.queryStringParameters?.text || "Name";
     params["ProjectionExpression"] = `#n_${v_name}, #n_${t_name}`;
@@ -34,9 +34,9 @@ exports.GetListHandler = async (event, context) => {
     attrname[`#n_${v_name}`] = v_name;
     attrname[`#n_${t_name}`] = t_name;
     params["ExpressionAttributeNames"] = attrname;
-    if(event.queryStringParameters?.filter) {
+    if (event.queryStringParameters?.filter) {
       const filter = JSON.parse(event.queryStringParameters.filter);
-      if(filter["KeyConditionExpression"]) {
+      if (filter["KeyConditionExpression"]) {
         params["KeyConditionExpression"] = filter["KeyConditionExpression"];
         params["ExpressionAttributeValues"] = {};
       }
@@ -45,12 +45,12 @@ exports.GetListHandler = async (event, context) => {
       params["ExpressionAttributeNames"] = Object.assign(params["ExpressionAttributeNames"], filter["ExpressionAttributeNames"]);
     }
   } else {
-    if(event.queryStringParameters) {
+    if (event.queryStringParameters) {
       if (event.queryStringParameters.visible && event.requestContext.authorizer && event.requestContext.authorizer.lambda) {
         if (event.queryStringParameters.visible === "owner") {
           params["FilterExpression"] = "INFO_BY = :v_info_by";
           params.ExpressionAttributeValues[":v_info_by"] = `${event.requestContext.authorizer.lambda.GROUP || 'Nogroup'}:${event.requestContext.authorizer.lambda.INFO_ID}`;
-        } else if (event.queryStringParameters["visible"] === "group" ) {
+        } else if (event.queryStringParameters["visible"] === "group") {
           params["FilterExpression"] = "begins_with(INFO_BY, :v_info_by)";
           params.ExpressionAttributeValues[":v_info_by"] = event.requestContext.authorizer.lambda.GROUP || 'Nogroup';
         }
@@ -71,7 +71,7 @@ exports.GetListHandler = async (event, context) => {
     "isBase64Encoded": false,
     "body": JSON.stringify(res)
   };
-  if(event.requestContext.authorizer && event.requestContext.authorizer.lambda && event.requestContext.authorizer.lambda.jwtoken) {
+  if (event.requestContext.authorizer && event.requestContext.authorizer.lambda && event.requestContext.authorizer.lambda.jwtoken) {
     response.headers['Authorization'] = event.requestContext.authorizer.lambda.jwtoken;
   }
 
@@ -86,9 +86,9 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
 
   const editAt = Date.now();
   let editBy = "Nogroup:Noname";
-  if(event.requestContext.authorizer && event.requestContext.authorizer.lambda) {
+  if (event.requestContext.authorizer && event.requestContext.authorizer.lambda) {
     let grp = undefined;
-    if(event.body) {
+    if (event.body) {
       grp = JSON.parse(event.body).GROUP;
     }
     editBy = `${event.requestContext.authorizer.lambda.GROUP || grp || "Nogroup"}:${event.requestContext.authorizer.lambda.INFO_ID || "Noname"}`;
@@ -99,7 +99,7 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     const parent_id = event.pathParameters.parent;
     const id = event.pathParameters.id;
 
-    let params = { "TableName" : tableName, Key: { "INFO_GRP": parent_id, "INFO_ID": id }};
+    let params = { "TableName": tableName, Key: { "INFO_GRP": parent_id, "INFO_ID": id } };
 
     console.info('get:', params);
     const data = await docClient.send(new GetCommand(params));
@@ -109,8 +109,8 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     const parent_id = event.pathParameters.parent;
     const id = event.pathParameters.id;
 
-    let params = { 
-      "TableName" : tableName,
+    let params = {
+      "TableName": tableName,
       "Item": Object.assign(JSON.parse(event.body), { "INFO_GRP": parent_id, "INFO_ID": id, "INFO_BY": editBy, "INFO_AT": editAt })
     };
 
@@ -129,7 +129,7 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     let expressionAttributeValues = {};
     for (const key in setinfo) {
       if (!["INFO_GRP", "INFO_ID"].includes(key)) {
-        if(updateExpression.length > 0) {
+        if (updateExpression.length > 0) {
           updateExpression = updateExpression.concat(", #n_", key, " = :v_", key);
         } else {
           updateExpression = updateExpression.concat("SET #n_", key, " = :v_", key);
@@ -139,8 +139,8 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
       }
     }
 
-    let params = { 
-      "TableName" : tableName, 
+    let params = {
+      "TableName": tableName,
       "Key": { "INFO_GRP": parent_id, "INFO_ID": id },
       "UpdateExpression": updateExpression,
       "ExpressionAttributeNames": expressionAttributeNames,
@@ -155,8 +155,8 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     const parent_id = event.pathParameters.parent;
     const id = event.pathParameters.id;
 
-    let params = { 
-      "TableName" : tableName, 
+    let params = {
+      "TableName": tableName,
       "Key": { "INFO_GRP": parent_id, "INFO_ID": id }
     };
 
@@ -164,15 +164,15 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     const data = await docClient.send(new DeleteCommand(params));
     console.info('data:', data);
     res = data;
-  } else if(event.routeKey === "POST /api/info/{name}") {
+  } else if (event.routeKey === "POST /api/info/{name}") {
     const name = event.pathParameters.name;
 
     const { default: ShortUniqueId } = require('short-unique-id');
     const uid = new ShortUniqueId();
     const id = uid.stamp(32);
 
-    let params = { 
-      "TableName" : tableName, 
+    let params = {
+      "TableName": tableName,
       "Item": Object.assign({ "INFO_TYPE": name }, JSON.parse(event.body), { "INFO_GRP": name, "INFO_ID": id, "INFO_BY": editBy, "INFO_AT": editAt })
     };
 
@@ -182,8 +182,8 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     res = data.Item;
   } else {
     throw new Error(`Lambda wrong invoke, you tried: ${event.routeKey} ${event.requestContext.http.pathParameters}`);
-  } 
-  
+  }
+
   const response = {
     "statusCode": 200,
     "headers": {
@@ -192,7 +192,7 @@ exports.AnyInfoParentIdHandler = async (event, context) => {
     "isBase64Encoded": false,
     "body": JSON.stringify(res)
   };
-  if(event.requestContext.authorizer && event.requestContext.authorizer.lambda && event.requestContext.authorizer.lambda.jwtoken) {
+  if (event.requestContext.authorizer && event.requestContext.authorizer.lambda && event.requestContext.authorizer.lambda.jwtoken) {
     response.headers['Authorization'] = event.requestContext.authorizer.lambda.jwtoken;
   }
 

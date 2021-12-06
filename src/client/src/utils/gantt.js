@@ -1,11 +1,12 @@
 /* eslint-disable */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Gantt = {}));
-}(this, (function (exports) { 'use strict';
+		typeof define === 'function' && define.amd ? define(['exports'], factory) :
+			(global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Gantt = {}));
+}(this, (function (exports) {
+	'use strict';
 
-	function getDefaultExportFromCjs (x) {
+	function getDefaultExportFromCjs(x) {
 		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 	}
 
@@ -19,90 +20,90 @@
 		}, fn(module, module.exports), module.exports;
 	}
 
-	function commonjsRequire () {
+	function commonjsRequire() {
 		throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 	}
 
 	var _extends_1 = createCommonjsModule(function (module) {
-	function _extends() {
-		module.exports = _extends = Object.assign || function (target) {
-			for (var i = 1; i < arguments.length; i++) {
-				var source = arguments[i];
+		function _extends() {
+			module.exports = _extends = Object.assign || function (target) {
+				for (var i = 1; i < arguments.length; i++) {
+					var source = arguments[i];
 
-				for (var key in source) {
-					if (Object.prototype.hasOwnProperty.call(source, key)) {
-						target[key] = source[key];
+					for (var key in source) {
+						if (Object.prototype.hasOwnProperty.call(source, key)) {
+							target[key] = source[key];
+						}
 					}
 				}
-			}
 
-			return target;
-		};
+				return target;
+			};
 
+			module.exports["default"] = module.exports, module.exports.__esModule = true;
+			return _extends.apply(this, arguments);
+		}
+
+		module.exports = _extends;
 		module.exports["default"] = module.exports, module.exports.__esModule = true;
-		return _extends.apply(this, arguments);
-	}
-
-	module.exports = _extends;
-	module.exports["default"] = module.exports, module.exports.__esModule = true;
 	});
 
 	var _extends = /*@__PURE__*/getDefaultExportFromCjs(_extends_1);
 
 	var defineProperty = createCommonjsModule(function (module) {
-	function _defineProperty(obj, key, value) {
-		if (key in obj) {
-			Object.defineProperty(obj, key, {
-				value: value,
-				enumerable: true,
-				configurable: true,
-				writable: true
-			});
-		} else {
-			obj[key] = value;
+		function _defineProperty(obj, key, value) {
+			if (key in obj) {
+				Object.defineProperty(obj, key, {
+					value: value,
+					enumerable: true,
+					configurable: true,
+					writable: true
+				});
+			} else {
+				obj[key] = value;
+			}
+
+			return obj;
 		}
 
-		return obj;
-	}
-
-	module.exports = _defineProperty;
-	module.exports["default"] = module.exports, module.exports.__esModule = true;
+		module.exports = _defineProperty;
+		module.exports["default"] = module.exports, module.exports.__esModule = true;
 	});
 
 	var _defineProperty = /*@__PURE__*/getDefaultExportFromCjs(defineProperty);
 
 	var classCallCheck = createCommonjsModule(function (module) {
-	function _classCallCheck(instance, Constructor) {
-		if (!(instance instanceof Constructor)) {
-			throw new TypeError("Cannot call a class as a function");
+		function _classCallCheck(instance, Constructor) {
+			if (!(instance instanceof Constructor)) {
+				throw new TypeError("Cannot call a class as a function");
+			}
 		}
-	}
 
-	module.exports = _classCallCheck;
-	module.exports["default"] = module.exports, module.exports.__esModule = true;
+		module.exports = _classCallCheck;
+		module.exports["default"] = module.exports, module.exports.__esModule = true;
 	});
 
 	var _classCallCheck = /*@__PURE__*/getDefaultExportFromCjs(classCallCheck);
 
 	var createClass = createCommonjsModule(function (module) {
-	function _defineProperties(target, props) {
-		for (var i = 0; i < props.length; i++) {
-			var descriptor = props[i];
-			descriptor.enumerable = descriptor.enumerable || false;
-			descriptor.configurable = true;
-			if ("value" in descriptor) descriptor.writable = true;
-			Object.defineProperty(target, descriptor.key, descriptor);
+		function _defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];
+				descriptor.enumerable = descriptor.enumerable || false;
+				descriptor.configurable = true;
+				if ("value" in descriptor) descriptor.writable = true;
+				Object.defineProperty(target, descriptor.key, descriptor);
+			}
 		}
-	}
 
-	function _createClass(Constructor, protoProps, staticProps) {
-		if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-		if (staticProps) _defineProperties(Constructor, staticProps);
-		return Constructor;
-	}
+		function _createClass(Constructor, protoProps, staticProps) {
+			if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+			if (staticProps) _defineProperties(Constructor, staticProps);
+			return Constructor;
+		}
 
-	module.exports = _createClass;
-	module.exports["default"] = module.exports, module.exports.__esModule = true;
+		module.exports = _createClass;
+		module.exports["default"] = module.exports, module.exports.__esModule = true;
 	});
 
 	var _createClass = /*@__PURE__*/getDefaultExportFromCjs(createClass);
@@ -409,7 +410,7 @@
 		var dag = [];
 		links.forEach(function (l) {
 			var source = l.source,
-					target = l.target;
+				target = l.target;
 
 			if (!hasPath(vmap, target, source)) {
 				dag.push(l);
@@ -505,11 +506,11 @@
 
 	function Layout(_ref) {
 		var styles = _ref.styles,
-				width = _ref.width,
-				height = _ref.height,
-				offsetY = _ref.offsetY,
-				thickWidth = _ref.thickWidth,
-				maxTextWidth = _ref.maxTextWidth;
+			width = _ref.width,
+			height = _ref.height,
+			offsetY = _ref.offsetY,
+			thickWidth = _ref.thickWidth,
+			maxTextWidth = _ref.maxTextWidth;
 		var x0 = thickWidth / 2;
 		var W = width - thickWidth;
 		var H = height - thickWidth;
@@ -536,12 +537,12 @@
 
 	function YearMonth(_ref) {
 		var styles = _ref.styles,
-				dates = _ref.dates,
-				unit = _ref.unit,
-				offsetY = _ref.offsetY,
-				minTime = _ref.minTime,
-				maxTime = _ref.maxTime,
-				maxTextWidth = _ref.maxTextWidth;
+			dates = _ref.dates,
+			unit = _ref.unit,
+			offsetY = _ref.offsetY,
+			minTime = _ref.minTime,
+			maxTime = _ref.maxTime,
+			maxTextWidth = _ref.maxTextWidth;
 		var months = dates.filter(function (v) {
 			return new Date(v).getDate() === 1;
 		});
@@ -575,12 +576,12 @@
 
 	function DayHeader(_ref) {
 		var styles = _ref.styles,
-				unit = _ref.unit,
-				minTime = _ref.minTime,
-				maxTime = _ref.maxTime,
-				height = _ref.height,
-				offsetY = _ref.offsetY,
-				maxTextWidth = _ref.maxTextWidth;
+			unit = _ref.unit,
+			minTime = _ref.minTime,
+			maxTime = _ref.maxTime,
+			height = _ref.height,
+			offsetY = _ref.offsetY,
+			maxTextWidth = _ref.maxTextWidth;
 		var dates = getDates(minTime, maxTime);
 		var ticks = [];
 		var x0 = maxTextWidth;
@@ -631,12 +632,12 @@
 
 	function WeekHeader(_ref) {
 		var styles = _ref.styles,
-				unit = _ref.unit,
-				minTime = _ref.minTime,
-				maxTime = _ref.maxTime,
-				height = _ref.height,
-				offsetY = _ref.offsetY,
-				maxTextWidth = _ref.maxTextWidth;
+			unit = _ref.unit,
+			minTime = _ref.minTime,
+			maxTime = _ref.maxTime,
+			height = _ref.height,
+			offsetY = _ref.offsetY,
+			maxTextWidth = _ref.maxTextWidth;
 		var dates = getDates(minTime, maxTime);
 		var weeks = dates.filter(function (v) {
 			return new Date(v).getDay() === 0;
@@ -690,12 +691,12 @@
 
 	function Year(_ref) {
 		var styles = _ref.styles,
-				months = _ref.months,
-				unit = _ref.unit,
-				offsetY = _ref.offsetY,
-				minTime = _ref.minTime,
-				maxTime = _ref.maxTime,
-				maxTextWidth = _ref.maxTextWidth;
+			months = _ref.months,
+			unit = _ref.unit,
+			offsetY = _ref.offsetY,
+			minTime = _ref.minTime,
+			maxTime = _ref.maxTime,
+			maxTextWidth = _ref.maxTextWidth;
 		var years = months.filter(function (v) {
 			return new Date(v).getMonth() === 0;
 		});
@@ -728,11 +729,11 @@
 
 	function MonthHeader(_ref) {
 		var styles = _ref.styles,
-				unit = _ref.unit,
-				minTime = _ref.minTime,
-				maxTime = _ref.maxTime,
-				offsetY = _ref.offsetY,
-				maxTextWidth = _ref.maxTextWidth;
+			unit = _ref.unit,
+			minTime = _ref.minTime,
+			maxTime = _ref.maxTime,
+			offsetY = _ref.offsetY,
+			maxTextWidth = _ref.maxTextWidth;
 		var MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 		var dates = getDates(minTime, maxTime);
 		var months = dates.filter(function (v) {
@@ -776,12 +777,12 @@
 
 	function Grid(_ref) {
 		var styles = _ref.styles,
-				data = _ref.data,
-				width = _ref.width,
-				height = _ref.height,
-				offsetY = _ref.offsetY,
-				rowHeight = _ref.rowHeight,
-				maxTextWidth = _ref.maxTextWidth;
+			data = _ref.data,
+			width = _ref.width,
+			height = _ref.height,
+			offsetY = _ref.offsetY,
+			rowHeight = _ref.rowHeight,
+			maxTextWidth = _ref.maxTextWidth;
 		return h("g", null, data.map(function (v, i) {
 			var y = (i + 1) * rowHeight + offsetY;
 			return h("line", {
@@ -803,10 +804,10 @@
 
 	function Labels(_ref) {
 		var styles = _ref.styles,
-				data = _ref.data,
-				_onClick = _ref.onClick,
-				rowHeight = _ref.rowHeight,
-				offsetY = _ref.offsetY;
+			data = _ref.data,
+			_onClick = _ref.onClick,
+			rowHeight = _ref.rowHeight,
+			offsetY = _ref.offsetY;
 		return h("g", null, data.map(function (v, i) {
 			return h("text", {
 				key: i,
@@ -823,13 +824,13 @@
 
 	function LinkLine(_ref) {
 		var styles = _ref.styles,
-				data = _ref.data,
-				unit = _ref.unit,
-				offsetY = _ref.offsetY,
-				minTime = _ref.minTime,
-				rowHeight = _ref.rowHeight,
-				barHeight = _ref.barHeight,
-				maxTextWidth = _ref.maxTextWidth;
+			data = _ref.data,
+			unit = _ref.unit,
+			offsetY = _ref.offsetY,
+			minTime = _ref.minTime,
+			rowHeight = _ref.rowHeight,
+			barHeight = _ref.barHeight,
+			maxTextWidth = _ref.maxTextWidth;
 		var x0 = maxTextWidth;
 		var y0 = rowHeight / 2 + offsetY;
 		var map = {};
@@ -974,17 +975,17 @@
 
 	function Bar(_ref) {
 		var styles = _ref.styles,
-				data = _ref.data,
-				unit = _ref.unit,
-				height = _ref.height,
-				offsetY = _ref.offsetY,
-				minTime = _ref.minTime,
-				showDelay = _ref.showDelay,
-				rowHeight = _ref.rowHeight,
-				barHeight = _ref.barHeight,
-				maxTextWidth = _ref.maxTextWidth,
-				current = _ref.current,
-				onClick = _ref.onClick;
+			data = _ref.data,
+			unit = _ref.unit,
+			height = _ref.height,
+			offsetY = _ref.offsetY,
+			minTime = _ref.minTime,
+			showDelay = _ref.showDelay,
+			rowHeight = _ref.rowHeight,
+			barHeight = _ref.barHeight,
+			maxTextWidth = _ref.maxTextWidth,
+			current = _ref.current,
+			onClick = _ref.onClick;
 		var x0 = maxTextWidth;
 		var y0 = (rowHeight - barHeight) / 2 + offsetY;
 		var cur = x0 + (current - minTime) / unit;
@@ -1111,50 +1112,50 @@
 	var TYPE = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 	function getFont(_ref) {
 		var _ref$fontSize = _ref.fontSize,
-				fontSize = _ref$fontSize === void 0 ? SIZE : _ref$fontSize,
-				_ref$fontFamily = _ref.fontFamily,
-				fontFamily = _ref$fontFamily === void 0 ? TYPE : _ref$fontFamily;
+			fontSize = _ref$fontSize === void 0 ? SIZE : _ref$fontSize,
+			_ref$fontFamily = _ref.fontFamily,
+			fontFamily = _ref$fontFamily === void 0 ? TYPE : _ref$fontFamily;
 		return "bold ".concat(fontSize, " ").concat(fontFamily);
 	}
 	function getStyles(_ref2) {
 		var _ref2$bgColor = _ref2.bgColor,
-				bgColor = _ref2$bgColor === void 0 ? '#fff' : _ref2$bgColor,
-				_ref2$lineColor = _ref2.lineColor,
-				lineColor = _ref2$lineColor === void 0 ? '#eee' : _ref2$lineColor,
-				_ref2$redLineColor = _ref2.redLineColor,
-				redLineColor = _ref2$redLineColor === void 0 ? '#f04134' : _ref2$redLineColor,
-				_ref2$groupBack = _ref2.groupBack,
-				groupBack = _ref2$groupBack === void 0 ? '#3db9d3' : _ref2$groupBack,
-				_ref2$groupFront = _ref2.groupFront,
-				groupFront = _ref2$groupFront === void 0 ? '#299cb4' : _ref2$groupFront,
-				_ref2$taskBack = _ref2.taskBack,
-				taskBack = _ref2$taskBack === void 0 ? '#65c16f' : _ref2$taskBack,
-				_ref2$taskFront = _ref2.taskFront,
-				taskFront = _ref2$taskFront === void 0 ? '#46ad51' : _ref2$taskFront,
-				_ref2$milestone = _ref2.milestone,
-				milestone = _ref2$milestone === void 0 ? '#d33daf' : _ref2$milestone,
-				_ref2$warning = _ref2.warning,
-				warning = _ref2$warning === void 0 ? '#faad14' : _ref2$warning,
-				_ref2$danger = _ref2.danger,
-				danger = _ref2$danger === void 0 ? '#f5222d' : _ref2$danger,
-				_ref2$link = _ref2.link,
-				link = _ref2$link === void 0 ? '#ffa011' : _ref2$link,
-				_ref2$textColor = _ref2.textColor,
-				textColor = _ref2$textColor === void 0 ? '#222' : _ref2$textColor,
-				_ref2$lightTextColor = _ref2.lightTextColor,
-				lightTextColor = _ref2$lightTextColor === void 0 ? '#999' : _ref2$lightTextColor,
-				_ref2$lineWidth = _ref2.lineWidth,
-				lineWidth = _ref2$lineWidth === void 0 ? '1px' : _ref2$lineWidth,
-				_ref2$thickLineWidth = _ref2.thickLineWidth,
-				thickLineWidth = _ref2$thickLineWidth === void 0 ? '1.4px' : _ref2$thickLineWidth,
-				_ref2$fontSize = _ref2.fontSize,
-				fontSize = _ref2$fontSize === void 0 ? SIZE : _ref2$fontSize,
-				_ref2$smallFontSize = _ref2.smallFontSize,
-				smallFontSize = _ref2$smallFontSize === void 0 ? '12px' : _ref2$smallFontSize,
-				_ref2$fontFamily = _ref2.fontFamily,
-				fontFamily = _ref2$fontFamily === void 0 ? TYPE : _ref2$fontFamily,
-				_ref2$whiteSpace = _ref2.whiteSpace,
-				whiteSpace = _ref2$whiteSpace === void 0 ? 'pre' : _ref2$whiteSpace;
+			bgColor = _ref2$bgColor === void 0 ? '#fff' : _ref2$bgColor,
+			_ref2$lineColor = _ref2.lineColor,
+			lineColor = _ref2$lineColor === void 0 ? '#eee' : _ref2$lineColor,
+			_ref2$redLineColor = _ref2.redLineColor,
+			redLineColor = _ref2$redLineColor === void 0 ? '#f04134' : _ref2$redLineColor,
+			_ref2$groupBack = _ref2.groupBack,
+			groupBack = _ref2$groupBack === void 0 ? '#3db9d3' : _ref2$groupBack,
+			_ref2$groupFront = _ref2.groupFront,
+			groupFront = _ref2$groupFront === void 0 ? '#299cb4' : _ref2$groupFront,
+			_ref2$taskBack = _ref2.taskBack,
+			taskBack = _ref2$taskBack === void 0 ? '#65c16f' : _ref2$taskBack,
+			_ref2$taskFront = _ref2.taskFront,
+			taskFront = _ref2$taskFront === void 0 ? '#46ad51' : _ref2$taskFront,
+			_ref2$milestone = _ref2.milestone,
+			milestone = _ref2$milestone === void 0 ? '#d33daf' : _ref2$milestone,
+			_ref2$warning = _ref2.warning,
+			warning = _ref2$warning === void 0 ? '#faad14' : _ref2$warning,
+			_ref2$danger = _ref2.danger,
+			danger = _ref2$danger === void 0 ? '#f5222d' : _ref2$danger,
+			_ref2$link = _ref2.link,
+			link = _ref2$link === void 0 ? '#ffa011' : _ref2$link,
+			_ref2$textColor = _ref2.textColor,
+			textColor = _ref2$textColor === void 0 ? '#222' : _ref2$textColor,
+			_ref2$lightTextColor = _ref2.lightTextColor,
+			lightTextColor = _ref2$lightTextColor === void 0 ? '#999' : _ref2$lightTextColor,
+			_ref2$lineWidth = _ref2.lineWidth,
+			lineWidth = _ref2$lineWidth === void 0 ? '1px' : _ref2$lineWidth,
+			_ref2$thickLineWidth = _ref2.thickLineWidth,
+			thickLineWidth = _ref2$thickLineWidth === void 0 ? '1.4px' : _ref2$thickLineWidth,
+			_ref2$fontSize = _ref2.fontSize,
+			fontSize = _ref2$fontSize === void 0 ? SIZE : _ref2$fontSize,
+			_ref2$smallFontSize = _ref2.smallFontSize,
+			smallFontSize = _ref2$smallFontSize === void 0 ? '12px' : _ref2$smallFontSize,
+			_ref2$fontFamily = _ref2.fontFamily,
+			fontFamily = _ref2$fontFamily === void 0 ? TYPE : _ref2$fontFamily,
+			_ref2$whiteSpace = _ref2.whiteSpace,
+			whiteSpace = _ref2$whiteSpace === void 0 ? 'pre' : _ref2$whiteSpace;
 		var line = {
 			stroke: lineColor,
 			'stroke-width': lineWidth
@@ -1243,33 +1244,33 @@
 		month: 30 * DAY / 56
 	};
 
-	function NOOP() {}
+	function NOOP() { }
 
 	function Gantt(_ref) {
 		var _ref$data = _ref.data,
-				data = _ref$data === void 0 ? [] : _ref$data,
-				_ref$onClick = _ref.onClick,
-				onClick = _ref$onClick === void 0 ? NOOP : _ref$onClick,
-				_ref$viewMode = _ref.viewMode,
-				viewMode = _ref$viewMode === void 0 ? 'week' : _ref$viewMode,
-				_ref$maxTextWidth = _ref.maxTextWidth,
-				maxTextWidth = _ref$maxTextWidth === void 0 ? 140 : _ref$maxTextWidth,
-				_ref$offsetY = _ref.offsetY,
-				offsetY = _ref$offsetY === void 0 ? 60 : _ref$offsetY,
-				_ref$rowHeight = _ref.rowHeight,
-				rowHeight = _ref$rowHeight === void 0 ? 40 : _ref$rowHeight,
-				_ref$barHeight = _ref.barHeight,
-				barHeight = _ref$barHeight === void 0 ? 16 : _ref$barHeight,
-				_ref$thickWidth = _ref.thickWidth,
-				thickWidth = _ref$thickWidth === void 0 ? 1.4 : _ref$thickWidth,
-				_ref$styleOptions = _ref.styleOptions,
-				styleOptions = _ref$styleOptions === void 0 ? {} : _ref$styleOptions,
-				_ref$showLinks = _ref.showLinks,
-				showLinks = _ref$showLinks === void 0 ? true : _ref$showLinks,
-				_ref$showDelay = _ref.showDelay,
-				showDelay = _ref$showDelay === void 0 ? true : _ref$showDelay,
-				start = _ref.start,
-				end = _ref.end;
+			data = _ref$data === void 0 ? [] : _ref$data,
+			_ref$onClick = _ref.onClick,
+			onClick = _ref$onClick === void 0 ? NOOP : _ref$onClick,
+			_ref$viewMode = _ref.viewMode,
+			viewMode = _ref$viewMode === void 0 ? 'week' : _ref$viewMode,
+			_ref$maxTextWidth = _ref.maxTextWidth,
+			maxTextWidth = _ref$maxTextWidth === void 0 ? 140 : _ref$maxTextWidth,
+			_ref$offsetY = _ref.offsetY,
+			offsetY = _ref$offsetY === void 0 ? 60 : _ref$offsetY,
+			_ref$rowHeight = _ref.rowHeight,
+			rowHeight = _ref$rowHeight === void 0 ? 40 : _ref$rowHeight,
+			_ref$barHeight = _ref.barHeight,
+			barHeight = _ref$barHeight === void 0 ? 16 : _ref$barHeight,
+			_ref$thickWidth = _ref.thickWidth,
+			thickWidth = _ref$thickWidth === void 0 ? 1.4 : _ref$thickWidth,
+			_ref$styleOptions = _ref.styleOptions,
+			styleOptions = _ref$styleOptions === void 0 ? {} : _ref$styleOptions,
+			_ref$showLinks = _ref.showLinks,
+			showLinks = _ref$showLinks === void 0 ? true : _ref$showLinks,
+			_ref$showDelay = _ref.showDelay,
+			showDelay = _ref$showDelay === void 0 ? true : _ref$showDelay,
+			start = _ref.start,
+			end = _ref.end;
 		var unit = UNIT[viewMode];
 		var minTime = start.getTime() - unit * 48;
 		var maxTime = end.getTime() + unit * 48;
@@ -1354,28 +1355,28 @@
 	}
 
 	var _typeof_1 = createCommonjsModule(function (module) {
-	function _typeof(obj) {
-		"@babel/helpers - typeof";
+		function _typeof(obj) {
+			"@babel/helpers - typeof";
 
-		if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-			module.exports = _typeof = function _typeof(obj) {
-				return typeof obj;
-			};
+			if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+				module.exports = _typeof = function _typeof(obj) {
+					return typeof obj;
+				};
 
-			module.exports["default"] = module.exports, module.exports.__esModule = true;
-		} else {
-			module.exports = _typeof = function _typeof(obj) {
-				return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-			};
+				module.exports["default"] = module.exports, module.exports.__esModule = true;
+			} else {
+				module.exports = _typeof = function _typeof(obj) {
+					return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+				};
 
-			module.exports["default"] = module.exports, module.exports.__esModule = true;
+				module.exports["default"] = module.exports, module.exports.__esModule = true;
+			}
+
+			return _typeof(obj);
 		}
 
-		return _typeof(obj);
-	}
-
-	module.exports = _typeof;
-	module.exports["default"] = module.exports, module.exports.__esModule = true;
+		module.exports = _typeof;
+		module.exports["default"] = module.exports, module.exports.__esModule = true;
 	});
 
 	var _typeof = /*@__PURE__*/getDefaultExportFromCjs(_typeof_1);
@@ -1404,8 +1405,8 @@
 
 	function render$2(vnode, ctx) {
 		var tag = vnode.tag,
-				props = vnode.props,
-				children = vnode.children;
+			props = vnode.props,
+			children = vnode.children;
 		var node = doc.createElementNS(NS, tag);
 
 		if (props) {
@@ -1463,9 +1464,9 @@
 			key: "render",
 			value: function render() {
 				var data = this.data,
-						start = this.start,
-						end = this.end,
-						options = this.options;
+					start = this.start,
+					end = this.end,
+					options = this.options;
 
 				if (this.tree) {
 					this.dom.removeChild(this.tree);
@@ -1498,23 +1499,23 @@
 
 	function render$1(vnode, ctx, e) {
 		var tag = vnode.tag,
-				props = vnode.props,
-				children = vnode.children;
+			props = vnode.props,
+			children = vnode.children;
 
 		if (tag === 'svg') {
 			var width = props.width,
-					height = props.height;
+				height = props.height;
 			ctx.width = width;
 			ctx.height = height;
 		}
 
 		if (tag === 'line') {
 			var x1 = props.x1,
-					x2 = props.x2,
-					y1 = props.y1,
-					y2 = props.y2,
-					_props$style = props.style,
-					style = _props$style === void 0 ? {} : _props$style;
+				x2 = props.x2,
+				y1 = props.y1,
+				y2 = props.y2,
+				_props$style = props.style,
+				style = _props$style === void 0 ? {} : _props$style;
 
 			if (style.stroke) {
 				ctx.strokeStyle = style.stroke;
@@ -1529,8 +1530,8 @@
 
 		if (tag === 'polyline' || tag === 'polygon') {
 			var points = props.points,
-					_props$style2 = props.style,
-					_style = _props$style2 === void 0 ? {} : _props$style2;
+				_props$style2 = props.style,
+				_style = _props$style2 === void 0 ? {} : _props$style2;
 
 			var p = s2p(points);
 
@@ -1559,16 +1560,16 @@
 
 		if (tag === 'rect') {
 			var x = props.x,
-					y = props.y,
-					_width = props.width,
-					_height = props.height,
-					_props$rx = props.rx,
-					rx = _props$rx === void 0 ? 0 : _props$rx,
-					_props$ry = props.ry,
-					ry = _props$ry === void 0 ? 0 : _props$ry,
-					onClick = props.onClick,
-					_props$style3 = props.style,
-					_style2 = _props$style3 === void 0 ? {} : _props$style3; // From https://github.com/canvg/canvg
+				y = props.y,
+				_width = props.width,
+				_height = props.height,
+				_props$rx = props.rx,
+				rx = _props$rx === void 0 ? 0 : _props$rx,
+				_props$ry = props.ry,
+				ry = _props$ry === void 0 ? 0 : _props$ry,
+				onClick = props.onClick,
+				_props$style3 = props.style,
+				_style2 = _props$style3 === void 0 ? {} : _props$style3; // From https://github.com/canvg/canvg
 
 
 			ctx.beginPath();
@@ -1603,8 +1604,8 @@
 
 		if (tag === 'text') {
 			var _x = props.x,
-					_y = props.y,
-					_style3 = props.style;
+				_y = props.y,
+				_style3 = props.style;
 
 			if (_style3) {
 				ctx.fillStyle = _style3.fill;
@@ -1716,9 +1717,9 @@
 			key: "render",
 			value: function render(e) {
 				var data = this.data,
-						start = this.start,
-						end = this.end,
-						options = this.options;
+					start = this.start,
+					end = this.end,
+					options = this.options;
 
 				if (options.maxTextWidth === undefined) {
 					var font = getFont(options.styleOptions || {});
@@ -1754,8 +1755,8 @@
 
 	function render(vnode, ctx) {
 		var tag = vnode.tag,
-				props = vnode.props,
-				children = vnode.children;
+			props = vnode.props,
+			children = vnode.children;
 		var tokens = [];
 		tokens.push("<".concat(tag));
 		Object.keys(props || {}).forEach(function (k) {
@@ -1829,9 +1830,9 @@
 			key: "render",
 			value: function render$1() {
 				var data = this.data,
-						start = this.start,
-						end = this.end,
-						options = this.options;
+					start = this.start,
+					end = this.end,
+					options = this.options;
 
 				var props = _objectSpread(_objectSpread({}, options), {}, {
 					start: start,

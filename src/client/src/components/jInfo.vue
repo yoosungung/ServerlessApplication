@@ -4,7 +4,9 @@
       <v-col
         v-for="itm in objectconfig"
         :key="itm.value"
-        cols="12" sm="6" lg="3"
+        cols="12"
+        sm="6"
+        lg="3"
       >
         <v-text-field
           v-if="itm.type == 'icon'"
@@ -75,26 +77,32 @@ export default {
   props: {
     objectype: String,
     objectconfig: Array,
-    jsondata: Object
+    jsondata: Object,
   },
   data() {
     return {
-      filedata: {}
-    }
+      filedata: {},
+    };
   },
   methods: {
     qryRefItems(item) {
       //console.log("jinfo.qryRefItems:", item);
-      const cis = this.$uiconfig.getCodeItems(this.$props.objectype, item.value);
-      if(cis) {
-        if(cis.isDynamicFilter) {
-          if(cis.hasValueFilter) {
-            cis.qryValue(null, this.$props.jsondata)
-            .then(r => {return r;})
-            .catch(e => {
-              console.error(e);
-              return [];
-            });
+      const cis = this.$uiconfig.getCodeItems(
+        this.$props.objectype,
+        item.value
+      );
+      if (cis) {
+        if (cis.isDynamicFilter) {
+          if (cis.hasValueFilter) {
+            cis
+              .qryValue(null, this.$props.jsondata)
+              .then((r) => {
+                return r;
+              })
+              .catch((e) => {
+                console.error(e);
+                return [];
+              });
           } else {
             return item.refitems;
           }
@@ -107,7 +115,13 @@ export default {
     },
     fileDownload(item) {
       const f = this.$props.jsondata[item?.value];
-      const s3path = f["s3key"] || s3File.getPath(this.$props.jsondata?.INFO_ID, item?.value, this.filedata);
+      const s3path =
+        f["s3key"] ||
+        s3File.getPath(
+          this.$props.jsondata?.INFO_ID,
+          item?.value,
+          this.filedata
+        );
       this.$axios
         .get(`/api/file/${s3path}`)
         .then((r) => {
@@ -117,15 +131,15 @@ export default {
         })
         .catch((e) => {
           console.error(e);
-          this.onMessageBox('Erorr', 'File down load error !');
+          this.onMessageBox("Erorr", "File down load error !");
         });
     },
     fileProps(item) {
       s3File.api2file(item?.value, this.filedata, this.$props.jsondata);
       return item?.value;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>

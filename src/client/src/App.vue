@@ -41,12 +41,17 @@
         light
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn ref="btn_power" icon :color="signUser ? 'primery' : 'disable'" @click="onPower">
+      <v-btn
+        ref="btn_power"
+        icon
+        :color="signUser ? 'primery' : 'disable'"
+        @click="onPower"
+      >
         <v-icon>mdi-power</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
-      <router-view v-on:message-bar="onMessageBar"/>
+      <router-view v-on:message-bar="onMessageBar" />
     </v-main>
     <v-snackbar v-model="snackbar" :timeout="timeout">
       <div>
@@ -76,14 +81,14 @@ export default {
     snackbar_message: "",
     snackbar_title: "",
     timeout: 2000,
-    signUser: undefined
+    signUser: undefined,
   }),
   async beforeMount() {
-    if(await this.$uiconfig.loadConfigs()) {
+    if (await this.$uiconfig.loadConfigs()) {
       this.items = this.$uiconfig.getMenus(false);
       this.$axios.use(this, this.$uiconfig.getApiUrl());
       this.$uiconfig.setAxios(this.$axios);
-    }    
+    }
   },
   methods: {
     onMessageBar(title, message) {
@@ -92,18 +97,18 @@ export default {
       this.snackbar = true;
     },
     onSignin(employee) {
-      if(employee) {
+      if (employee) {
         this.signUser = employee;
-        if(this.signUser.isadmin) {
+        if (this.signUser.isadmin) {
           this.items = this.$uiconfig.getMenus(true);
         }
       }
     },
     onPower() {
       this.signUser = undefined;
-      this.$axios.defaults.headers['Authorization'] = "";
-      this.$router.push({ name: 'signin', path: '/signin' })
-    }
+      this.$axios.defaults.headers["Authorization"] = "";
+      this.$router.push({ name: "signin", path: "/signin" });
+    },
   },
 };
 </script>

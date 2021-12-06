@@ -1,57 +1,115 @@
 <template>
-    <div style="all: unset;">
-      <div class="asldigram">
-        <div class="wrapper">
-          <div class="col-left">
-            <v-tabs v-model="tabIdx">
-              <v-tab key="Tasks">Tasks</v-tab>
-              <v-tab key="Flows">Flows</v-tab>
-            </v-tabs>
-            <v-tabs-items v-model="tabIdx">
-              <v-tab-item key="Tasks">
-                <div v-for="itm in TaskItems" :key="itm.name"
-                  class="drag-drawflow" 
-                  :data-node="itm.name"
-                  draggable="true" v-on:dragstart="drag" 
-                  v-on:touchend="drop"
-                  v-on:touchmove="positionMobile"
-                  v-on:touchstart="drag"
-                >
-                  <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
-                </div>
-              </v-tab-item>
-              <v-tab-item key="Flows">
-                <div v-for="itm in flowItems" :key="itm.name"
-                  class="drag-drawflow" 
-                  :data-node="itm.name"
-                  draggable="true" v-on:dragstart="drag" 
-                  v-on:touchend="drop"
-                  v-on:touchmove="positionMobile"
-                  v-on:touchstart="drag"
-                >
-                  <v-icon>{{itm.icon}}</v-icon><span> {{itm.name}}</span>
-                </div>
-              </v-tab-item>
-            </v-tabs-items>
-          </div>
-          <div class="col-right">
-            <div id="drawflow" v-on:drop="drop" v-on:dragover="allowDrop">
-              <div class="btn-export" onclick="">Export</div>
-              <div class="btn-clear" v-on:click="$editor.clearModuleSelected(); $editor.import(cleanAslJson());">Clear</div>
-              <div class="btn-lock">
-                <i ref="lock" class="v-icon notranslate mdi theme--dark mdi-lock-open-variant-outline" v-on:click="$editor.editor_mode='fixed'; changeMode('lock');"></i>
-                <i ref="unlock" class="v-icon notranslate mdi theme--dark mdi-lock-outline" v-on:click="$editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
+  <div style="all: unset">
+    <div class="asldigram">
+      <div class="wrapper">
+        <div class="col-left">
+          <v-tabs v-model="tabIdx">
+            <v-tab key="Tasks">Tasks</v-tab>
+            <v-tab key="Flows">Flows</v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="tabIdx">
+            <v-tab-item key="Tasks">
+              <div
+                v-for="itm in TaskItems"
+                :key="itm.name"
+                class="drag-drawflow"
+                :data-node="itm.name"
+                draggable="true"
+                v-on:dragstart="drag"
+                v-on:touchend="drop"
+                v-on:touchmove="positionMobile"
+                v-on:touchstart="drag"
+              >
+                <v-icon>{{ itm.icon }}</v-icon
+                ><span> {{ itm.name }}</span>
               </div>
-              <div class="bar-zoom">
-                <i class="v-icon notranslate mdi theme--dark mdi-magnify-minus-outline" v-on:click="$editor.zoom_out()"></i>
-                <i class="v-icon notranslate mdi theme--dark mdi-magnify" v-on:click="$editor.zoom_reset()"></i>
-                <i class="v-icon notranslate mdi theme--dark mdi-magnify-plus-outline" v-on:click="$editor.zoom_in()"></i>
+            </v-tab-item>
+            <v-tab-item key="Flows">
+              <div
+                v-for="itm in flowItems"
+                :key="itm.name"
+                class="drag-drawflow"
+                :data-node="itm.name"
+                draggable="true"
+                v-on:dragstart="drag"
+                v-on:touchend="drop"
+                v-on:touchmove="positionMobile"
+                v-on:touchstart="drag"
+              >
+                <v-icon>{{ itm.icon }}</v-icon
+                ><span> {{ itm.name }}</span>
               </div>
+            </v-tab-item>
+          </v-tabs-items>
+        </div>
+        <div class="col-right">
+          <div id="drawflow" v-on:drop="drop" v-on:dragover="allowDrop">
+            <div class="btn-export" v-on:click="exportAslJson">Save</div>
+            <div
+              class="btn-clear"
+              v-on:click="
+                $editor.clearModuleSelected();
+                $editor.import(cleanAslJson());
+              "
+            >
+              Clear
+            </div>
+            <div class="btn-lock">
+              <i
+                ref="lock"
+                class="
+                  v-icon
+                  notranslate
+                  mdi
+                  theme--dark
+                  mdi-lock-open-variant-outline
+                "
+                v-on:click="
+                  $editor.editor_mode = 'fixed';
+                  changeMode('lock');
+                "
+              ></i>
+              <i
+                ref="unlock"
+                class="v-icon notranslate mdi theme--dark mdi-lock-outline"
+                v-on:click="
+                  $editor.editor_mode = 'edit';
+                  changeMode('unlock');
+                "
+                style="display: none"
+              ></i>
+            </div>
+            <div class="bar-zoom">
+              <i
+                class="
+                  v-icon
+                  notranslate
+                  mdi
+                  theme--dark
+                  mdi-magnify-minus-outline
+                "
+                v-on:click="$editor.zoom_out()"
+              ></i>
+              <i
+                class="v-icon notranslate mdi theme--dark mdi-magnify"
+                v-on:click="$editor.zoom_reset()"
+              ></i>
+              <i
+                class="
+                  v-icon
+                  notranslate
+                  mdi
+                  theme--dark
+                  mdi-magnify-plus-outline
+                "
+                v-on:click="$editor.zoom_in()"
+              ></i>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -68,9 +126,9 @@ export default {
       $editor: null,
       aslJson: {},
 
-      mobile_item_selec: '',
+      mobile_item_selec: "",
       mobile_last_move: null,
-    }
+    };
   },
 
   mounted() {
@@ -91,21 +149,77 @@ export default {
   methods: {
     qryStates() {
       this.flowItems = [
-        { name: "Pass", icon: "mdi-arrow-right-circle-outline", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-arrow-right-circle-outline"></i> PASS</div></div>`},
-        { name: "Choice", icon: "mdi-call-split", inputcnt: 1, outputcnt: 2, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-call-split"></i> CHOICE</div></div>`},
-        { name: "Wait", icon: "mdi-alarm", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-alarm"></i> WAIT</div></div>`},
-        { name: "Succeed", icon: "mdi-check-underline", inputcnt: 1, outputcnt: -1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-check-underline"></i> SUCCEED</div></div>`},
-        { name: "Fail", icon: "mdi-message-alert", inputcnt: 1, outputcnt: -1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-message-alert"></i> FAIL</div></div>`},
-        { name: "Parallel", icon: "mdi-play-box-multiple", inputcnt: 1, outputcnt: 2, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play-box-multiple"></i> PARALLEL</div></div>`},
-        { name: "Map", icon: "mdi-reload", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-reload"></i> MAP</div></div>`},
-        { name: "Merge", icon: "mdi-merge", inputcnt: 1, outputcnt: 1, dataformat: {}, html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-merge"></i> MERGE</div></div>`},
+        {
+          name: "Pass",
+          icon: "mdi-arrow-right-circle-outline",
+          inputcnt: 1,
+          outputcnt: 1,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-arrow-right-circle-outline"></i> PASS</div></div>`,
+        },
+        {
+          name: "Choice",
+          icon: "mdi-call-split",
+          inputcnt: 1,
+          outputcnt: 2,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-call-split"></i> CHOICE</div></div>`,
+        },
+        {
+          name: "Wait",
+          icon: "mdi-alarm",
+          inputcnt: 1,
+          outputcnt: 1,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-alarm"></i> WAIT</div></div>`,
+        },
+        {
+          name: "Succeed",
+          icon: "mdi-check-underline",
+          inputcnt: 1,
+          outputcnt: -1,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-check-underline"></i> SUCCEED</div></div>`,
+        },
+        {
+          name: "Fail",
+          icon: "mdi-message-alert",
+          inputcnt: 1,
+          outputcnt: -1,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-message-alert"></i> FAIL</div></div>`,
+        },
+        {
+          name: "Parallel",
+          icon: "mdi-play-box-multiple",
+          inputcnt: 1,
+          outputcnt: 2,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play-box-multiple"></i> PARALLEL</div></div>`,
+        },
+        {
+          name: "Map",
+          icon: "mdi-reload",
+          inputcnt: 1,
+          outputcnt: 1,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-reload"></i> MAP</div></div>`,
+        },
+        {
+          name: "Merge",
+          icon: "mdi-merge",
+          inputcnt: 1,
+          outputcnt: 1,
+          dataformat: {},
+          html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-merge"></i> MERGE</div></div>`,
+        },
       ];
       this.$axios
         .get(`/api/list/TTaskTemplate`)
         .then((r) => {
           if (r && r.data) {
-            this.TaskItems = r.data.map(v => { 
-              if(!v.html) {
+            this.TaskItems = r.data.map((v) => {
+              if (!v.html) {
                 v.html = `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light ${v.icon}"></i> ${v.name}</div></div>`;
               }
               return v;
@@ -121,46 +235,44 @@ export default {
     },
     cleanAslJson() {
       this.aslJson = {
-        "drawflow": {
-          "Home": {
-            "data": {
-              "0": {
-                "id":0,
-                "name":"start",
-                "data":{},
-                "class":"start",
-                "html": `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play"></i>START</div></div>`, 
-                "typenode": false, 
-                "inputs":{},
-                "outputs":{
-                  "output_1":{
-                    "connections":[
-                    ]
-                  }
+        drawflow: {
+          Home: {
+            data: {
+              0: {
+                id: 0,
+                name: "start",
+                data: {},
+                class: "start",
+                html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-play"></i>START</div></div>`,
+                typenode: false,
+                inputs: {},
+                outputs: {
+                  output_1: {
+                    connections: [],
+                  },
                 },
-                "pos_x": 400,
-                "pos_y":50
+                pos_x: 400,
+                pos_y: 50,
               },
-              "999999": {
-                "id":999999,
-                "name":"end",
-                "data":{},
-                "class":"end",
-                "html":`<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-stop"></i>END</div></div>`, 
-                "typenode": false, 
-                "inputs":{
-                  "input_1":{
-                    "connections":[
-                    ]
-                  }
+              99999999: {
+                id: 99999999,
+                name: "end",
+                data: {},
+                class: "end",
+                html: `<div><div class="title-box"><i class="v-icon notranslate mdi theme--light mdi-stop"></i>END</div></div>`,
+                typenode: false,
+                inputs: {
+                  input_1: {
+                    connections: [],
+                  },
                 },
-                "outputs":{},
-                "pos_x": 400,
-                "pos_y": 500
+                outputs: {},
+                pos_x: 400,
+                pos_y: 500,
               },
-            }
-          }
-        }
+            },
+          },
+        },
       };
       return this.aslJson;
     },
@@ -168,6 +280,71 @@ export default {
     queryAslJson() {
       return this.cleanAslJson();
     },
+    exportAslJson() {
+      const flowJson = this.$editor.export();
+      console.log(flowJson);
+    },
+    /*
+{
+  "0":{
+    "id":0,
+    "name":"start",
+    "data":{},
+    "class":"start",
+    "html":"<div><div class=\"title-box\"><i class=\"v-icon notranslate mdi theme--light mdi-play\"></i>START</div></div>",
+    "typenode":false,
+    "inputs":{},
+    "outputs":{
+      "output_1":{
+        "connections":[
+          {"node":"10000000","output":"input_1"}
+        ]
+      }
+    },
+    "pos_x":400,"pos_y":50
+  },
+  "9999999":{
+    "id":9999999,
+    "name":"end",
+    "data":{},
+    "class":"end",
+    "html":"<div><div class=\"title-box\"><i class=\"v-icon notranslate mdi theme--light mdi-stop\"></i>END</div></div>",
+    "typenode":false,
+    "inputs":{
+      "input_1":{
+        "connections":[
+          {"node":"10000000","input":"output_1"}
+        ]
+      }
+    },
+    "outputs":{},
+    "pos_x":400,"pos_y":500
+    },
+    "10000000":{
+      "id":10000000,
+      "name":"테스트",
+      "data":"{}",
+      "class":"테스트",
+      "html":"<div><div class=\"title-box\"><i class=\"v-icon notranslate mdi theme--light mdi-test-tube\"></i> 테스트</div></div>",
+      "typenode":false,
+      "inputs":{
+        "input_1":{
+          "connections":[
+            {"node":"0","input":"output_1"}
+          ]
+        }
+      },
+      "outputs":{
+        "output_1":{
+          "connections":[
+            {"node":"9999999","output":"input_1"}
+          ]
+        }
+      },
+      "pos_x":363,"pos_y":180
+    }
+  }
+    */
 
     setEditorEvent() {
       /*
@@ -178,7 +355,7 @@ export default {
         console.log("Node removed " + id);
       });
       */
-      this.$editor.on('nodeSelected', function(id) {
+      this.$editor.on("nodeSelected", function (id) {
         console.log("Node selected " + id);
       });
       /*
@@ -219,12 +396,12 @@ export default {
 
     changeMode(option) {
       //console.log('changeMode', option);
-      if(option == 'lock') {
-        this.$refs.lock.style.display = 'none';
-        this.$refs.unlock.style.display = 'block';
+      if (option == "lock") {
+        this.$refs.lock.style.display = "none";
+        this.$refs.unlock.style.display = "block";
       } else {
-        this.$refs.lock.style.display = 'block';
-        this.$refs.unlock.style.display = 'none';
+        this.$refs.lock.style.display = "block";
+        this.$refs.unlock.style.display = "none";
       }
     },
 
@@ -235,19 +412,30 @@ export default {
     drag(ev) {
       //console.log('drag', ev);
       if (ev.type === "touchstart") {
-        this.mobile_item_selec = ev.target.closest(".drag-drawflow").getAttribute('data-node');
+        this.mobile_item_selec = ev.target
+          .closest(".drag-drawflow")
+          .getAttribute("data-node");
       } else {
-        ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+        ev.dataTransfer.setData("node", ev.target.getAttribute("data-node"));
       }
     },
     drop(ev) {
       //console.log('drop', ev);
       if (ev.type === "touchend") {
-        var parentdrawflow = document.elementFromPoint( this.mobile_last_move.touches[0].clientX, this.mobile_last_move.touches[0].clientY).closest("#drawflow");
-        if(parentdrawflow != null) {
-          this.addNodeToDrawFlow(this.mobile_item_selec, this.mobile_last_move.touches[0].clientX, this.mobile_last_move.touches[0].clientY);
+        var parentdrawflow = document
+          .elementFromPoint(
+            this.mobile_last_move.touches[0].clientX,
+            this.mobile_last_move.touches[0].clientY
+          )
+          .closest("#drawflow");
+        if (parentdrawflow != null) {
+          this.addNodeToDrawFlow(
+            this.mobile_item_selec,
+            this.mobile_last_move.touches[0].clientX,
+            this.mobile_last_move.touches[0].clientY
+          );
         }
-        this.mobile_item_selec = '';
+        this.mobile_item_selec = "";
       } else {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("node");
@@ -260,15 +448,42 @@ export default {
     },
 
     addNodeToDrawFlow(name, pos_x, pos_y) {
-      if(this.$editor.editor_mode === 'fixed') {
+      if (this.$editor.editor_mode === "fixed") {
         return false;
       }
-      pos_x = pos_x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().x * ( this.$editor.precanvas.clientWidth / (this.$editor.precanvas.clientWidth * this.$editor.zoom)));
-      pos_y = pos_y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)) - (this.$editor.precanvas.getBoundingClientRect().y * ( this.$editor.precanvas.clientHeight / (this.$editor.precanvas.clientHeight * this.$editor.zoom)));
+      pos_x =
+        pos_x *
+          (this.$editor.precanvas.clientWidth /
+            (this.$editor.precanvas.clientWidth * this.$editor.zoom)) -
+        this.$editor.precanvas.getBoundingClientRect().x *
+          (this.$editor.precanvas.clientWidth /
+            (this.$editor.precanvas.clientWidth * this.$editor.zoom));
+      pos_y =
+        pos_y *
+          (this.$editor.precanvas.clientHeight /
+            (this.$editor.precanvas.clientHeight * this.$editor.zoom)) -
+        this.$editor.precanvas.getBoundingClientRect().y *
+          (this.$editor.precanvas.clientHeight /
+            (this.$editor.precanvas.clientHeight * this.$editor.zoom));
 
       let itm;
-      itm = this.TaskItems.find(v => { return v.name == name; }) || this.flowItems.find(v => { return v.name == name; });
-      this.$editor.addNode(name, itm?.inputcnt || 1,  itm?.outputcnt || 1, pos_x, pos_y, name, itm?.dataformat || {}, itm?.html || `<div><div class="title-box">${name}</div></div>`);
+      itm =
+        this.TaskItems.find((v) => {
+          return v.name == name;
+        }) ||
+        this.flowItems.find((v) => {
+          return v.name == name;
+        });
+      this.$editor.addNode(
+        name,
+        itm?.inputcnt || 1,
+        itm?.outputcnt || 1,
+        pos_x,
+        pos_y,
+        name,
+        itm?.dataformat || {},
+        itm?.html || `<div><div class="title-box">${name}</div></div>`
+      );
       /*
         <div>
           <div class="title-box"><i class="fab fa-facebook"></i> Facebook Message</div>
@@ -287,9 +502,9 @@ export default {
         </div>
         editor.addNode('aws', 1, 1, pos_x, pos_y, 'aws', { "db": { "dbname": '', "key": '' }}, aws );
       */
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
@@ -301,7 +516,7 @@ export default {
   margin: 0px;
   padding: 0px;
   overflow: hidden;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 
   position: relative;
 }
@@ -311,7 +526,7 @@ export default {
 }
 
 .col-left {
-  float:left;
+  float: left;
   overflow: auto;
   width: 30%;
   max-width: 300px;
@@ -338,12 +553,11 @@ export default {
 
 #drawflow {
   position: relative;
-  height: 100%; 
+  height: 100%;
   background: var(--background-color);
   background-size: 25px 25px;
-  background-image:
-   linear-gradient(to right, #f1f1f1 1px, transparent 1px),
-   linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
+  background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px),
+    linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
 }
 
 .btn-export {
@@ -416,7 +630,7 @@ export default {
     width: 50px;
   }
   .col .drag-drawflow span {
-    display:none;
+    display: none;
   }
   #drawflow {
     width: calc(100vw - 51px);
@@ -435,7 +649,8 @@ export default {
 .drawflow .drawflow-node:hover {
   cursor: move;
 }
-.drawflow .drawflow-node .inputs, .drawflow .drawflow-node .outputs {
+.drawflow .drawflow-node .inputs,
+.drawflow .drawflow-node .outputs {
   /* by YSU
   width: 0px; */
   height: 0px;
@@ -482,7 +697,7 @@ export default {
   align-items: center;
   position: absolute;
   min-height: 40px;
-  border-radius:4px;
+  border-radius: 4px;
   color: black;
   z-index: 2;
 
@@ -493,7 +708,7 @@ export default {
   padding: 0px;
   width: 200px;
 }
-.drawflow .drawflow-node.selected  {
+.drawflow .drawflow-node.selected {
   background: white;
   border: 1px solid #4ea9ff;
   -webkit-box-shadow: 0 2px 20px 2px #4ea9ff;
@@ -510,7 +725,8 @@ export default {
   stroke: #4ea9ff;
   stroke-width: 3px;
 }
-.drawflow .drawflow-node .input, .drawflow .drawflow-node .output {
+.drawflow .drawflow-node .input,
+.drawflow .drawflow-node .output {
   position: relative;
   background: white;
   border-radius: 50%;
@@ -522,7 +738,8 @@ export default {
   width: 15px;
   border: 2px solid var(--border-color);
 }
-.drawflow .drawflow-node .input:hover, .drawflow .drawflow-node .output:hover {
+.drawflow .drawflow-node .input:hover,
+.drawflow .drawflow-node .output:hover {
   background: #4ea9ff;
 }
 .drawflow .drawflow-node .output {
@@ -590,10 +807,13 @@ export default {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-.drawflow-node.start, .drawflow-node.end {
+.drawflow-node.start,
+.drawflow-node.end {
   width: 110px;
 }
-.drawflow-node input, .drawflow-node select, .drawflow-node textarea {
+.drawflow-node input,
+.drawflow-node select,
+.drawflow-node textarea {
   border-radius: 4px;
   border: 1px solid var(--border-color);
   height: 30px;
@@ -628,7 +848,8 @@ export default {
   stroke-width: 2;
   fill: white;
 }
-.drawflow .connection .point.selected, .drawflow .connection .point:hover {
+.drawflow .connection .point.selected,
+.drawflow .connection .point:hover {
   fill: #4ea9ff;
 }
 </style>

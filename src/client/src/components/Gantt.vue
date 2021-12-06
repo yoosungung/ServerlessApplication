@@ -2,13 +2,26 @@
   <v-container fluid>
     <v-row justify="end">
       <v-col cols="1" sm="3" align-self="center">
-        <v-select :items="viewModeItems" v-model="viewMode" label="View Mode" @change="OnChangeOption"/>
+        <v-select
+          :items="viewModeItems"
+          v-model="viewMode"
+          label="View Mode"
+          @change="OnChangeOption"
+        />
       </v-col>
       <v-col cols="1" sm="1" align-self="center">
-        <v-checkbox v-model="showLinks" label="Show Links" @change="OnChangeOption"/>
+        <v-checkbox
+          v-model="showLinks"
+          label="Show Links"
+          @change="OnChangeOption"
+        />
       </v-col>
       <v-col cols="1" sm="1" align-self="center">
-        <v-checkbox v-model="showDelay" label="Show Delay" @change="OnChangeOption"/>
+        <v-checkbox
+          v-model="showDelay"
+          label="Show Delay"
+          @change="OnChangeOption"
+        />
       </v-col>
       <v-col cols="auto" sm="auto" align-self="center">
         <v-btn @click="OnClickReSchedule">ReSchedule</v-btn>
@@ -18,14 +31,22 @@
     </v-row>
     <v-row class="overflow-x-auto">
       <v-col cols="auto">
-        <div id="svg-root" v-html="ganttHTML" style="{all:unset;}"></div>
+        <div
+          id="svg-root"
+          v-html="ganttHTML"
+          style="
+             {
+              all: unset;
+            }
+          "
+        ></div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import {SVGGantt, utils} from '../utils/gantt';
+import { SVGGantt, utils } from "../utils/gantt";
 
 export default {
   props: {
@@ -50,12 +71,12 @@ export default {
       moving: false,
       $start: null,
       $line: null,
-    }
+    };
   },
-  
+
   mounted() {
-    this.getData(this.$props.parentid, this.$props.objectname)
-      .then(({tasks, links}) => {
+    this.getData(this.$props.parentid, this.$props.objectname).then(
+      ({ tasks, links }) => {
         this.tasks = tasks;
         this.links = links;
         const data = utils.formatData(this.tasks, this.links);
@@ -63,30 +84,32 @@ export default {
 
         const options = {
           viewMode: this.viewMode,
-          showLinks: `${this.showLinks?"showLinks":""}`,
-          showDelay: `${this.showDelay?"showDelay":""}`,
-          onClick: this.OnClickGantt
-        }
+          showLinks: `${this.showLinks ? "showLinks" : ""}`,
+          showDelay: `${this.showDelay ? "showDelay" : ""}`,
+          onClick: this.OnClickGantt,
+        };
         //console.log(options);
 
-        this.svgGantt = new SVGGantt('#svg-root', data, options);
+        this.svgGantt = new SVGGantt("#svg-root", data, options);
         this.ganttHTML = this.svgGantt.render();
 
-        this.$svg = document.getElementById('svg-root');
-        this.$svg.addEventListener('mousedown', this.onmousedown);
-        this.$svg.addEventListener('mousemove', this.onmousemove);
-        this.$svg.addEventListener('mouseup', this.onmouseup);
-      });
+        this.$svg = document.getElementById("svg-root");
+        this.$svg.addEventListener("mousedown", this.onmousedown);
+        this.$svg.addEventListener("mousemove", this.onmousemove);
+        this.$svg.addEventListener("mouseup", this.onmouseup);
+      }
+    );
   },
 
   methods: {
     getData(objectid, objectype) {
       let objty = { task: "TTask", link: "TLink" };
-      if(objectype == "TProcess") {
+      if (objectype == "TProcess") {
         objty = { task: "TClassTask", link: "TClassLink" };
       }
       this.ganttHTML = "";
-      return this.$axios.get(`/api/info/${objectid}`)
+      return this.$axios
+        .get(`/api/info/${objectid}`)
         .then((r) => {
           const tasks = [];
           const links = [];
@@ -95,17 +118,17 @@ export default {
             delete dat.INFO_GRP;
             delete dat.INFO_BY;
             delete dat.INFO_AT;
-            const objtype = dat['INFO_TYPE'];
+            const objtype = dat["INFO_TYPE"];
             //delete dat.INFO_TYPE;
 
             if (objtype === objty.task) {
-              dat['id'] = dat['INFO_ID'];
+              dat["id"] = dat["INFO_ID"];
               //delete dat.INFO_ID;
-              if(dat['start']) {
-                dat['start'] = new Date(dat['start']);
+              if (dat["start"]) {
+                dat["start"] = new Date(dat["start"]);
               }
-              if(dat['end']) {
-                dat['end'] = new Date(dat['end']);
+              if (dat["end"]) {
+                dat["end"] = new Date(dat["end"]);
               }
               tasks.push(dat);
             } else if (objtype === objty.link) {
@@ -114,7 +137,7 @@ export default {
             }
           }
 
-          tasks.sort((a,b) => {
+          tasks.sort((a, b) => {
             if (a.no > b.no) {
               return 1;
             }
@@ -124,7 +147,7 @@ export default {
             return 0;
           });
 
-          return {tasks, links};
+          return { tasks, links };
         })
         .catch((e) => {
           this.tasks = [];
@@ -134,20 +157,20 @@ export default {
     },
 
     setData(objectid) {
-      const tasks = this.tasks.map( vo => {
-        if(vo['start']) {
-          if(typeof vo['start'].getMonth === 'function') {
-            vo['start'] = vo['start'].toISOString().substring(0, 10); 
+      const tasks = this.tasks.map((vo) => {
+        if (vo["start"]) {
+          if (typeof vo["start"].getMonth === "function") {
+            vo["start"] = vo["start"].toISOString().substring(0, 10);
           } else {
-            vo['start'] = vo['start'].substring(0, 10); 
-          }          
+            vo["start"] = vo["start"].substring(0, 10);
+          }
         }
-        if(vo['end']) {
-          if(typeof vo['end'].getMonth === 'function') {
-            vo['end'] = vo['end'].toISOString().substring(0, 10); 
+        if (vo["end"]) {
+          if (typeof vo["end"].getMonth === "function") {
+            vo["end"] = vo["end"].toISOString().substring(0, 10);
           } else {
-            vo['end'] = vo['end'].substring(0, 10); 
-          }          
+            vo["end"] = vo["end"].substring(0, 10);
+          }
         }
         return vo;
       });
@@ -159,7 +182,11 @@ export default {
         })
         .catch((e) => {
           console.error(e);
-          this.$emit("message-bar", "Error", `Faile Save to Tasks and Links ! ${e}`);
+          this.$emit(
+            "message-bar",
+            "Error",
+            `Faile Save to Tasks and Links ! ${e}`
+          );
         });
     },
 
@@ -172,9 +199,9 @@ export default {
     OnChangeOption() {
       const options = {
         viewMode: this.viewMode,
-        showLinks: `${this.showLinks?"showLinks":""}`,
-        showDelay: `${this.showDelay?"showDelay":""}`,
-      }
+        showLinks: `${this.showLinks ? "showLinks" : ""}`,
+        showDelay: `${this.showDelay ? "showDelay" : ""}`,
+      };
       this.svgGantt.setOptions(options);
       this.ganttHTML = this.svgGantt.render();
     },
@@ -185,8 +212,7 @@ export default {
     },
 
     OnClickLoad() {
-      this.getData(this.$props.parentid)
-      .then(({tasks, links}) => {
+      this.getData(this.$props.parentid).then(({ tasks, links }) => {
         this.tasks = tasks;
         this.links = links;
         this.changeData();
@@ -198,24 +224,25 @@ export default {
     },
 
     OnClickGantt(evt) {
-      if(evt?.id) {
-        const objtype = (this.$props.objectname == "TProcess"?"TClassTask":"TTask");
+      if (evt?.id) {
+        const objtype =
+          this.$props.objectname == "TProcess" ? "TClassTask" : "TTask";
         this.$emit("open-task", evt, objtype);
       }
     },
 
     addLink(s, e) {
-      const sid = s.dataset['id'];
-      const eid = e.dataset['id'];
-      const snode = this.tasks.find(t => t.id === sid);
-      const enode = this.tasks.find(t => t.id === eid);
-      let stype = isStart(s) ? 'S' : 'F';
-      let etype = isStart(e) ? 'S' : 'F';
-      if (snode.type === 'milestone') {
-        stype = 'F';
+      const sid = s.dataset["id"];
+      const eid = e.dataset["id"];
+      const snode = this.tasks.find((t) => t.id === sid);
+      const enode = this.tasks.find((t) => t.id === eid);
+      let stype = isStart(s) ? "S" : "F";
+      let etype = isStart(e) ? "S" : "F";
+      if (snode.type === "milestone") {
+        stype = "F";
       }
-      if (enode.type === 'milestone') {
-        etype = 'S';
+      if (enode.type === "milestone") {
+        etype = "S";
       }
       this.links.push({ source: sid, target: eid, type: `${stype}${etype}` });
       this.changeData();
@@ -227,20 +254,22 @@ export default {
       }
       e.preventDefault();
       this.$start = e.target;
-      document.querySelectorAll('.gantt-ctrl-start,.gantt-ctrl-finish').forEach(elem => {
-        elem.style['display'] = 'block';
-      });
+      document
+        .querySelectorAll(".gantt-ctrl-start,.gantt-ctrl-finish")
+        .forEach((elem) => {
+          elem.style["display"] = "block";
+        });
       this.moving = true;
-      this.$line = document.createElementNS(NS, 'line');
-      const x = this.$start.getAttribute('cx');
-      const y = this.$start.getAttribute('cy');
-      this.$line.setAttribute('x1', x);
-      this.$line.setAttribute('y1', y);
-      this.$line.setAttribute('x2', x);
-      this.$line.setAttribute('y2', y);
-      this.$line.style['stroke'] = '#ffa011';
-      this.$line.style['stroke-width'] = '2';
-      this.$line.style['stroke-dasharray'] = '5';
+      this.$line = document.createElementNS(NS, "line");
+      const x = this.$start.getAttribute("cx");
+      const y = this.$start.getAttribute("cy");
+      this.$line.setAttribute("x1", x);
+      this.$line.setAttribute("y1", y);
+      this.$line.setAttribute("x2", x);
+      this.$line.setAttribute("y2", y);
+      this.$line.style["stroke"] = "#ffa011";
+      this.$line.style["stroke-width"] = "2";
+      this.$line.style["stroke-dasharray"] = "5";
       this.$svg.appendChild(this.$line);
     },
 
@@ -248,16 +277,16 @@ export default {
       if (!this.moving) return;
       e.preventDefault();
       if (isStart(e.target) || isFinish(e.target)) {
-        const x = e.target.getAttribute('cx');
-        const y = e.target.getAttribute('cy');
-        this.$line.setAttribute('x2', x);
-        this.$line.setAttribute('y2', y);
+        const x = e.target.getAttribute("cx");
+        const y = e.target.getAttribute("cy");
+        this.$line.setAttribute("x2", x);
+        this.$line.setAttribute("y2", y);
       } else {
         const x = e.clientX;
         const y = e.clientY;
         const rect = this.$svg.getBoundingClientRect();
-        this.$line.setAttribute('x2', x - rect.left);
-        this.$line.setAttribute('y2', y - rect.top);
+        this.$line.setAttribute("x2", x - rect.left);
+        this.$line.setAttribute("y2", y - rect.top);
       }
     },
 
@@ -269,46 +298,48 @@ export default {
         this.addLink(this.$start, e.target);
       }
 
-      document.querySelectorAll('.gantt-ctrl-start,.gantt-ctrl-finish').forEach(elem => {
-        elem.style['display'] = 'none';
-      });
+      document
+        .querySelectorAll(".gantt-ctrl-start,.gantt-ctrl-finish")
+        .forEach((elem) => {
+          elem.style["display"] = "none";
+        });
       this.moving = false;
       if (this.$start) {
-        this.$start.style['display'] = 'none';
+        this.$start.style["display"] = "none";
         this.$start = null;
       }
       if (this.$line) {
         this.$svg.removeChild(this.$line);
         this.$line = null;
       }
-    }
-  }
-}
+    },
+  },
+};
 
 function isStart(el) {
-  return el.classList.contains('gantt-ctrl-start');
+  return el.classList.contains("gantt-ctrl-start");
 }
 
 function isFinish(el) {
-  return el.classList.contains('gantt-ctrl-finish');
+  return el.classList.contains("gantt-ctrl-finish");
 }
 
-const NS = 'http://www.w3.org/2000/svg';
-
+const NS = "http://www.w3.org/2000/svg";
 </script>
 
 <style>
 .gantt-bar:hover circle {
-  display: block!important;
+  display: block !important;
 }
-.gantt-ctrl-start:hover, .gantt-ctrl-finish:hover {
-  fill: #ffbf5e!important;
-  stroke: #ffa011!important;
+.gantt-ctrl-start:hover,
+.gantt-ctrl-finish:hover {
+  fill: #ffbf5e !important;
+  stroke: #ffa011 !important;
 }
 .gantt-label {
   cursor: pointer;
 }
 .gantt-label:hover {
-  fill: #1582dc!important;
+  fill: #1582dc !important;
 }
 </style>
