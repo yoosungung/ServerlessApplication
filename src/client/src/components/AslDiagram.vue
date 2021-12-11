@@ -116,6 +116,12 @@
 import Drawflow from "../utils/drawflow";
 
 export default {
+  props: {
+    parentid: String,
+    parentdata: Object,
+    objectype: String,
+    jsondata: Array,
+  },
   data() {
     return {
       tabIdx: 0,
@@ -139,7 +145,6 @@ export default {
     this.$editor.reroute = true;
     this.$editor.reroute_fix_curvature = true;
     this.$editor.force_first_input = false;
-    // this.editor.node_style = 'Vertical'; //'Horitzontal'
     this.$editor.start();
     this.$editor.import(this.queryAslJson());
 
@@ -278,11 +283,55 @@ export default {
     },
 
     queryAslJson() {
-      return this.cleanAslJson();
+      if (this.$props.jsondata?.length > 0) {
+        this.$axios
+          .get(`/api/info/${this.$props.jsondata[0]["INFO_ID"]}`)
+          .then((r) => {
+            if (r?.data?.Define) {
+              return (this.aslJson = {
+                drawflow: { Home: { data: r.data.Define } },
+              });
+            } else {
+              return this.cleanAslJson();
+            }
+          })
+          .catch((e) => {
+            console.error(e);
+            return this.cleanAslJson();
+          });
+      } else {
+        return this.cleanAslJson();
+      }
     },
     exportAslJson() {
       const flowJson = this.$editor.export();
-      console.log(flowJson);
+      const tasks = flowJson?.drawflow?.Home?.data || {};
+
+      const stacktask = [];
+      let t = tasks["0"]?.outputs?.output_1.connections[0].node;
+
+      const stepJson = {
+        Comment: this.$props.parentdata["Description"],
+        StartAt: t,
+        States: {},
+      };
+
+      while (t) {
+        const tobj = tasks[t];
+        if (["Succeed", "Fail"].includes(tobj.class)) {
+          stepJson.States[tobj['id']] = tobj;
+        } else if (
+          ["Pass", "Choice", "Wait", "Parallel", "Map", "Merge"].includes(
+            tobj.class
+          )
+        ) {
+          stepJson.States[tobj['id']] = tobj;
+        } else {
+          Object.keys(tobj.outputs).map((k) => {
+            stacktask.push(tobj.outputs[k].connections[0].node);
+          });
+        }
+      }
     },
     /*
 {

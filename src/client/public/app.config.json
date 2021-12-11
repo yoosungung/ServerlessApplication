@@ -241,6 +241,11 @@
           "text": "정의",
           "value": "Define",
           "type": "textarea"
+        },
+        {
+          "text": "작업",
+          "value": "StepFunction",
+          "type": "textarea"
         }
       ]
     },

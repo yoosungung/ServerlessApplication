@@ -75,41 +75,39 @@ export default {
   },
 
   mounted() {
-    this.getData(this.$props.parentid, this.$props.objectname).then(
-      ({ tasks, links }) => {
-        this.tasks = tasks;
-        this.links = links;
-        const data = utils.formatData(this.tasks, this.links);
-        //console.log(data);
+    this.getData().then(({ tasks, links }) => {
+      this.tasks = tasks;
+      this.links = links;
+      const data = utils.formatData(this.tasks, this.links);
+      //console.log(data);
 
-        const options = {
-          viewMode: this.viewMode,
-          showLinks: `${this.showLinks ? "showLinks" : ""}`,
-          showDelay: `${this.showDelay ? "showDelay" : ""}`,
-          onClick: this.OnClickGantt,
-        };
-        //console.log(options);
+      const options = {
+        viewMode: this.viewMode,
+        showLinks: `${this.showLinks ? "showLinks" : ""}`,
+        showDelay: `${this.showDelay ? "showDelay" : ""}`,
+        onClick: this.OnClickGantt,
+      };
+      //console.log(options);
 
-        this.svgGantt = new SVGGantt("#svg-root", data, options);
-        this.ganttHTML = this.svgGantt.render();
+      this.svgGantt = new SVGGantt("#svg-root", data, options);
+      this.ganttHTML = this.svgGantt.render();
 
-        this.$svg = document.getElementById("svg-root");
-        this.$svg.addEventListener("mousedown", this.onmousedown);
-        this.$svg.addEventListener("mousemove", this.onmousemove);
-        this.$svg.addEventListener("mouseup", this.onmouseup);
-      }
-    );
+      this.$svg = document.getElementById("svg-root");
+      this.$svg.addEventListener("mousedown", this.onmousedown);
+      this.$svg.addEventListener("mousemove", this.onmousemove);
+      this.$svg.addEventListener("mouseup", this.onmouseup);
+    });
   },
 
   methods: {
-    getData(objectid, objectype) {
+    getData() {
       let objty = { task: "TTask", link: "TLink" };
-      if (objectype == "TProcess") {
+      if (this.$props.objectname == "TProcess") {
         objty = { task: "TClassTask", link: "TClassLink" };
       }
       this.ganttHTML = "";
       return this.$axios
-        .get(`/api/info/${objectid}`)
+        .get(`/api/info/${this.$props.parentid}`)
         .then((r) => {
           const tasks = [];
           const links = [];
@@ -156,7 +154,7 @@ export default {
         });
     },
 
-    setData(objectid) {
+    setData() {
       const tasks = this.tasks.map((vo) => {
         if (vo["start"]) {
           if (typeof vo["start"].getMonth === "function") {
@@ -175,7 +173,10 @@ export default {
         return vo;
       });
       this.$axios
-        .post(`/api/gantt/${objectid}`, { tasks, links: this.links })
+        .post(`/api/gantt/${this.$props.parentid}`, {
+          tasks,
+          links: this.links,
+        })
         .then((r) => {
           console.info(r);
           this.$emit("message-bar", "Infomation", "Save Tasks and Links !");
@@ -187,6 +188,19 @@ export default {
             "Error",
             `Faile Save to Tasks and Links ! ${e}`
           );
+        });
+    },
+    setLink(link) {
+      link["INFO_TYPE"] =
+        this.$props.objectname == "TProcess" ? "TClassLink" : "TLink";
+      this.$axios
+        .post(`/api/info/${this.$props.parentid}`, link)
+        .then((r) => {
+          console.info(r);
+        })
+        .catch((e) => {
+          console.error(e);
+          this.$emit("message-bar", "Error", `Faile Save to Link ! ${e}`);
         });
     },
 
@@ -244,7 +258,8 @@ export default {
       if (enode.type === "milestone") {
         etype = "S";
       }
-      this.links.push({ source: sid, target: eid, type: `${stype}${etype}` });
+      this.setLink({ source: sid, target: eid, type: `${stype}${etype}` });
+      //this.links.push({ source: sid, target: eid, type: `${stype}${etype}` });
       this.changeData();
     },
 

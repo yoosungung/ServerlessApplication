@@ -174,7 +174,7 @@ export default {
     getTitle(objdat) {
       if (objdat) {
         return (
-          objdat["Title"] || objdat["Name"] || objdat["Caption"] || "Noname"
+          objdat["title"] || objdat["name"] || objdat["caption"] || "Noname"
         );
       } else {
         return "Noname";
