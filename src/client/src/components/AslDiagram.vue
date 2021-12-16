@@ -315,22 +315,51 @@ export default {
         StartAt: t,
         States: {},
       };
+      let sts = [stepJson.States];
 
       while (t) {
         const tobj = tasks[t];
-        if (["Succeed", "Fail"].includes(tobj.class)) {
-          stepJson.States[tobj['id']] = tobj;
-        } else if (
-          ["Pass", "Choice", "Wait", "Parallel", "Map", "Merge"].includes(
-            tobj.class
-          )
-        ) {
-          stepJson.States[tobj['id']] = tobj;
-        } else {
-          Object.keys(tobj.outputs).map((k) => {
-            stacktask.push(tobj.outputs[k].connections[0].node);
-          });
+        switch(tobj['class']) {
+          case "Succeed": 
+            sts[-1][tobj['id']] = { "Type": tobj['class'], "end": true };
+            break;
+          case "Fail": 
+            sts[-1][tobj['id']] = { "Type": tobj['class'], "end": true };
+            break;
+          case "Pass": 
+            const nxt = tobj.outputs?.output_1.connections[0].node;
+            sts[-1][tobj['id']] = { "Type": tobj['class'], "Next": nxt };
+            stacktask.push(nxt);
+            break;
+          case "Choice": 
+            tobj.outputs.map(v => {
+              const nxt = v.connections[0].node;
+              sts[-1][tobj['id']] = { "Type": tobj['class'], "Choices": nxt };
+              stacktask.push(nxt);
+            });
+            break;
+          case "Wait": 
+            const nxt = tobj.outputs?.output_1.connections[0].node;
+            sts[-1][tobj['id']] = { "Type": tobj['class'], "Next": nxt };
+            stacktask.push(nxt);
+            break;
+          case "Parallel": 
+            const states = {};
+            sts[-1][tobj['id']] = { "Type": tobj['class'], "States": states };
+            sts.push(states);
+            break;
+          case "Map": 
+            const states = {};
+            sts[-1][tobj['id']] = { "Type": tobj['class'], "States": states };
+            sts.push(states);
+            break;
+          case "Merge":
+            sts.pop();
+            break;
+          default:
+            break;
         }
+        t = stacktask.pop();
       }
     },
     /*
